@@ -28,9 +28,32 @@
 ItemShipment = _Class:Create("ItemShipment", nil, {
   mods = {},
 })
-local configFilePathPattern = string.gsub("Mods/%s/ScriptExtender/ItemDeliveryFrameworkConfig.json", "'", "\'")
+
+local configFilePathPattern = string.gsub("Mods/%s/ScriptExtender/ItemShipmentFrameworkConfig.json", "'", "\'")
+
+function ItemShipment:InitializePVars()
+  if Mods.AVItemShipmentFramework.PersistentVars == nil then
+    Mods.AVItemShipmentFramework.PersistentVars = {}
+  end
+
+  if Mods.AVItemShipmentFramework.PersistentVars.shipments == nil then
+    Mods.AVItemShipmentFramework.PersistentVars.shipments = {}
+  end
+end
+
+function ItemShipment:InitializePVarsForMod(data, modGUID)
+  if not Mods.AVItemShipmentFramework.PersistentVars.shipments[modGUID] then
+    Mods.AVItemShipmentFramework.PersistentVars.shipments[modGUID] = {}
+  end
+
+  -- For each templateUUID in the data, create a key in the persistentVars table with a boolean value of false
+  for _, item in pairs(data.Items) do
+    Mods.AVItemShipmentFramework.PersistentVars.shipments[modGUID][item.TemplateUUID] = false
+  end
+end
 
 function ItemShipment:SubmitData(data, modGUID)
+  self:InitializePVarsForMod(data, modGUID)
   self.mods[modGUID] = data
 end
 
