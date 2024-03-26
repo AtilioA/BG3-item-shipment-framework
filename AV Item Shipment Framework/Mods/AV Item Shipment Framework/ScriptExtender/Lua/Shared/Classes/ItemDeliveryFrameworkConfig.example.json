@@ -1,0 +1,35 @@
+{
+  "FileVersion": 1,
+  "Items": [
+    {
+      "TemplateUUID": "...",
+      "Send": {
+        "Quantity": 1,
+        "To": {
+          "CampChest": {
+            "Player1": true,
+            "Player2": false,
+            "Player3": false,
+            "Player4": false
+          },
+          "Host": false
+        },
+        "CheckExistence": {
+          "CampChest": {
+            "Player1": true,
+            "Player2": false,
+            "Player3": false,
+            "Player4": false
+          },
+          "PartyMembers": {
+            "Followers": true,
+            "AtCamp": true
+          }
+        }
+      }
+    },
+    {
+      "TemplateUUID": "Equal to the previous item, but using default values implicitly"
+    }
+  ]
+}
