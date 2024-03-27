@@ -18,7 +18,7 @@ Config = VCHelpers.Config:New({
 Config:UpdateCurrentConfig()
 
 -- Config:AddConfigReloadedCallback(function(configInstance)
---   SRCPrinter.DebugLevel = configInstance:GetCurrentDebugLevel()
---   SRCPrint(0, "Config reloaded: " .. Ext.Json.Stringify(configInstance:getCfg(), { Beautify = true }))
+--   ISFPrinter.DebugLevel = configInstance:GetCurrentDebugLevel()
+--   ISFPrint(0, "Config reloaded: " .. Ext.Json.Stringify(configInstance:getCfg(), { Beautify = true }))
 -- end)
 -- Config:RegisterReloadConfigCommand("isf")

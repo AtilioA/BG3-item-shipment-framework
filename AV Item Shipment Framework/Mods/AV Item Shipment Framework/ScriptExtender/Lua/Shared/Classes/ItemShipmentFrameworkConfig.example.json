@@ -7,24 +7,25 @@
         "Quantity": 1,
         "To": {
           "CampChest": {
-            "Player1": true,
-            "Player2": false,
-            "Player3": false,
-            "Player4": false
+            "Player1Chest": true,
+            "Player2Chest": false,
+            "Player3Chest": false,
+            "Player4Chest": false
           },
           "Host": false
         },
         "CheckExistence": {
           "CampChest": {
-            "Player1": true,
-            "Player2": false,
-            "Player3": false,
-            "Player4": false
+            "Player1Chest": true,
+            "Player2Chest": false,
+            "Player3Chest": false,
+            "Player4Chest": false
           },
           "PartyMembers": {
             "Followers": true,
             "AtCamp": true
-          }
+          },
+          "FrameworkCheck": true
         }
       }
     },
