@@ -12,7 +12,8 @@
             "Player3Chest": false,
             "Player4Chest": false
           },
-          "Host": false
+          "Host": false,
+          "NotifyPlayer": true
         },
         "CheckExistence": {
           "CampChest": {
