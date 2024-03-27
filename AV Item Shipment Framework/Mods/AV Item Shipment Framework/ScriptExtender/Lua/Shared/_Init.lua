@@ -24,15 +24,16 @@ end
 
 local MODVERSION = Ext.Mod.GetMod(ModuleUUID).Info.ModVersion
 if MODVERSION == nil then
-    SRCWarn(0, "Volitio's AV Item Shipment Framework loaded (version unknown)")
+    ISFWarn(0, "Volitio's AV Item Shipment Framework loaded (version unknown)")
 else
     -- Remove the last element (build/revision number) from the MODVERSION table
     table.remove(MODVERSION)
 
     local versionNumber = table.concat(MODVERSION, ".")
-    SRCPrint(0, "Aether & Volitio's Item Shipment Framework version " .. versionNumber .. " loaded")
+    ISFPrint(0, "Aether & Volitio's Item Shipment Framework version " .. versionNumber .. " loaded")
 end
 
+VCHelpers.ModVars:Register("Shipments", ModuleUUID, {})
 ItemShipmentInstance = ItemShipment:New()
 
 SubscribedEvents.SubscribeToEvents()
