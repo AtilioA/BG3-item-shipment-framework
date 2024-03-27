@@ -46,8 +46,6 @@ function ItemShipment:InitializeModVarsForMod(data, modGUID)
   for _, item in pairs(data.Items) do
     ISFModVars.Shipments[modGUID][item.TemplateUUID] = false
   end
-
-  VCHelpers.ModVars:Sync(ModuleUUID)
 end
 
 function ItemShipment:SubmitData(data, modGUID)
@@ -86,4 +84,120 @@ function ItemShipment:LoadConfigFiles()
       self:TryLoadConfig(config, uuid)
     end
   end
+end
+
+function ItemShipment:ProcessShipments()
+  local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
+
+  -- Iterate through each mod and check if items need to be added
+  for modGUID, modData in pairs(ItemShipmentInstance.mods) do
+    if Ext.Mod.IsModLoaded(modGUID) then
+      ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+      for _, item in pairs(modData.Items) do
+        if ItemShipment:ShouldAddItem(ISFModVars, modGUID, item) then
+          ItemShipment:AddItem(ISFModVars, modGUID, item)
+        end
+      end
+    end
+  end
+end
+
+function ItemShipment:ShouldAddItem(ISFModVars, modGUID, item)
+  return not self:CheckExistence(ISFModVars, modGUID, item)
+end
+
+function ItemShipment:GetCampChestsUUIDs(item)
+  local campChestUUIDs = {}
+
+  local campChests = Osi.DB_Camp_UserCampChest:Get(nil, nil)
+  _D(campChests)
+  if campChests then
+    if item.Send.To.CampChest.Player1Chest then
+      if campChests[1] then
+        table.insert(campChestUUIDs, campChests[1][2])
+      end
+    end
+
+    if item.Send.To.CampChest.Player2Chest then
+      if campChests[2] then
+        table.insert(campChestUUIDs, campChests[2][2])
+      end
+    end
+
+    if item.Send.To.CampChest.Player3Chest then
+      if campChests[3] then
+        table.insert(campChestUUIDs, campChests[3][2])
+      end
+    end
+
+    if item.Send.To.CampChest.Player4Chest then
+      if campChests[4] then
+        table.insert(campChestUUIDs, campChests[4][2])
+      end
+    end
+  end
+
+  return campChestUUIDs
+end
+
+function ItemShipment:AddItem(ISFModVars, modGUID, item)
+  local targetInventories = {}
+  local quantity = item.Send.Quantity or 1
+  local notify = 0
+  if item.Send.Notify == true then
+    notify = 1
+  end
+
+  ISFPrint(1, "Adding item: " .. item.TemplateUUID)
+
+  -- Check each option in the Send.To field
+  _D(item)
+  if item.Send.To.Host then
+    table.insert(targetInventories, Osi.GetHostCharacter())
+  end
+
+  -- FIXME
+  local campChestUUIDs = self:GetCampChestsUUIDs(item)
+  for _, campChestUUID in ipairs(campChestUUIDs) do
+    table.insert(targetInventories, campChestUUID)
+  end
+
+  _D(targetInventories)
+  for _, targetInventory in ipairs(targetInventories) do
+    if targetInventory ~= nil then
+      ISFPrint(1, "Adding item: " .. item.TemplateUUID)
+      _D(targetInventory)
+      Osi.TemplateAddTo(item.TemplateUUID, targetInventory, quantity, notify)
+      -- Osi.TemplateAddTo("398e7328-ce90-4c02-94a2-93341fac499a", "CONT_PlayerCampChest_A_00cb696b-2e5b-2927-cd35-a580b570f400", 10, 1)
+    else
+      ISFPrint(1, "No valid target inventory found for item: " .. item.TemplateUUID)
+    end
+  end
+
+  -- Update ModVars to track added items
+  ISFModVars.Shipments[modGUID][item.TemplateUUID] = true
+  -- VCHelpers.ModVars:Sync(ModuleUUID)
+end
+
+function ItemShipment:CheckExistence(ISFModVars, modGUID, item)
+  -- Check if the item has already been added
+  if item.Send.CheckExistence.FrameworkCheck then
+    if ISFModVars.Shipments[modGUID][item.TemplateUUID] == true then
+      return true
+    end
+  end
+
+  -- -- Implement additional checks based on the config
+  -- if item.Send.CheckExistence.PartyMembers.Followers then
+  --   -- TODO: Check if party members have the item, for each party member
+  -- end
+
+  if item.Send.CheckExistence.CampChest.Player1Chest then
+    -- VCHelpers.Inventory:GetInventory()
+    if VCHelpers.Inventory:IsItemInCampChest(item.TemplateUUID) then
+      return true
+    end
+  end
+
+  return false
 end
