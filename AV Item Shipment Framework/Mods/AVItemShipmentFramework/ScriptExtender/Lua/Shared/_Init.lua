@@ -33,7 +33,15 @@ else
     ISFPrint(0, "Aether & Volitio's Item Shipment Framework version " .. versionNumber .. " loaded")
 end
 
+-- TODO: move it (but I don't know where, it does not seem to work later on)
 VCHelpers.ModVars:Register("Shipments", ModuleUUID, {})
+VCHelpers.ModVars:Register("Mailboxes", ModuleUUID, {
+    Player1 = nil,
+    Player2 = nil,
+    Player3 = nil,
+    Player4 = nil
+})
+
 ItemShipmentInstance = ItemShipment:New()
 
 SubscribedEvents.SubscribeToEvents()

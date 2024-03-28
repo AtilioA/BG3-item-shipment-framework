@@ -31,10 +31,17 @@ ItemShipment = _Class:Create("ItemShipment", nil, {
 
 local configFilePathPattern = string.gsub("Mods/%s/ScriptExtender/ItemShipmentFrameworkConfig.json", "'", "\'")
 
-function ItemShipment:InitializeModVars()
-  local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
-  VCHelpers.ModVars:Register("Shipments", ModuleUUID, {})
-end
+-- function ItemShipment:InitializeModVars()
+--   -- REFACTOR: make this global or something
+--   local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
+--   VCHelpers.ModVars:Register("Shipments", ModuleUUID, {})
+--   VCHelpers.ModVars:Register("Mailboxes", ModuleUUID, {
+--     Player1 = nil,
+--     Player2 = nil,
+--     Player3 = nil,
+--     Player4 = nil
+--   })
+-- end
 
 function ItemShipment:InitializeModVarsForMod(data, modGUID)
   local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
@@ -71,7 +78,8 @@ end
 
 function ItemShipment:LoadConfigFiles()
   -- Ensure ModVars table is initialized
-  self:InitializeModVars()
+  -- self:InitializeModVars()
+
   ISFDebug(2, "Entering LoadConfigFiles")
   for _, uuid in pairs(Ext.Mod.GetLoadOrder()) do
     local modData = Ext.Mod.GetMod(uuid)
