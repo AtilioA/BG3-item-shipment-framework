@@ -5,8 +5,8 @@ Config = VCHelpers.Config:New({
     GENERAL = {
       enabled = true, -- Toggle the mod on/off
     },
-    FEATURES = {
-
+    FEATURES = { -- Options that can override values set by mod authors
+      disable_notifications = false, -- Disable all item shipment notifications
     },
     DEBUG = {
       level = 0 -- 0 = no debug, 1 = minimal, 2 = verbose debug logs

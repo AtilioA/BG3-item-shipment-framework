@@ -119,7 +119,9 @@ function ItemShipment:ProcessShipments()
         if ItemShipment:ShouldAddItem(ISFModVars, modGUID, item) then
           ItemShipment:AddItem(ISFModVars, modGUID, item)
           -- NOTE: this is not accounting for multiplayer characters/mailboxes
-          Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox.")
+          if Config:getCfg().FEATURES.disable_notifications == false and item.Send.Notify then
+            Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox.")
+          end
         end
       end
     end
@@ -186,11 +188,11 @@ function ItemShipment:AddItem(ISFModVars, modGUID, item)
     table.insert(targetInventories, campChestUUID)
   end
 
-  _D(targetInventories)
+  -- _D(targetInventories)
   for _, targetInventory in ipairs(targetInventories) do
     if targetInventory ~= nil then
       ISFPrint(1, "Adding item: " .. item.TemplateUUID)
-      _D(targetInventory)
+      -- _D(targetInventory)
       Osi.TemplateAddTo(item.TemplateUUID, targetInventory, quantity, notify)
       -- Osi.TemplateAddTo("398e7328-ce90-4c02-94a2-93341fac499a", "CONT_PlayerCampChest_A_00cb696b-2e5b-2927-cd35-a580b570f400", 10, 1)
     else
