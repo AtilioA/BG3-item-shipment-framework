@@ -2,35 +2,35 @@
   "FileVersion": 1,
   "Items": [
     {
-      "TemplateUUID": "...", // The TemplateUUID, also known as "MapKey" in a RootTemplate _merged.lsf file, is the Unique Identifier which tells Item Shipment Framework what item to spawn into the game. Replace the three dots between quotes with your item's UUID.
+      "TemplateUUID": "...", // The TemplateUUID, also known as "MapKey" in a RootTemplate _merged.lsf file is the Unique Identifier which tells the Item Shipment Framework what item to spawn into the game. Replace the three dots between quotes with your item's UUID.
       "Send": {
         "Quantity": 1, // Here, you can specify the amount of the item which you would like to spawn in.
         "To": { // In this section, you may specify all the destinations you wish to spawn the item into, like the Camp Chests and the player's inventory.
-          "CampChest": { // Player1, 2, 3, and 4, specify which camp chest you would like to place your item(s) into. To support all four possible players in multi-player, mark all of these variables as "true".
+          "CampChest": { // Player1, 2, 3, and 4, specify which camp chest you would like to place your item(s) into. To support all four possible players in multi-player, mark all of these variables as true.
+            "Player1Chest": true,
+            "Player2Chest": false,
+            "Player3Chest": false,
+            "Player4Chest": false
+          }, // "Host" represents the current character selected by the player. This could mean a character other than the Avatar selected during character creation. It also means the host of the current game session, even in a single-player. Setting this variable to true will spawn your item directly into the host's inventory.
+          "Host": false, // While this option has been included so that mod authors can give items directly to the player, it is strongly encouraged only to set this variable to true IF, and ONLY IF it is REQUIRED that your items are in the player's inventory.
+          "NotifyPlayer": false // If you want the player to receive a notification when the item is spawned into their inventory, set this variable to true.
+        }, // If you want your item to be spawned into only player inventories, and not any camp chests, set all CampChest variables to false, and set the Host variable to true.
+        "CheckExistence": { // This section tells Item Shipment Framework whether to check if your item is currently inside of the camp chests, and player inventories. Both sections can be used, and checked on at the same time.
+          "CampChest": { // If these variables are set to true, and your item is found in NONE of the specified camp chests, Item Shipment Framework will spawn your item where you have specified in the "To" section.
             "Player1Chest": true,
             "Player2Chest": false,
             "Player3Chest": false,
             "Player4Chest": false
           },
-          "Host": false, // "Host" represents the current character(s) selected by the player(s). It does not just mean the host of a multi-player game, and if you set this variable to true, it will spawn your item directly into each player's inventory.
-          "NotifyPlayer": false // If you would like for the player to receive a notification when the item is spawned into their inventory, set this variable to true.
-        }, // If you would like for your item to be spawned into exclusively player inventories, and not any camp chests, set all CampChest variables to false, and set the Host variable to true.
-        "CheckExistence": { // This section tells Item Shipment Framework whether or not to check if your item is currently inside of the camp chests, or player inventories.
-          "CampChest": { // If these variables are set to true, and your item is not found in NONE of the specified camp chests or inventories, Item Shipment Framework will spawn your item where you have specified in the "To" section.
-            "Player1Chest": true,
-            "Player2Chest": false,
-            "Player3Chest": false,
-            "Player4Chest": false
-          },
-          "PartyMembers": { // If these variables are set to true, and your item is not found in player or follower inventories, Item Shipment Framework will spawn your item back into those respective inventories.
+          "PartyMembers": { // If these variables are set to true, and your item is found in NONE of the specified inventories, Item Shipment Framework will spawn your item where you have specified in the "To" section.
             "Followers": true,
-            "AtCamp": true
+            "AtCamp": true // Specifies whether to check on follower inventories while they are at camp, and not in your current party.
           },
-          "FrameworkCheck": true // If this variable is set to true, Item Shipment Framework will do an internal check as to whether or not it has already spawned your item into the game. Although this should be fairly accurate, it's advised not to rely solely on this.
+          "FrameworkCheck": true // When this variable is set to true, Item Shipment Framework will do an internal check whether it has already spawned your item into the game. Although this should be fairly accurate, it's advised not to rely solely on this.
         }
       }
     },
-    { // Equal to the previous item, but using default values implicitly
+    { // Equal to the previous item, but using default values implicitly. If you wish to specify alternate values from the first item, copy the variables which you would like to override from the first item template into this one.
       "TemplateUUID": "..."
     }
   ]
