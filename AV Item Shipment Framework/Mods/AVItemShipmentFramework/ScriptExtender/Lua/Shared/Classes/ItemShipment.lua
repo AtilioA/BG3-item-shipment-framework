@@ -27,6 +27,7 @@
 ---@class ItemShipment: MetaClass
 ItemShipment = _Class:Create("ItemShipment", nil, {
   mods = {},
+  mailbox_templateUUID = "b99474ea-43f9-4dbb-9917-e0a6daa3b9e3"
 })
 
 local configFilePathPattern = string.gsub("Mods/%s/ScriptExtender/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
@@ -94,7 +95,20 @@ function ItemShipment:LoadConfigFiles()
   end
 end
 
+function ItemShipment:InitializeMailbox()
+  local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
+  local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
+  
+  for _, chestUUID in ipairs(campChestUUIDs) do
+    if chestUUID and ISFModVars.Mailboxes.Player1 == nil then
+      Osi.TemplateAddTo(self.mailbox_templateUUID, chestUUID, 1, 1)
+      Osi.ShowNotification(Osi.GetHostCharacter(), "A mailbox has been added to your camp chest.")
+    end
+  end
+end
+
 function ItemShipment:ProcessShipments()
+  self:InitializeMailbox()
   local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
 
   -- Iterate through each mod and check if items need to be added
@@ -104,6 +118,8 @@ function ItemShipment:ProcessShipments()
       for _, item in pairs(modData.Items) do
         if ItemShipment:ShouldAddItem(ISFModVars, modGUID, item) then
           ItemShipment:AddItem(ISFModVars, modGUID, item)
+          -- NOTE: this is not accounting for multiplayer characters/mailboxes
+          Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox.")
         end
       end
     end

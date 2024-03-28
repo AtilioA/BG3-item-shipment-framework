@@ -17,8 +17,14 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
   -- Scan for mod JSON files to load
   ItemShipmentInstance:LoadConfigFiles()
 
-  -- Process shipments read from JSON files
-  ItemShipmentInstance:ProcessShipments()
+end
+
+function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
+  if objectTemplate == "CONT_ISF_Container_" .. ItemShipmentInstance.mailbox_templateUUID then
+    local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
+    ISFModVars.Mailboxes = ISFModVars.Mailboxes or {}
+    ISFModVars.Mailboxes["Player1"] = object2
+  end
 end
 
 return EHandlers
