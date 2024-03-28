@@ -29,7 +29,7 @@ ItemShipment = _Class:Create("ItemShipment", nil, {
   mods = {},
 })
 
-local configFilePathPattern = string.gsub("Mods/%s/ScriptExtender/ItemShipmentFrameworkConfig.json", "'", "\'")
+local configFilePathPattern = string.gsub("Mods/%s/ScriptExtender/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
 
 -- function ItemShipment:InitializeModVars()
 --   -- REFACTOR: make this global or something
