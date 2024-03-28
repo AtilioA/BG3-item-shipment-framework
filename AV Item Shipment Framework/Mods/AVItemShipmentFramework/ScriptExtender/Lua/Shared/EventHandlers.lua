@@ -2,7 +2,7 @@ EHandlers = {}
 
 function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
   ISFDebug(2, "Entering OnLevelGameplayStarted, levelName: " .. levelName .. ", isEditorMode: " .. tostring(isEditorMode))
-  
+
   -- Ignore Editor Mode
   if isEditorMode == true then
     return
@@ -17,6 +17,11 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
   -- Scan for mod JSON files to load
   ItemShipmentInstance:LoadConfigFiles()
 
+  -- Add small delay to ensure camp chests are loaded and that notifications can be read by the player
+  VCHelpers.Timer:OnTime(3000, function()
+    -- Process shipments read from JSON files
+    ItemShipmentInstance:ProcessShipments()
+  end)
 end
 
 function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
