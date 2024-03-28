@@ -30,7 +30,7 @@ ItemShipment = _Class:Create("ItemShipment", nil, {
   mailbox_templateUUID = "b99474ea-43f9-4dbb-9917-e0a6daa3b9e3"
 })
 
-local configFilePathPattern = string.gsub("Mods/%s/ScriptExtender/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
+local configFilePathPattern = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
 
 -- function ItemShipment:InitializeModVars()
 --   -- REFACTOR: make this global or something
