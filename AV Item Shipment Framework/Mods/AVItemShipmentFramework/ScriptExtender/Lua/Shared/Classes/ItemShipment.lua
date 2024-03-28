@@ -116,8 +116,8 @@ function ItemShipment:ProcessShipments()
     if Ext.Mod.IsModLoaded(modGUID) then
       ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
       for _, item in pairs(modData.Items) do
-        if ItemShipment:ShouldAddItem(ISFModVars, modGUID, item) then
-          ItemShipment:AddItem(ISFModVars, modGUID, item)
+        if ItemShipment:ShouldShipItem(ISFModVars, modGUID, item) then
+          ItemShipment:ShipItem(ISFModVars, modGUID, item)
           -- NOTE: this is not accounting for multiplayer characters/mailboxes
           if Config:getCfg().FEATURES.disable_notifications == false and item.Send.Notify then
             Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox.")
@@ -128,7 +128,7 @@ function ItemShipment:ProcessShipments()
   end
 end
 
-function ItemShipment:ShouldAddItem(ISFModVars, modGUID, item)
+function ItemShipment:ShouldShipItem(ISFModVars, modGUID, item)
   return not self:CheckExistence(ISFModVars, modGUID, item)
 end
 
@@ -136,7 +136,6 @@ function ItemShipment:GetCampChestsUUIDs(item)
   local campChestUUIDs = {}
 
   local campChests = Osi.DB_Camp_UserCampChest:Get(nil, nil)
-  _D(campChests)
   if campChests then
     if item.Send.To.CampChest.Player1Chest then
       if campChests[1] then
@@ -166,7 +165,7 @@ function ItemShipment:GetCampChestsUUIDs(item)
   return campChestUUIDs
 end
 
-function ItemShipment:AddItem(ISFModVars, modGUID, item)
+function ItemShipment:ShipItem(ISFModVars, modGUID, item)
   local targetInventories = {}
   local quantity = item.Send.Quantity or 1
   local notify = 0
