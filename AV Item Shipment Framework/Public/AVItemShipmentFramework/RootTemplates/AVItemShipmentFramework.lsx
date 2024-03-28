@@ -4,106 +4,6 @@
 	<region id="Templates">
 		<node id="Templates">
 			<children>
-				<!--Player 1 Camp Chest | TreasureTable = CampChest_A-->
-				<node id="GameObjects">
-					<attribute id="CanBePickedUp" type="bool" value="False" />
-					<attribute id="ExamineRotation" type="fvec3" value="0 0 0" />
-					<attribute id="IsPublicDomain" type="bool" value="True" />
-					<attribute id="LevelName" type="FixedString" value="" />
-					<attribute id="MapKey" type="FixedString" value="96eab9d1-74b1-42f7-b1ad-061a9fcea8c4" />
-					<attribute id="Name" type="LSString" value="CONT_PlayerCampChest_A" />
-					<attribute id="ParentTemplateId" type="FixedString" value="b1487efd-4ae8-4747-866d-717df74169cd" />
-					<attribute id="PhysicsTemplate" type="FixedString" value="a77ef121-5f3c-4384-5e0c-9bbe304f3645" />
-					<attribute id="Stats" type="FixedString" value="OBJ_ImmutableContainer" />
-					<attribute id="Type" type="FixedString" value="item" />
-					<attribute id="VisualTemplate" type="FixedString" value="a16cc92c-116a-c87d-3c2a-5e7038a86ea1" />
-					<attribute id="_OriginalFileVersion_" type="int64" value="144115207403209018" />
-					<children>
-						<node id="InventoryList">
-							<children>
-								<node id="InventoryItem">
-									<attribute id="Object" type="FixedString" value="CampChest_A" />
-								</node>
-							</children>
-						</node>
-						<node id="StatusList" />
-					</children>
-				</node>
-				<!--Player 2 Camp Chest | TreasureTable = CampChest_B-->
-				<node id="GameObjects">
-					<attribute id="CanBePickedUp" type="bool" value="False" />
-					<attribute id="ExamineRotation" type="fvec3" value="0 0 0" />
-					<attribute id="IsPublicDomain" type="bool" value="True" />
-					<attribute id="LevelName" type="FixedString" value="" />
-					<attribute id="MapKey" type="FixedString" value="f68b5862-887c-4adf-b9f8-bb29e4d73b0f" />
-					<attribute id="Name" type="LSString" value="CONT_PlayerCampChest_B" />
-					<attribute id="ParentTemplateId" type="FixedString" value="b1487efd-4ae8-4747-866d-717df74169cd" />
-					<attribute id="PhysicsTemplate" type="FixedString" value="a77ef121-5f3c-4384-5e0c-9bbe304f3645" />
-					<attribute id="Stats" type="FixedString" value="OBJ_ImmutableContainer" />
-					<attribute id="Type" type="FixedString" value="item" />
-					<attribute id="VisualTemplate" type="FixedString" value="58428c03-be6e-18ff-6728-3fe4943420f2" />
-					<attribute id="_OriginalFileVersion_" type="int64" value="144115207403209018" />
-					<children>
-						<node id="InventoryList">
-							<children>
-								<node id="InventoryItem">
-									<attribute id="Object" type="FixedString" value="CampChest_B" />
-								</node>
-							</children>
-						</node>
-						<node id="StatusList" />
-					</children>
-				</node>
-				<!--Player 3 Camp Chest | TreasureTable = CampChest_C-->
-				<node id="GameObjects">
-					<attribute id="CanBePickedUp" type="bool" value="False" />
-					<attribute id="ExamineRotation" type="fvec3" value="0 0 0" />
-					<attribute id="IsPublicDomain" type="bool" value="True" />
-					<attribute id="LevelName" type="FixedString" value="" />
-					<attribute id="MapKey" type="FixedString" value="b5de2260-8e6b-4c2f-91eb-6f3133682a2f" />
-					<attribute id="Name" type="LSString" value="CONT_PlayerCampChest_C" />
-					<attribute id="ParentTemplateId" type="FixedString" value="b1487efd-4ae8-4747-866d-717df74169cd" />
-					<attribute id="PhysicsTemplate" type="FixedString" value="a77ef121-5f3c-4384-5e0c-9bbe304f3645" />
-					<attribute id="Stats" type="FixedString" value="OBJ_ImmutableContainer" />
-					<attribute id="Type" type="FixedString" value="item" />
-					<attribute id="VisualTemplate" type="FixedString" value="d4813da7-b19b-dab4-a2f9-54b99a4909ad" />
-					<attribute id="_OriginalFileVersion_" type="int64" value="144115207403209018" />
-					<children>
-						<node id="InventoryList">
-							<children>
-								<node id="InventoryItem">
-									<attribute id="Object" type="FixedString" value="CampChest_C" />
-								</node>
-							</children>
-						</node>
-						<node id="StatusList" />
-					</children>
-				</node>
-				<!--Player 4 Camp Chest | TreasureTable = CampChest_D-->
-				<node id="GameObjects">
-					<attribute id="CanBePickedUp" type="bool" value="False" />
-					<attribute id="ExamineRotation" type="fvec3" value="0 0 0" />
-					<attribute id="IsPublicDomain" type="bool" value="True" />
-					<attribute id="LevelName" type="FixedString" value="" />
-					<attribute id="MapKey" type="FixedString" value="9b293d36-29f0-460c-bc81-2bdd4610a478" />
-					<attribute id="Name" type="LSString" value="CONT_PlayerCampChest_D" />
-					<attribute id="ParentTemplateId" type="FixedString" value="b1487efd-4ae8-4747-866d-717df74169cd" />
-					<attribute id="PhysicsTemplate" type="FixedString" value="a77ef121-5f3c-4384-5e0c-9bbe304f3645" />
-					<attribute id="Stats" type="FixedString" value="OBJ_ImmutableContainer" />
-					<attribute id="Type" type="FixedString" value="item" />
-					<attribute id="VisualTemplate" type="FixedString" value="b410994e-6c00-519b-09de-068f399b8c4d" />
-					<attribute id="_OriginalFileVersion_" type="int64" value="144115207403209018" />
-					<children>
-						<node id="InventoryList">
-							<children>
-								<node id="InventoryItem">
-									<attribute id="Object" type="FixedString" value="CampChest_D" />
-								</node>
-							</children>
-						</node>
-						<node id="StatusList" />
-					</children>
-				</node>
 				<!--Item Shipment Framework Mailbox | TreasureTable = ISF_Container-->
 				<node id="GameObjects">
 					<attribute id="Description" type="TranslatedString" handle="hd978f2dfg78afg4ac4g8599g84d1f6f58e55" version="5" />
@@ -113,9 +13,11 @@
 					<attribute id="MapKey" type="FixedString" value="b99474ea-43f9-4dbb-9917-e0a6daa3b9e3" />
 					<attribute id="Name" type="LSString" value="CONT_ISF_Container" />
 					<attribute id="ParentTemplateId" type="FixedString" value="9f61d4c0-92f0-48f5-97bc-e4b8a5482a03" />
+					<attribute id="PhysicsTemplate" type="FixedString" value="c6ec5944-1d2b-67bb-f0d8-dd9960b6faf9" />
 					<attribute id="Stats" type="FixedString" value="OBJ_ISF_Container" />
 					<attribute id="TechnicalDescription" type="TranslatedString" handle="h47d309efgf592g4ad5g9276g0a19c5de4c64" version="1" />
 					<attribute id="Type" type="FixedString" value="item" />
+					<attribute id="VisualTemplate" type="FixedString" value="17b1b3b7-d079-e531-eaf9-6dc33542900f" />
 					<attribute id="_OriginalFileVersion_" type="int64" value="144396663052566628" />
 					<children>
 						<node id="InventoryList">
