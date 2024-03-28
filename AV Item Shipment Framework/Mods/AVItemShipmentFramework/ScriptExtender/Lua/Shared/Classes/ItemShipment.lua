@@ -44,6 +44,7 @@ local configFilePathPattern = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.j
 --   })
 -- end
 
+-- TODO: manage per-campaign; currently shares data across campaigns/save files I think
 function ItemShipment:InitializeModVarsForMod(data, modGUID)
   local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
   if not ISFModVars.Shipments[modGUID] then
@@ -61,6 +62,7 @@ function ItemShipment:SubmitData(data, modGUID)
   self.mods[modGUID] = data
 end
 
+-- TODO: modularize CF code into different files
 ---@param configStr string
 ---@param modGUID GUIDSTRING
 function ItemShipment:TryLoadConfig(configStr, modGUID)
@@ -98,11 +100,36 @@ end
 function ItemShipment:InitializeMailbox()
   local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
   local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
-  
-  for _, chestUUID in ipairs(campChestUUIDs) do
-    if chestUUID and ISFModVars.Mailboxes.Player1 == nil then
+
+  ISFPrint(2, "Camp Chest UUIDs: " .. Ext.Json.Stringify(campChestUUIDs), { Beautify = true })
+
+  for playerID, chestUUID in pairs(campChestUUIDs) do
+    ISFPrint(2, "Initializing mailbox for playerID: " .. playerID .. ", chestUUID: " .. chestUUID)
+    ISFPrint(2, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
+    if chestUUID and ISFModVars.Mailboxes[tostring(playerID)] == nil then
       Osi.TemplateAddTo(self.mailbox_templateUUID, chestUUID, 1, 1)
       Osi.ShowNotification(Osi.GetHostCharacter(), "A mailbox has been added to your camp chest.")
+      -- NOTE: Assignment to Mailboxes table is done in the OnTemplateAddedTo event handler
+    end
+  end
+end
+
+--- This function will move mailboxes inside camp chests if they exist and are not already inside.
+function ItemShipment:MakeSureMailboxesAreInsideChests()
+  local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
+  local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
+
+  ISFPrint(2, "Camp Chest UUIDs: " .. Ext.Json.Stringify(campChestUUIDs), { Beautify = true })
+  ISFPrint(2, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
+
+  for playerID, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+    local campChestUUID = campChestUUIDs[tostring(playerID)]
+    if campChestUUID then
+      local campChestInventory = VCHelpers.Inventory:GetInventory(campChestUUID, false, false)
+      if Osi.IsInInventoryOf(mailboxUUID, campChestUUID) == 0 then
+        Osi.ToInventory(mailboxUUID, campChestUUID, 1, 1, 1)
+        Osi.ShowNotification(Osi.GetHostCharacter(), "Your mailbox has been moved to your camp chest.")
+      end
     end
   end
 end

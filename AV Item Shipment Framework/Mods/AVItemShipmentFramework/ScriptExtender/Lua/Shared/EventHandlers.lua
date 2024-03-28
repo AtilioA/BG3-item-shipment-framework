@@ -19,16 +19,27 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
 
   -- Add small delay to ensure camp chests are loaded and that notifications can be read by the player
   VCHelpers.Timer:OnTime(3000, function()
+    -- Make sure mailboxes are inside chests, if not, move them
+    ItemShipmentInstance:MakeSureMailboxesAreInsideChests()
     -- Process shipments read from JSON files
     ItemShipmentInstance:ProcessShipments()
   end)
 end
 
 function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
+  ISFDebug(2,
+    "Entering OnTemplateAddedTo, objectTemplate: " ..
+    objectTemplate .. ", object2: " .. object2 .. ", inventoryHolder: " .. inventoryHolder)
   if objectTemplate == "CONT_ISF_Container_" .. ItemShipmentInstance.mailbox_templateUUID then
     local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
     ISFModVars.Mailboxes = ISFModVars.Mailboxes or {}
-    ISFModVars.Mailboxes["Player1"] = object2
+
+    local campChestName = VCHelpers.Format:GetTemplateName(inventoryHolder)
+    if campChestName == nil then
+      return
+    end
+
+    ISFModVars.Mailboxes[VCHelpers.Camp:GetPlayerIDFromCampChestName(campChestName)] = object2
   end
 end
 
