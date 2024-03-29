@@ -12,11 +12,11 @@
             "Player3Chest": true,
             "Player4Chest": true
           }, // "Host" represents the current character selected by the player. This could mean a character other than the Avatar selected during character creation. It also means the host of the current game session, even in a single-player. Setting this variable to true will spawn your item directly into the host's inventory.
-          "Host": false, // While this option has been included so that mod authors can give items directly to the player, it is strongly encouraged only to set this variable to true IF, and ONLY IF it is REQUIRED that your items are in the player's inventory.
+          "Host": false // While this option has been included so that mod authors can give items directly to the player, it is strongly encouraged only to set this variable to true IF, and ONLY IF it is REQUIRED that your items are in the player's inventory.
         }, // If you want your item to be spawned into only player inventories, and not any camp chests, set all CampChest variables to false, and set the Host variable to true.
         "On": { // This section tells ISF when to try to spawn your item into the game. This will still check for the existence of your item as you have specified in the "CheckExistence" section below, and will only spawn your item if it is not found in the specified categories, but it will try to do so at the specified times.
           "SaveLoad": true, // If you want to try to spawn your item into the game when the player loads a save, set this variable to true.
-          "DayEnd": false, // If you want to try to spawn your item into the game at the end of every day (during night, just before actual long rest), set this variable to true.
+          "DayEnd": false // If you want to try to spawn your item into the game at the end of every day (during night, just before actual long rest), set this variable to true.
         },
         "NotifyPlayer": true, // If you want the player to receive a notification when the item is spawned into their inventory, set this variable to true.
         "CheckExistence": { // This section tells ISF whether to check if your item is currently inside of the camp chests, and player inventories. Both sections can be used, and checked on at the same time.
