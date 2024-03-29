@@ -225,39 +225,6 @@ function ItemShipment:ShouldShipItem(ISFModVars, modGUID, item)
   return IsTriggerCompatible and not itemExists
 end
 
-function ItemShipment:GetCampChestsUUIDs(item)
-  local campChestUUIDs = {}
-
-  local campChests = Osi.DB_Camp_UserCampChest:Get(nil, nil)
-  if campChests then
-    if item.Send.To.CampChest.Player1Chest then
-      if campChests[1] then
-        table.insert(campChestUUIDs, campChests[1][2])
-      end
-    end
-
-    if item.Send.To.CampChest.Player2Chest then
-      if campChests[2] then
-        table.insert(campChestUUIDs, campChests[2][2])
-      end
-    end
-
-    if item.Send.To.CampChest.Player3Chest then
-      if campChests[3] then
-        table.insert(campChestUUIDs, campChests[3][2])
-      end
-    end
-
-    if item.Send.To.CampChest.Player4Chest then
-      if campChests[4] then
-        table.insert(campChestUUIDs, campChests[4][2])
-      end
-    end
-  end
-
-  return campChestUUIDs
-end
-
 function ItemShipment:ShipItem(ISFModVars, modGUID, item)
   local targetInventories = {}
   local quantity = item.Send.Quantity or 1
