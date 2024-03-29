@@ -162,6 +162,24 @@ function ItemShipment:MakeSureMailboxesAreInsideChests()
   end
 end
 
+function ItemShipment:NotifyPlayer(item, modGUID)
+  if Config:getCfg().FEATURES.notifications.enabled == true and item and item.Send.NotifyPlayer then
+    if item.Send.NotifyPlayer then
+      if Config:getCfg().FEATURES.notifications.ping_chest == true then
+        for playerID, chestUUID in pairs(VCHelpers.Camp:GetAllCampChestsUUIDs()) do
+          if item.Send.CheckExistence.CampChest[self.playerIDMapping[playerID]] then
+            local chestPositionX, chestPositionY, chestPositionZ = Osi.GetPosition(chestUUID)
+            if chestPositionX and chestPositionY and chestPositionZ then
+              Osi.RequestPing(chestPositionX, chestPositionY, chestPositionZ, chestUUID, Osi.GetHostCharacter())
+            end
+          end
+        end
+      end
+      Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+    end
+  end
+end
+
 ---@param ISFModVars table The ISF ModVars table
 ---@param modGUID string The UUID of the mod being processed
 ---@param skipChecks boolean Whether to skip checking if the item already exists
@@ -169,13 +187,11 @@ end
 function ItemShipment:ProcessModShipments(ISFModVars, modGUID, skipChecks)
   if Ext.Mod.IsModLoaded(modGUID) then
     ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
-    for _, item in pairs(ISFModVars.Shipments[modGUID].Items) do
+    for _, item in pairs(ItemShipmentInstance.mods[modGUID].Items) do
       if skipChecks or ItemShipment:ShouldShipItem(ISFModVars, modGUID, item) then
         ItemShipment:ShipItem(ISFModVars, modGUID, item)
         -- NOTE: this is not accounting for multiplayer characters/mailboxes, and will likely never be
-        if Config:getCfg().FEATURES.notifications.enabled == true and item.Send.NotifyPlayer then
-          Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox.")
-        end
+        ItemShipment:NotifyPlayer(item, modGUID)
       end
     end
   end
