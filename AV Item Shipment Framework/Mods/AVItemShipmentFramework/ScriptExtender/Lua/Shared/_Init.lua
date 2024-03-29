@@ -43,5 +43,8 @@ VCHelpers.ModVars:Register("Mailboxes", ModuleUUID, {
 })
 
 ItemShipmentInstance = ItemShipment:New()
+if Config:getCfg().DEBUG.level > 1 then
+    ItemShipmentInstance = _MetaClass._Debug(ItemShipmentInstance)
+end
 
 SubscribedEvents.SubscribeToEvents()

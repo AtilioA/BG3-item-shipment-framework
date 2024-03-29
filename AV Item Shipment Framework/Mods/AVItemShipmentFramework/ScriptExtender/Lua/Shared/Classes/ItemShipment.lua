@@ -114,11 +114,11 @@ function ItemShipment:SetShipmentTrigger(trigger)
   self.shipmentTrigger = trigger
 end
 
--- Check if the character has visited the main region (finished tutorial), i.e. Act 1 wilderness area
--- TODO: add items if the character has visited the main region for the first time
+-- Check if the character has finished the tutorial or if spawning during tutorial is allowed
 function ItemShipment:MandatoryShipmentsChecks()
-  if (Osi.GetFlag(hasVisitedAct1Flag, Osi.GetHostCharacter())) then
-    ISFPrint(2, "Character has visited the main region, allowing shipments to be processed.")
+  local allowDuringTutorial = Config:getCfg().FEATURES.spawning.allow_during_tutorial
+  if allowDuringTutorial or Osi.GetFlag(hasVisitedAct1Flag, Osi.GetHostCharacter()) then
+    ISFPrint(2, "Character has visited Act 1 or spawning during tutorial is allowed, shipments can be processed.")
     return true
   end
 
