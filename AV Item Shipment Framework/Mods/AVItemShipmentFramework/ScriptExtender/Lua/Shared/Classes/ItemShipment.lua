@@ -37,6 +37,7 @@ ItemShipment = _Class:Create("ItemShipment", nil, {
 })
 
 local configFilePathPattern = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
+local hasVisitedAct1Flag = "VISITEDREGION_WLD_Main_A"
 
 -- function ItemShipment:InitializeModVars()
 --   -- REFACTOR: make this global or something
@@ -103,6 +104,16 @@ function ItemShipment:LoadConfigFiles()
   end
 end
 
+-- Check if the character has visited the main region (finished tutorial), i.e. Act 1 wilderness area
+function ItemShipment:MandatoryShipmentsChecks()
+  if (Osi.GetFlag(hasVisitedAct1Flag, Osi.GetHostCharacter())) then
+    ISFPrint(2, "Character has visited the main region, allowing shipments to be processed.")
+    return true
+  end
+
+  return false
+end
+
 function ItemShipment:InitializeMailbox()
   local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
   local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
@@ -144,6 +155,14 @@ end
 ---@param checkExistence boolean Whether to check if the item already exists in inventories, etc. before adding it to the destination
 ---@return void
 function ItemShipment:ProcessShipments(skipChecks)
+  -- Mandatory checks before processing shipments/mailboxes/camp chests
+  if not ItemShipment:MandatoryShipmentsChecks() then
+    return
+  end
+
+  -- Make sure mailboxes are inside chests, if not, move them
+  ItemShipmentInstance:MakeSureMailboxesAreInsideChests()
+
   skipChecks = skipChecks or false
   self:InitializeMailbox()
   local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)

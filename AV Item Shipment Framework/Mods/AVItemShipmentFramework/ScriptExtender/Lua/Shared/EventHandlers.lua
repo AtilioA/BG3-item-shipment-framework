@@ -22,7 +22,7 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
     -- Make sure mailboxes are inside chests, if not, move them
     ItemShipmentInstance:MakeSureMailboxesAreInsideChests()
     -- Process shipments read from JSON files
-    ItemShipmentInstance:ProcessShipments()
+    ItemShipmentInstance:ProcessShipments(false)
   end)
 end
 
