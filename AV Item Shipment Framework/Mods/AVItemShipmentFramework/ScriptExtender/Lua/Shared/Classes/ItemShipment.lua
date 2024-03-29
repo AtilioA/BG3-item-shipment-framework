@@ -162,6 +162,25 @@ function ItemShipment:MakeSureMailboxesAreInsideChests()
   end
 end
 
+---@param ISFModVars table The ISF ModVars table
+---@param modGUID string The UUID of the mod being processed
+---@param skipChecks boolean Whether to skip checking if the item already exists
+---@return void
+function ItemShipment:ProcessModShipments(ISFModVars, modGUID, skipChecks)
+  if Ext.Mod.IsModLoaded(modGUID) then
+    ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+    for _, item in pairs(ISFModVars.Shipments[modGUID].Items) do
+      if skipChecks or ItemShipment:ShouldShipItem(ISFModVars, modGUID, item) then
+        ItemShipment:ShipItem(ISFModVars, modGUID, item)
+        -- NOTE: this is not accounting for multiplayer characters/mailboxes, and will likely never be
+        if Config:getCfg().FEATURES.notifications.enabled == true and item.Send.NotifyPlayer then
+          Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox.")
+        end
+      end
+    end
+  end
+end
+
 --- This function will process shipments for each mod that has been loaded.
 ---@param checkExistence boolean Whether to check if the item already exists in inventories, etc. before adding it to the destination
 ---@return void
@@ -178,20 +197,9 @@ function ItemShipment:ProcessShipments(skipChecks)
   self:InitializeMailbox()
   local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
 
-  -- Iterate through each mod and check if items need to be added
+  -- Iterate through each mod and process shipments
   for modGUID, modData in pairs(ItemShipmentInstance.mods) do
-    if Ext.Mod.IsModLoaded(modGUID) then
-      ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
-      for _, item in pairs(modData.Items) do
-        if skipChecks or ItemShipment:ShouldShipItem(ISFModVars, modGUID, item) then
-          ItemShipment:ShipItem(ISFModVars, modGUID, item)
-          -- NOTE: this is not accounting for multiplayer characters/mailboxes, and will likely never be
-          if Config:getCfg().FEATURES.notifications.enabled == true and item.Send.NotifyPlayer then
-            Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox.")
-          end
-        end
-      end
-    end
+    self:ProcessModShipments(ISFModVars, modGUID, skipChecks)
   end
 
   self:SetShipmentTrigger(nil)
@@ -360,11 +368,21 @@ function ItemShipment:CheckExistence(ISFModVars, modGUID, item)
   return false
 end
 
-Ext.RegisterConsoleCommand('isf_ship', function(cmd, skipChecks)
+Ext.RegisterConsoleCommand('isf_ship_all', function(cmd, skipChecks)
   skipChecks = skipChecks or true
   local trigger = "ConsoleCommand"
   self:SetShipmentTrigger(trigger)
 
   ItemShipmentInstance:LoadConfigFiles()
   ItemShipmentInstance:ProcessShipments(skipChecks)
+end)
+
+Ext.RegisterConsoleCommand('isf_ship_mod', function(cmd, modUUID, skipChecks)
+  local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
+  skipChecks = skipChecks or true
+  local trigger = "ConsoleCommand"
+  self:SetShipmentTrigger(trigger)
+
+  ItemShipmentInstance:LoadConfigFiles()
+  ItemShipment:ProcessModShipments(ISFModVars, modUUID, skipChecks)
 end)
