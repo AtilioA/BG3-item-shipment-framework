@@ -163,20 +163,23 @@ function ItemShipment:MakeSureMailboxesAreInsideChests()
 end
 
 function ItemShipment:NotifyPlayer(item, modGUID)
-  if Config:getCfg().FEATURES.notifications.enabled == true and item and item.Send.NotifyPlayer then
-    if item.Send.NotifyPlayer then
-      if Config:getCfg().FEATURES.notifications.ping_chest == true then
-        for playerID, chestUUID in pairs(VCHelpers.Camp:GetAllCampChestsUUIDs()) do
-          if item.Send.CheckExistence.CampChest[self.playerIDMapping[playerID]] then
-            local chestPositionX, chestPositionY, chestPositionZ = Osi.GetPosition(chestUUID)
-            if chestPositionX and chestPositionY and chestPositionZ then
-              Osi.RequestPing(chestPositionX, chestPositionY, chestPositionZ, chestUUID, Osi.GetHostCharacter())
-            end
-          end
+  function ItemShipment:PingChestsReceivingItems()
+    for playerID, chestUUID in pairs(VCHelpers.Camp:GetAllCampChestsUUIDs()) do
+      if item.Send.CheckExistence.CampChest[self.playerIDMapping[playerID]] then
+        local chestPositionX, chestPositionY, chestPositionZ = Osi.GetPosition(chestUUID)
+        if chestPositionX and chestPositionY and chestPositionZ then
+          Osi.RequestPing(chestPositionX, chestPositionY, chestPositionZ, chestUUID, Osi.GetHostCharacter())
         end
       end
-      Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
     end
+  end
+
+  if Config:getCfg().FEATURES.notifications.enabled == true and item and item.Send.NotifyPlayer then
+    if Config:getCfg().FEATURES.notifications.ping_chest == true then
+      self:PingChestsReceivingItems()
+    end
+    Osi.ShowNotification(Osi.GetHostCharacter(),
+      "You have new items in your mailbox from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
   end
 end
 
