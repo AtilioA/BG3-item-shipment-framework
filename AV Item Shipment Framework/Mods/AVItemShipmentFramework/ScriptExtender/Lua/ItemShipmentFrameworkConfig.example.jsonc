@@ -17,13 +17,13 @@
         "NotifyPlayer": true, // If you want the player to receive a notification when the item is spawned into their inventory, set this variable to true.
         "CheckExistence": { // This section tells Item Shipment Framework whether to check if your item is currently inside of the camp chests, and player inventories. Both sections can be used, and checked on at the same time.
           "CampChest": { // If these variables are set to true, and your item is found in NONE of the specified camp chests, Item Shipment Framework will spawn your item where you have specified in the "To" section.
-            "Player1Chest": true,
-            "Player2Chest": false,
-            "Player3Chest": false,
-            "Player4Chest": false
+            "Player1Chest": true, // Chest of Player 1 (Host in single-player, or the first player in multi-player)
+            "Player2Chest": false, // Chest of Player 2 (Second player in multi-player)
+            "Player3Chest": false, // Chest of Player 3 (Third player in multi-player)
+            "Player4Chest": false // Chest of Player 4 (Fourth player in multi-player)
           },
           "PartyMembers": { // If these variables are set to true, and your item is found in NONE of the specified inventories, Item Shipment Framework will spawn your item where you have specified in the "To" section.
-            "Followers": true,
+            "ActiveParty": true, // Specifies whether to check on inventories of party the player's current party (includes player character)
             "AtCamp": true // Specifies whether to check on follower inventories while they are at camp, and not in your current party.
           },
           "FrameworkCheck": true // When this variable is set to true, Item Shipment Framework will do an internal check whether it has already spawned your item into the game. Although this should be fairly accurate, it's advised not to rely solely on this.
