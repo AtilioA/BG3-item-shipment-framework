@@ -17,7 +17,7 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
   -- Scan for mod JSON files to load
   ItemShipmentInstance:LoadConfigFiles()
 
-  local trigger = "LevelGameplayStarted"
+  local trigger = "SaveLoad"
   -- Add small delay to ensure camp chests are loaded and that notifications can be read by the player
   VCHelpers.Timer:OnTime(3000, function()
     ItemShipmentInstance:SetShipmentTrigger(trigger)
@@ -45,7 +45,7 @@ end
 
 function EHandlers.OnEndTheDayRequested(character)
   ISFDebug(2, "Entering OnEndTheDayRequested, character: " .. character)
-  local trigger = "EndTheDayRequested"
+  local trigger = "DayEnd"
   ItemShipmentInstance:SetShipmentTrigger(trigger)
   ItemShipmentInstance:ProcessShipments(false)
 end

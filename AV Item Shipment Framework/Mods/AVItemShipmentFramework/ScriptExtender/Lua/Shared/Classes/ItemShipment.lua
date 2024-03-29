@@ -205,6 +205,7 @@ function ItemShipment:ProcessShipments(skipChecks)
   self:SetShipmentTrigger(nil)
 end
 
+-- FIXME: not working for some reason
 function ItemShipment:IsTriggerCompatible(item)
   local triggerIsCompatible = self.shipmentTrigger == "ConsoleCommand"
 
@@ -219,7 +220,8 @@ function ItemShipment:IsTriggerCompatible(item)
 end
 
 function ItemShipment:ShouldShipItem(ISFModVars, modGUID, item)
-  local IsTriggerCompatible = self:IsTriggerCompatible(item)
+  local IsTriggerCompatible = self:IsTriggerCompatible(item) or true
+  _D(IsTriggerCompatible)
   local itemExists = self:CheckExistence(ISFModVars, modGUID, item)
 
   return IsTriggerCompatible and not itemExists
