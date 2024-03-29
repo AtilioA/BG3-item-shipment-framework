@@ -5,6 +5,8 @@ function SubscribedEvents.SubscribeToEvents()
     Ext.Osiris.RegisterListener("LevelGameplayStarted", 2, "before", EHandlers.OnLevelGameplayStarted)
 
     Ext.Osiris.RegisterListener("TemplateAddedTo", 4, "after", EHandlers.OnTemplateAddedTo)
+
+    Ext.Osiris.RegisterListener("EndTheDayRequested", 1, "after", EHandlers.OnEndTheDayRequested)
   end
 end
 

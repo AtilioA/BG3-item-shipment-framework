@@ -1,3 +1,5 @@
+-- TODO: modularize and add more comments
+
 --[[
     This file has code adapted from sources originally licensed under the MIT License. The terms of the MIT License are as follows:
 
@@ -27,13 +29,14 @@
 ---@class ItemShipment: MetaClass
 ItemShipment = _Class:Create("ItemShipment", nil, {
   mods = {},
-  mailbox_templateUUID = "b99474ea-43f9-4dbb-9917-e0a6daa3b9e3",
+  mailboxTemplateUUID = "b99474ea-43f9-4dbb-9917-e0a6daa3b9e3",
   playerIDMapping = {
     ["65537"] = "Player1Chest",
     ["65538"] = "Player2Chest",
     ["65539"] = "Player3Chest",
     ["65540"] = "Player4Chest"
-  }
+  },
+  shipmentTrigger = nil,
 })
 
 local configFilePathPattern = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
@@ -104,7 +107,15 @@ function ItemShipment:LoadConfigFiles()
   end
 end
 
+-- Set the trigger for the shipment, e.g. "ConsoleCommand", "LevelGameplayStarted", "EndTheDayRequested"
+--@param trigger string The trigger/reason to set
+--@return void
+function ItemShipment:SetShipmentTrigger(trigger)
+  self.shipmentTrigger = trigger
+end
+
 -- Check if the character has visited the main region (finished tutorial), i.e. Act 1 wilderness area
+-- TODO: add items if the character has visited the main region for the first time
 function ItemShipment:MandatoryShipmentsChecks()
   if (Osi.GetFlag(hasVisitedAct1Flag, Osi.GetHostCharacter())) then
     ISFPrint(2, "Character has visited the main region, allowing shipments to be processed.")
@@ -124,7 +135,7 @@ function ItemShipment:InitializeMailbox()
     ISFPrint(2, "Initializing mailbox for playerID: " .. playerID .. ", chestUUID: " .. chestUUID)
     ISFPrint(2, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
     if chestUUID and ISFModVars.Mailboxes[tostring(playerID)] == nil then
-      Osi.TemplateAddTo(self.mailbox_templateUUID, chestUUID, 1, 1)
+      Osi.TemplateAddTo(self.mailboxTemplateUUID, chestUUID, 1, 1)
       Osi.ShowNotification(Osi.GetHostCharacter(), "A mailbox has been added to your camp chest.")
       -- NOTE: Assignment to Mailboxes table is done in the OnTemplateAddedTo event handler
     end
@@ -182,10 +193,28 @@ function ItemShipment:ProcessShipments(skipChecks)
       end
     end
   end
+
+  self:SetShipmentTrigger(nil)
+end
+
+function ItemShipment:IsTriggerCompatible(item)
+  local triggerIsCompatible = self.shipmentTrigger == "ConsoleCommand"
+
+  for trigger, shouldShip in pairs(item.Send.On) do
+    if self.shipmentTrigger == trigger then
+      triggerIsCompatible = shouldShip
+      break
+    end
+  end
+
+  return triggerIsCompatible
 end
 
 function ItemShipment:ShouldShipItem(ISFModVars, modGUID, item)
-  return not self:CheckExistence(ISFModVars, modGUID, item)
+  local IsTriggerCompatible = self:IsTriggerCompatible(item)
+  local itemExists = self:CheckExistence(ISFModVars, modGUID, item)
+
+  return IsTriggerCompatible and not itemExists
 end
 
 function ItemShipment:GetCampChestsUUIDs(item)
@@ -331,8 +360,11 @@ function ItemShipment:CheckExistence(ISFModVars, modGUID, item)
   return false
 end
 
-Ext.RegisterConsoleCommand('isf_send', function(cmd, skipChecks)
+Ext.RegisterConsoleCommand('isf_ship', function(cmd, skipChecks)
   skipChecks = skipChecks or true
+  local trigger = "ConsoleCommand"
+  self:SetShipmentTrigger(trigger)
+
   ItemShipmentInstance:LoadConfigFiles()
   ItemShipmentInstance:ProcessShipments(skipChecks)
 end)
