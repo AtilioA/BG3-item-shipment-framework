@@ -13,9 +13,9 @@ Config = VCHelpers.Config:New({
       spawning = {
         allow_during_tutorial = false, -- Set to true to allow item spawning during the tutorial
       },
-      DEBUG = {
-        level = 0 -- 0 = no debug, 1 = minimal, 2 = verbose debug logs
-      }
+    },
+    DEBUG = {
+      level = 0 -- 0 = no debug, 1 = minimal, 2 = verbose debug logs
     },
     onConfigReloaded = {}
   }
