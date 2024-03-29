@@ -162,9 +162,10 @@ end
 ---@param item table The item that was shipped
 ---@param modGUID string The UUID of the mod that shipped the item
 function ItemShipment:NotifyPlayer(item, modGUID)
+  -- --- Ping the chests receiving items to notify the player that they have new items in their mailbox
   function ItemShipment:PingChestsReceivingItems()
     for playerID, chestUUID in pairs(VCHelpers.Camp:GetAllCampChestsUUIDs()) do
-      if item.Send.CheckExistence.CampChest[self.playerIDMapping[playerID]] then
+      if item.Send.To.CampChest[self.playerIDMapping[playerID]] then
         local chestPositionX, chestPositionY, chestPositionZ = Osi.GetPosition(chestUUID)
         if chestPositionX and chestPositionY and chestPositionZ then
           Osi.RequestPing(chestPositionX, chestPositionY, chestPositionZ, chestUUID, Osi.GetHostCharacter())
@@ -179,6 +180,10 @@ function ItemShipment:NotifyPlayer(item, modGUID)
     end
     Osi.ShowNotification(Osi.GetHostCharacter(),
       "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+    VCHelpers.Timer:OnTime(2800, function()
+      Osi.ShowNotification(Osi.GetHostCharacter(),
+        "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+    end)
   end
 end
 
@@ -267,14 +272,12 @@ function ItemShipment:ShipItem(ISFModVars, modGUID, item)
   ISFPrint(1, "Adding item: " .. item.TemplateUUID)
 
   -- Check each option in the Send.To field
-  _D(item)
   if item.Send.To.Host then
     table.insert(targetInventories, Osi.GetHostCharacter())
   end
 
   -- Check each camp chest and add the corresponding mailbox to the targetInventories
   local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
-  _D(campChestUUIDs)
 
   for playerID, campChestUUID in pairs(campChestUUIDs) do
     local mailboxUUID = ISFModVars.Mailboxes[playerID]
@@ -282,7 +285,8 @@ function ItemShipment:ShipItem(ISFModVars, modGUID, item)
       table.insert(targetInventories, mailboxUUID)
     end
   end
-  _D(targetInventories)
+
+  ISFDebug(2, "Target inventories: " .. Ext.Json.Stringify(targetInventories), { Beautify = true })
 
   for _, targetInventory in ipairs(targetInventories) do
     if targetInventory ~= nil then
