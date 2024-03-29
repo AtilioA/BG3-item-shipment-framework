@@ -41,9 +41,16 @@ ItemShipment = _Class:Create("ItemShipment", nil, {
 })
 
 -- TODO: move these to somewhere else
-local configFilePathPattern = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
+local configFilePathPatternJSON = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.json", "'", "\'")
+-- Lua can't handle optional characters smh
+local configFilePathPatternJSONC = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
 hasVisitedAct1Flag = "925c721d-686b-4fbe-8c3c-d1233bf863b7" -- "VISITEDREGION_WLD_Main_A"
 
+-- NOTE: When introducing new (breaking) versions of the config file, add a new function to parse the new version and update the version number in the config file
+-- local versionHandlers = {
+--   [1] = parseVersion1Config,
+--   [2] = parseVersion2Config,
+-- }
 
 -- TODO: manage per-campaign; currently shares data across campaigns/save files I think
 --- Initialize the mod vars for the mod, if they don't already exist. Might be redundant, but it's here for now.
@@ -97,9 +104,13 @@ function ItemShipment:LoadConfigFiles()
   for _, uuid in pairs(Ext.Mod.GetLoadOrder()) do
     local modData = Ext.Mod.GetMod(uuid)
     ISFDebug(3, "Checking mod: " .. modData.Info.Name)
-    local filePath = configFilePathPattern:format(modData.Info.Directory)
-    -- ISFDebug(2, "Checking file path: " .. filePath)
+
+    local filePath = configFilePathPatternJSONC:format(modData.Info.Directory)
     local config = Ext.IO.LoadFile(filePath, "data")
+    if config == nil then
+      filePath = configFilePathPatternJSON:format(modData.Info.Directory)
+      config = Ext.IO.LoadFile(filePath, "data")
+    end
     if config ~= nil and config ~= "" then
       ISFDebug(2, "Found config for mod: " .. Ext.Mod.GetMod(uuid).Info.Name)
       self:TryLoadConfig(config, uuid)
