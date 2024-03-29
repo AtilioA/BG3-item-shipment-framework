@@ -27,7 +27,13 @@
 ---@class ItemShipment: MetaClass
 ItemShipment = _Class:Create("ItemShipment", nil, {
   mods = {},
-  mailbox_templateUUID = "b99474ea-43f9-4dbb-9917-e0a6daa3b9e3"
+  mailbox_templateUUID = "b99474ea-43f9-4dbb-9917-e0a6daa3b9e3",
+  playerIDMapping = {
+    ["65537"] = "Player1Chest",
+    ["65538"] = "Player2Chest",
+    ["65539"] = "Player3Chest",
+    ["65540"] = "Player4Chest"
+  }
 })
 
 local configFilePathPattern = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
@@ -134,7 +140,11 @@ function ItemShipment:MakeSureMailboxesAreInsideChests()
   end
 end
 
-function ItemShipment:ProcessShipments()
+--- This function will process shipments for each mod that has been loaded.
+---@param checkExistence boolean Whether to check if the item already exists in inventories, etc. before adding it to the destination
+---@return void
+function ItemShipment:ProcessShipments(skipChecks)
+  skipChecks = skipChecks or false
   self:InitializeMailbox()
   local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
 
@@ -143,10 +153,10 @@ function ItemShipment:ProcessShipments()
     if Ext.Mod.IsModLoaded(modGUID) then
       ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
       for _, item in pairs(modData.Items) do
-        if ItemShipment:ShouldShipItem(ISFModVars, modGUID, item) then
+        if skipChecks or ItemShipment:ShouldShipItem(ISFModVars, modGUID, item) then
           ItemShipment:ShipItem(ISFModVars, modGUID, item)
-          -- NOTE: this is not accounting for multiplayer characters/mailboxes
-          if Config:getCfg().FEATURES.disable_notifications == false and item.Send.Notify then
+          -- NOTE: this is not accounting for multiplayer characters/mailboxes, and will likely never be
+          if Config:getCfg().FEATURES.disable_notifications ~= true and item.Send.NotifyPlayer then
             Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox.")
           end
         end
@@ -196,7 +206,7 @@ function ItemShipment:ShipItem(ISFModVars, modGUID, item)
   local targetInventories = {}
   local quantity = item.Send.Quantity or 1
   local notify = 0
-  if item.Send.Notify == true then
+  if item.Send.NotifyPlayer == true then
     notify = 1
   end
 
@@ -208,13 +218,18 @@ function ItemShipment:ShipItem(ISFModVars, modGUID, item)
     table.insert(targetInventories, Osi.GetHostCharacter())
   end
 
-  -- FIXME
-  local campChestUUIDs = self:GetCampChestsUUIDs(item)
-  for _, campChestUUID in ipairs(campChestUUIDs) do
-    table.insert(targetInventories, campChestUUID)
-  end
+  -- Check each camp chest and add the corresponding mailbox to the targetInventories
+  local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
+  _D(campChestUUIDs)
 
-  -- _D(targetInventories)
+  for playerID, campChestUUID in pairs(campChestUUIDs) do
+    local mailboxUUID = ISFModVars.Mailboxes[playerID]
+    if mailboxUUID and item.Send.To.CampChest[self.playerIDMapping[playerID]] then
+      table.insert(targetInventories, mailboxUUID)
+    end
+  end
+  _D(targetInventories)
+
   for _, targetInventory in ipairs(targetInventories) do
     if targetInventory ~= nil then
       ISFPrint(1, "Adding item: " .. item.TemplateUUID)
@@ -253,3 +268,9 @@ function ItemShipment:CheckExistence(ISFModVars, modGUID, item)
 
   return false
 end
+
+Ext.RegisterConsoleCommand('isf_send', function(cmd, skipChecks)
+  skipChecks = skipChecks or true
+  ItemShipmentInstance:LoadConfigFiles()
+  ItemShipmentInstance:ProcessShipments(skipChecks)
+end)
