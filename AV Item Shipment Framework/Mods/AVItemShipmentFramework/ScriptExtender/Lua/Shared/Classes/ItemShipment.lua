@@ -40,7 +40,7 @@ ItemShipment = _Class:Create("ItemShipment", nil, {
 })
 
 local configFilePathPattern = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
-local hasVisitedAct1Flag = "VISITEDREGION_WLD_Main_A"
+hasVisitedAct1Flag = "925c721d-686b-4fbe-8c3c-d1233bf863b7" -- "VISITEDREGION_WLD_Main_A"
 
 -- function ItemShipment:InitializeModVars()
 --   -- REFACTOR: make this global or something
@@ -179,7 +179,7 @@ function ItemShipment:NotifyPlayer(item, modGUID)
       self:PingChestsReceivingItems()
     end
     Osi.ShowNotification(Osi.GetHostCharacter(),
-      "You have new items in your mailbox from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+      "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
   end
 end
 
