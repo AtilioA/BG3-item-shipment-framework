@@ -3,16 +3,19 @@ Config = VCHelpers.Config:New({
   configFilePath = "av_item_shipment_framework_config.json",
   defaultConfig = {
     GENERAL = {
-      enabled = true, -- Toggle the mod on/off
+      enabled = true,      -- Toggle the mod on/off
     },
-    FEATURES = { -- Options that can override values set by mod authors
-      disable_notifications = false, -- Disable all item shipment notifications
+    FEATURES = {           -- Options that can override values set by mod authors
+      notifications = {
+        enabled = true,    -- Set to false to disable all item shipment notifications, regardless of mod author settings
+        ping_chest = true, -- Set to false to disable the ping on chest upon item shipment
+      },
+      DEBUG = {
+        level = 0 -- 0 = no debug, 1 = minimal, 2 = verbose debug logs
+      }
     },
-    DEBUG = {
-      level = 0 -- 0 = no debug, 1 = minimal, 2 = verbose debug logs
-    }
-  },
-  onConfigReloaded = {}
+    onConfigReloaded = {}
+  }
 })
 
 Config:UpdateCurrentConfig()

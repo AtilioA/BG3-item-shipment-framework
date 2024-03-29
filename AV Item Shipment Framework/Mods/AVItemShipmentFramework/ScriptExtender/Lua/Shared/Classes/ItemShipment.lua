@@ -156,7 +156,7 @@ function ItemShipment:ProcessShipments(skipChecks)
         if skipChecks or ItemShipment:ShouldShipItem(ISFModVars, modGUID, item) then
           ItemShipment:ShipItem(ISFModVars, modGUID, item)
           -- NOTE: this is not accounting for multiplayer characters/mailboxes, and will likely never be
-          if Config:getCfg().FEATURES.disable_notifications ~= true and item.Send.NotifyPlayer then
+          if Config:getCfg().FEATURES.notifications.enabled == true and item.Send.NotifyPlayer then
             Osi.ShowNotification(Osi.GetHostCharacter(), "You have new items in your mailbox.")
           end
         end
