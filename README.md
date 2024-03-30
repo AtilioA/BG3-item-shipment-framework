@@ -1,5 +1,7 @@
-# BG3-item-delivery-framework
-📤️ Baldur's Gate 3 framework for other mods to distribute items to camp chest/party inventories
+# Aether & Volitio's Item Shipment Framework
+Aether & Volitio's Item Shipment Framework (ISF for short) allows mod authors to directly ship their modded items into the camp chest or player inventories in Baldur's Gate 3. It is intended as an alternative to the popular Tutorial Chest item shipment approach which many authors have used.
+
+It should serve as a way for users to more conveniently interact with these mods in a more reliable and less confusing way. Additionally, ISF takes the burden off mod authors by handling the complexities of item delivery, allowing checks such as whether the item has already been given to the player, or if they already possess it in their party, camp chests, etc.
 
 Copyright © 2024 Aetherpoint and Volitio
 
