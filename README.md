@@ -1,4 +1,4 @@
-# BG3-item-delivery-framework
+# Aether & Volitio's Item Shipment Framework
 📤️ Baldur's Gate 3 framework for other mods to distribute items to camp chest/party inventories
 
 Copyright © 2024 Aetherpoint and Volitio
