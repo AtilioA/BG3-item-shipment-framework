@@ -182,10 +182,11 @@ function ItemShipment:TryLoadConfig(configStr, modGUID)
     end
   elseif modGUID ~= nil then
     ISFWarn(0,
-      "Failed to parse config for mod: " ..
-      Ext.Mod.GetMod(modGUID).Info.Name .. ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " for assistance.")
+      "Invalid config for mod " ..
+      Ext.Mod.GetMod(modGUID).Info.Name ..
+      ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " for assistance.")
   else
-    ISFWarn(0, "Failed to parse config for mod: " .. modGUID .. ". Please contact the mod author for assistance.")
+    ISFWarn(0, "Invalid config for mod " .. modGUID .. ". Please contact the mod author for assistance.")
   end
 end
 
@@ -300,7 +301,7 @@ function ItemShipment:ProcessModShipments(ISFModVars, modGUID, skipChecks)
   if Ext.Mod.IsModLoaded(modGUID) then
     ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
     for _, item in pairs(ItemShipmentInstance.mods[modGUID].Items) do
-      if skipChecks or ItemShipment:ShouldShipItem(ISFModVars, modGUID, item) then
+      if skipChecks or self:ShouldShipItem(ISFModVars, modGUID, item) then
         ItemShipment:ShipItem(ISFModVars, modGUID, item)
         -- NOTE: this is not accounting for multiplayer characters/mailboxes, and will likely never be
         ItemShipment:NotifyPlayer(item, modGUID)
@@ -338,8 +339,8 @@ function ItemShipment:IsTriggerCompatible(item)
   local triggerIsCompatible = self.shipmentTrigger == "ConsoleCommand"
 
   for trigger, shouldShip in pairs(item.Send.On) do
-    if self.shipmentTrigger == trigger then
-      triggerIsCompatible = shouldShip
+    if shouldShip == true and self.shipmentTrigger == trigger then
+      triggerIsCompatible = true
       break
     end
   end
@@ -353,8 +354,7 @@ end
 ---@param item table The item being processed
 ---@return boolean
 function ItemShipment:ShouldShipItem(ISFModVars, modGUID, item)
-  local IsTriggerCompatible = self:IsTriggerCompatible(item) or true
-  _D(IsTriggerCompatible)
+  local IsTriggerCompatible = self:IsTriggerCompatible(item)
   local itemExists = self:CheckExistence(ISFModVars, modGUID, item)
 
   return IsTriggerCompatible and not itemExists
