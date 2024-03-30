@@ -299,28 +299,28 @@ end
 ---@param item table The item that was shipped
 ---@param modGUID string The UUID of the mod that shipped the item
 function ItemShipment:NotifyPlayer(item, modGUID)
-  -- --- Ping the chests receiving items to notify the player that they have new items in their mailbox
-  function ItemShipment:PingChestsReceivingItems()
+  -- TODO: slightly modularize this
+  if Config:getCfg().FEATURES.notifications.enabled == true and item and item.Send.NotifyPlayer then
     for playerID, chestUUID in pairs(VCHelpers.Camp:GetAllCampChestsUUIDs()) do
       if item.Send.To.CampChest[self.playerIDMapping[playerID]] then
-        local chestPositionX, chestPositionY, chestPositionZ = Osi.GetPosition(chestUUID)
-        if chestPositionX and chestPositionY and chestPositionZ then
-          Osi.RequestPing(chestPositionX, chestPositionY, chestPositionZ, chestUUID, Osi.GetHostCharacter())
+        if Config:getCfg().FEATURES.notifications.vfx == true then
+          Osi.PlayEffect(Osi.GetHostCharacter(), "09ca988d-47dd-b10f-d8e4-b4744874a942")
+        end
+        Osi.ShowNotification(Osi.GetHostCharacter(),
+          "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+        VCHelpers.Timer:OnTime(2750, function()
+          Osi.ShowNotification(Osi.GetHostCharacter(),
+            "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+        end)
+        if Config:getCfg().FEATURES.notifications.ping_chest == true then
+          local chestPositionX, chestPositionY, chestPositionZ = Osi.GetPosition(chestUUID)
+          if chestPositionX and chestPositionY and chestPositionZ then
+            Osi.RequestPing(chestPositionX, chestPositionY, chestPositionZ, chestUUID, Osi.GetHostCharacter())
+            Osi.PlayEffect(chestUUID, "00630e26-964d-c3e1-fcce-7f267c75e606")
+          end
         end
       end
     end
-  end
-
-  if Config:getCfg().FEATURES.notifications.enabled == true and item and item.Send.NotifyPlayer then
-    if Config:getCfg().FEATURES.notifications.ping_chest == true then
-      self:PingChestsReceivingItems()
-    end
-    Osi.ShowNotification(Osi.GetHostCharacter(),
-      "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
-    VCHelpers.Timer:OnTime(2800, function()
-      Osi.ShowNotification(Osi.GetHostCharacter(),
-        "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
-    end)
   end
 end
 
@@ -426,7 +426,7 @@ function ItemShipment:ShipItem(ISFModVars, modGUID, item)
 
   for _, targetInventory in ipairs(targetInventories) do
     if targetInventory ~= nil then
-      ISFPrint(1, "Adding item: " .. item.TemplateUUID)
+      ISFPrint(0, "Adding item: " .. item.TemplateUUID)
       -- _D(targetInventory)
       Osi.TemplateAddTo(item.TemplateUUID, targetInventory, quantity, notify)
       -- Osi.TemplateAddTo("398e7328-ce90-4c02-94a2-93341fac499a", "CONT_PlayerCampChest_A_00cb696b-2e5b-2927-cd35-a580b570f400", 10, 1)

@@ -9,6 +9,7 @@ Config = VCHelpers.Config:New({
       notifications = {
         enabled = true,    -- Set to false to disable all item shipment notifications, regardless of mod author settings
         ping_chest = true, -- Set to false to disable the ping on chest upon item shipment
+        vfx = true,        -- Set to false to disable the VFX on receiving items in the mailbox
       },
       spawning = {
         allow_during_tutorial = false, -- Set to true to allow item spawning during the tutorial
