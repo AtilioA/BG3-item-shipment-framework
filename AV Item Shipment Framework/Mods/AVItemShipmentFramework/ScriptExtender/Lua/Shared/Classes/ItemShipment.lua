@@ -57,7 +57,10 @@ hasVisitedAct1Flag = "925c721d-686b-4fbe-8c3c-d1233bf863b7" -- "VISITEDREGION_WL
 ---@param data table The item data to submit
 ---@param modGUID string The UUID of the mod that the item data belongs to
 function ItemShipment:InitializeModVarsForMod(data, modGUID)
-  local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
+  local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+  if not ISFModVars.Shipments then
+    ISFModVars.Shipments = {}
+  end
   if not ISFModVars.Shipments[modGUID] then
     ISFModVars.Shipments[modGUID] = {}
   end
@@ -65,6 +68,24 @@ function ItemShipment:InitializeModVarsForMod(data, modGUID)
   -- For each templateUUID in the data, create a key in the persistentVars table with a boolean value of false
   for _, item in pairs(data.Items) do
     ISFModVars.Shipments[modGUID][item.TemplateUUID] = false
+  end
+
+  if not ISFModVars.Mailboxes then
+    ISFModVars.Mailboxes = {
+      ["65537"] = nil,
+      ["65538"] = nil,
+      ["65539"] = nil,
+      ["65540"] = nil
+    }
+  end
+
+  -- Sync the mod vars
+  if ISFModVars then
+    for varName, data in pairs(ISFModVars) do
+      ISFModVars[varName] = ISFModVars[varName]
+    end
+    Ext.Vars.DirtyModVariables(ModuleUUID)
+    Ext.Vars.SyncModVariables(ModuleUUID)
   end
 end
 
@@ -89,7 +110,7 @@ function ItemShipment:SanitizeData(data, modGUID)
       ISFWarn(0,
         "ISF config file for mod " ..
         Ext.Mod.GetMod(modGUID).Info.Name ..
-        " contains an item that does not have a TemplateUUID and will be removed. Please contact " ..
+        " contains an item that does not have a TemplateUUID and will be ignored. Please contact " ..
         Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
       table.remove(data.Items, i)
     end
@@ -263,15 +284,18 @@ function ItemShipment:MandatoryShipmentsChecks()
 end
 
 --- Initialize mailboxes for each player in the campaign
-function ItemShipment:InitializeMailbox()
-  local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
+function ItemShipment:InitializeMailboxes()
+  local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+
   local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
 
   for playerID, chestUUID in pairs(campChestUUIDs) do
     ISFDebug(2, "Initializing mailbox for playerID: " .. playerID .. ", chestUUID: " .. chestUUID)
     ISFDebug(2, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
     if chestUUID and ISFModVars.Mailboxes[tostring(playerID)] == nil then
-      Osi.TemplateAddTo(self.mailboxTemplateUUID, chestUUID, 1, 1)
+      ISFDebug(2, "Adding mailbox .. " .. self.mailboxTemplateUUID .. " .. to chest .. " .. chestUUID .. ".")
+      Osi.TemplateAddTo(self.mailboxTemplateUUID, chestUUID, 1)
+      -- TODO: use string handles
       Osi.ShowNotification(Osi.GetHostCharacter(), "A mailbox has been added to your camp chest.")
       -- NOTE: Assignment to Mailboxes table is done in the OnTemplateAddedTo event handler
     end
@@ -280,16 +304,18 @@ end
 
 --- Move mailboxes inside camp chests if they exist and are not already inside.
 function ItemShipment:MakeSureMailboxesAreInsideChests()
-  local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
-  local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
-
-  for playerID, mailboxUUID in pairs(ISFModVars.Mailboxes) do
-    local campChestUUID = campChestUUIDs[tostring(playerID)]
-    if campChestUUID then
-      local campChestInventory = VCHelpers.Inventory:GetInventory(campChestUUID, false, false)
-      if Osi.IsInInventoryOf(mailboxUUID, campChestUUID) == 0 then
-        Osi.ToInventory(mailboxUUID, campChestUUID, 1, 1, 1)
-        Osi.ShowNotification(Osi.GetHostCharacter(), "A mailbox has been moved to the camp chest.")
+  local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+  if ISFModVars.Mailboxes then
+    local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
+    for playerID, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+      local campChestUUID = campChestUUIDs[tostring(playerID)]
+      if campChestUUID then
+        local campChestInventory = VCHelpers.Inventory:GetInventory(campChestUUID, false, false)
+        if Osi.IsInInventoryOf(mailboxUUID, campChestUUID) == 0 then
+          Osi.ToInventory(mailboxUUID, campChestUUID, 1, 1, 1)
+          -- TODO: use string handles
+          Osi.ShowNotification(Osi.GetHostCharacter(), "A mailbox has been moved to the camp chest.")
+        end
       end
     end
   end
@@ -306,9 +332,10 @@ function ItemShipment:NotifyPlayer(item, modGUID)
         if Config:getCfg().FEATURES.notifications.vfx == true then
           Osi.PlayEffect(Osi.GetHostCharacter(), "09ca988d-47dd-b10f-d8e4-b4744874a942")
         end
+        -- TODO: use string handles
         Osi.ShowNotification(Osi.GetHostCharacter(),
           "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
-        VCHelpers.Timer:OnTime(2750, function()
+        VCHelpers.Timer:OnTime(2500, function()
           Osi.ShowNotification(Osi.GetHostCharacter(),
             "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
         end)
@@ -325,16 +352,15 @@ function ItemShipment:NotifyPlayer(item, modGUID)
 end
 
 --- Process shipments for a specific mod.
----@param ISFModVars table The ISF ModVars table
 ---@param modGUID string The UUID of the mod being processed
 ---@param skipChecks boolean Whether to skip checking if the item already exists
 ---@return void
-function ItemShipment:ProcessModShipments(ISFModVars, modGUID, skipChecks)
+function ItemShipment:ProcessModShipments(modGUID, skipChecks)
   if Ext.Mod.IsModLoaded(modGUID) then
     ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
     for _, item in pairs(ItemShipmentInstance.mods[modGUID].Items) do
-      if skipChecks or self:ShouldShipItem(ISFModVars, modGUID, item) then
-        ItemShipment:ShipItem(ISFModVars, modGUID, item)
+      if skipChecks or self:ShouldShipItem(modGUID, item) then
+        ItemShipment:ShipItem(modGUID, item)
         -- NOTE: this is not accounting for multiplayer characters/mailboxes, and will likely never be
         ItemShipment:NotifyPlayer(item, modGUID)
       end
@@ -355,15 +381,19 @@ function ItemShipment:ProcessShipments(skipChecks)
   ItemShipmentInstance:MakeSureMailboxesAreInsideChests()
 
   skipChecks = skipChecks or false
-  self:InitializeMailbox()
-  local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
+  self:InitializeMailboxes()
 
-  -- Iterate through each mod and process shipments
-  for modGUID, modData in pairs(ItemShipmentInstance.mods) do
-    self:ProcessModShipments(ISFModVars, modGUID, skipChecks)
-  end
+  VCHelpers.Timer:OnTime(3000, function()
+    ISFDebug(2, "Processing shipments for all mods.")
 
-  self:SetShipmentTrigger(nil)
+
+    -- Iterate through each mod and process shipments
+    for modGUID, modData in pairs(ItemShipmentInstance.mods) do
+      self:ProcessModShipments(modGUID, skipChecks)
+    end
+
+    self:SetShipmentTrigger(nil)
+  end)
 end
 
 -- FIXME: not working for some reason
@@ -381,23 +411,23 @@ function ItemShipment:IsTriggerCompatible(item)
 end
 
 --- Check if the item should be shipped based on the item's configuration for trigger and existence checks
----@param ISFModVars table The ISF ModVars table
 ---@param modGUID string The UUID of the mod being processed
 ---@param item table The item being processed
 ---@return boolean
-function ItemShipment:ShouldShipItem(ISFModVars, modGUID, item)
+function ItemShipment:ShouldShipItem(modGUID, item)
   local IsTriggerCompatible = self:IsTriggerCompatible(item)
-  local itemExists = self:CheckExistence(ISFModVars, modGUID, item)
+  local itemExists = self:CheckExistence(modGUID, item)
 
   return IsTriggerCompatible and not itemExists
 end
 
 --- Add the item to the target inventory, based on the item's configuration for Send.To
----@param ISFModVars table The ISF ModVars table
 ---@param modGUID string The UUID of the mod being processed
 ---@param item table The item being processed
 ---@return void
-function ItemShipment:ShipItem(ISFModVars, modGUID, item)
+function ItemShipment:ShipItem(modGUID, item)
+  local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+
   local targetInventories = {}
   local quantity = item.Send.Quantity or 1
   local notify = 0
@@ -405,7 +435,8 @@ function ItemShipment:ShipItem(ISFModVars, modGUID, item)
     notify = 1
   end
 
-  ISFPrint(1, "Adding item: " .. item.TemplateUUID)
+  ISFPrint(1, "Adding item: " .. Ext.Json.Stringify(item), { Beautify = true })
+  ISFPrint(1, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
 
   -- Check each option in the Send.To field
   if item.Send.To.Host then
@@ -416,8 +447,9 @@ function ItemShipment:ShipItem(ISFModVars, modGUID, item)
   local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
 
   for playerID, campChestUUID in pairs(campChestUUIDs) do
-    local mailboxUUID = ISFModVars.Mailboxes[playerID]
-    if mailboxUUID and item.Send.To.CampChest[self.playerIDMapping[playerID]] then
+    local mailboxUUID = ISFModVars.Mailboxes[tonumber(playerID)]
+    if mailboxUUID and item.Send.To.CampChest[self.playerIDMapping[tostring(playerID)]] then
+      ISFDebug(2, "Adding mailbox to delivery list: " .. item.TemplateUUID)
       table.insert(targetInventories, mailboxUUID)
     end
   end
@@ -441,15 +473,17 @@ function ItemShipment:ShipItem(ISFModVars, modGUID, item)
 end
 
 --- Check if the item already exists in the target inventories, based on the item's configuration for CheckExistence
----@param ISFModVars table The ISF ModVars table
 ---@param modGUID string The UUID of the mod being processed
 ---@param item table The item being processed
 ---@return boolean
-function ItemShipment:CheckExistence(ISFModVars, modGUID, item)
+function ItemShipment:CheckExistence(modGUID, item)
+  local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+
   -- Check if the item has already been added
   ISFDebug(2, "CHECKING MODVARS")
   if item.Send.CheckExistence.FrameworkCheck then
     if ISFModVars.Shipments[modGUID][item.TemplateUUID] == true then
+      ISFDebug(1, "Item " .. item.TemplateUUID .. " has already been shipped and will not be shipped again.")
       return true
     end
   end
@@ -529,11 +563,10 @@ end)
 ---@param skipChecks boolean Whether to skip checking if the item already exists
 ---@return void
 Ext.RegisterConsoleCommand('isf_ship_mod', function(cmd, modUUID, skipChecks)
-  local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
   skipChecks = skipChecks or true
   local trigger = "ConsoleCommand"
   self:SetShipmentTrigger(trigger)
 
   ItemShipmentInstance:LoadConfigFiles()
-  ItemShipment:ProcessModShipments(ISFModVars, modUUID, skipChecks)
+  ItemShipment:ProcessModShipments(modUUID, skipChecks)
 end)

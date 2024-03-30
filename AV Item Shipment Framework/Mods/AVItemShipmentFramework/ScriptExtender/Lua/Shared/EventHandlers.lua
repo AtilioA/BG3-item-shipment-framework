@@ -27,19 +27,33 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
 end
 
 function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
-  ISFDebug(2,
-    "Entering OnTemplateAddedTo, objectTemplate: " ..
-    objectTemplate .. ", object2: " .. object2 .. ", inventoryHolder: " .. inventoryHolder)
+  local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
   if objectTemplate == "CONT_ISF_Container_" .. ItemShipmentInstance.mailboxTemplateUUID then
-    local ISFModVars = VCHelpers.ModVars:Get(ModuleUUID)
+    ISFDebug(2,
+      "Entering OnTemplateAddedTo, objectTemplate: " ..
+      objectTemplate .. ", object2: " .. object2 .. ", inventoryHolder: " .. inventoryHolder)
     ISFModVars.Mailboxes = ISFModVars.Mailboxes or {}
+    Ext.Vars.SyncModVariables(ModuleUUID)
 
     local campChestName = VCHelpers.Format:GetTemplateName(inventoryHolder)
     if campChestName == nil then
       return
     end
 
+    -- TODO: clean up this godawful mess
     ISFModVars.Mailboxes[VCHelpers.Camp:GetPlayerIDFromCampChestName(campChestName)] = object2
+    ISFModVars.Mailboxes[VCHelpers.Camp:GetPlayerIDFromCampChestName(campChestName)] = ISFModVars.Mailboxes
+        [VCHelpers.Camp:GetPlayerIDFromCampChestName(campChestName)]
+    Ext.Vars.SyncModVariables(ModuleUUID)
+    if ISFModVars then
+      for varName, data in pairs(ISFModVars) do
+        ISFModVars[varName] = ISFModVars[varName]
+      end
+      Ext.Vars.DirtyModVariables(ModuleUUID)
+      Ext.Vars.SyncModVariables(ModuleUUID)
+    end
+
+    ISFDebug(2, "Mailboxes after initialization: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
   end
 end
 
