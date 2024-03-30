@@ -105,39 +105,71 @@ function ItemShipment:ApplyDefaultValues(data)
     -- Set default value for Send
     item.Send = item.Send or {}
     -- Set default value for Send.Quantity
-    item.Send.Quantity = item.Send.Quantity or 1
+    if item.Send.Quantity == nil then
+      item.Send.Quantity = 1
+    end
 
     -- Set default values for Send.To
     item.Send.To = item.Send.To or {}
-    item.Send.To.Host = item.Send.To.Host or false
+    if item.Send.To.Host == nil then
+      item.Send.To.Host = false
+    end
 
     item.Send.To.CampChest = item.Send.To.CampChest or {}
-    item.Send.To.CampChest.Player1Chest = item.Send.To.CampChest.Player1Chest or true
-    item.Send.To.CampChest.Player2Chest = item.Send.To.CampChest.Player2Chest or true
-    item.Send.To.CampChest.Player3Chest = item.Send.To.CampChest.Player3Chest or true
-    item.Send.To.CampChest.Player4Chest = item.Send.To.CampChest.Player4Chest or true
+    if item.Send.To.CampChest.Player1Chest == nil then
+      item.Send.To.CampChest.Player1Chest = true
+    end
+    if item.Send.To.CampChest.Player2Chest == nil then
+      item.Send.To.CampChest.Player2Chest = true
+    end
+    if item.Send.To.CampChest.Player3Chest == nil then
+      item.Send.To.CampChest.Player3Chest = true
+    end
+    if item.Send.To.CampChest.Player4Chest == nil then
+      item.Send.To.CampChest.Player4Chest = true
+    end
 
     -- Set default values for Send.On
     item.Send.On = item.Send.On or {}
-    item.Send.On.SaveLoad = item.Send.On.SaveLoad or true
-    item.Send.On.DayEnd = item.Send.On.DayEnd or false
+    if item.Send.On.SaveLoad == nil then
+      item.Send.On.SaveLoad = true
+    end
+    if item.Send.On.DayEnd == nil then
+      item.Send.On.DayEnd = false
+    end
 
     -- Set default value for Send.NotifyPlayer
-    item.Send.NotifyPlayer = item.Send.NotifyPlayer or true
+    if item.Send.NotifyPlayer == nil then
+      item.Send.NotifyPlayer = true
+    end
 
     -- Set default values for Send.CheckExistence
     item.Send.CheckExistence = item.Send.CheckExistence or {}
     item.Send.CheckExistence.CampChest = item.Send.CheckExistence.CampChest or {}
-    item.Send.CheckExistence.CampChest.Player1Chest = item.Send.CheckExistence.CampChest.Player1Chest or true
-    item.Send.CheckExistence.CampChest.Player2Chest = item.Send.CheckExistence.CampChest.Player2Chest or true
-    item.Send.CheckExistence.CampChest.Player3Chest = item.Send.CheckExistence.CampChest.Player3Chest or true
-    item.Send.CheckExistence.CampChest.Player4Chest = item.Send.CheckExistence.CampChest.Player4Chest or true
+    if item.Send.CheckExistence.CampChest.Player1Chest == nil then
+      item.Send.CheckExistence.CampChest.Player1Chest = true
+    end
+    if item.Send.CheckExistence.CampChest.Player2Chest == nil then
+      item.Send.CheckExistence.CampChest.Player2Chest = true
+    end
+    if item.Send.CheckExistence.CampChest.Player3Chest == nil then
+      item.Send.CheckExistence.CampChest.Player3Chest = true
+    end
+    if item.Send.CheckExistence.CampChest.Player4Chest == nil then
+      item.Send.CheckExistence.CampChest.Player4Chest = true
+    end
 
     item.Send.CheckExistence.PartyMembers = item.Send.CheckExistence.PartyMembers or {}
-    item.Send.CheckExistence.PartyMembers.ActiveParty = item.Send.CheckExistence.PartyMembers.ActiveParty or true
-    item.Send.CheckExistence.PartyMembers.AtCamp = item.Send.CheckExistence.PartyMembers.AtCamp or true
+    if item.Send.CheckExistence.PartyMembers.AtCamp == nil then
+      item.Send.CheckExistence.PartyMembers.AtCamp = true
+    end
+    if item.Send.CheckExistence.FrameworkCheck == nil then
+      item.Send.CheckExistence.FrameworkCheck = true
+    end
 
-    item.Send.CheckExistence.FrameworkCheck = item.Send.CheckExistence.FrameworkCheck or true
+    if item.Send.CheckExistence.FrameworkCheck == nil then
+      item.Send.CheckExistence.FrameworkCheck = true
+    end
   end
 
   return data
