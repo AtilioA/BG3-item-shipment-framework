@@ -68,12 +68,105 @@ function ItemShipment:InitializeModVarsForMod(data, modGUID)
   end
 end
 
+--- Remove elements in the table that do not have a FileVersions, Items table, and any elements in the Items table that do not have a TemplateUUID
+---@param data table The item data to sanitize
+function ItemShipment:SanitizeData(data, modGUID)
+  -- Remove elements in the table that do not have a FileVersions table
+  if not data.FileVersion then
+    ISFWarn(0, "No 'FileVersion' section found in data for mod: " .. Ext.Mod.GetMod(modGUID).Info.Name)
+    return
+  end
+
+  -- Remove elements in the table that do not have an Items table
+  if not data.Items then
+    ISFWarn(0, "No 'Items' section found in data for mod: " .. Ext.Mod.GetMod(modGUID).Info.Name)
+    return
+  end
+
+  -- Remove any elements in the Items table that do not have a TemplateUUID
+  for i = #data.Items, 1, -1 do
+    if not data.Items[i].TemplateUUID then
+      ISFWarn(0,
+        "ISF config file for mod " ..
+        Ext.Mod.GetMod(modGUID).Info.Name ..
+        " contains an item that does not have a TemplateUUID and will be removed. Please contact " ..
+        Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
+      table.remove(data.Items, i)
+    end
+  end
+
+  return data
+end
+
+--- ApplyDefaultValues ensures that any missing fields in the JSON data are assigned default values.
+---@param data table The item data to process
+function ItemShipment:ApplyDefaultValues(data)
+  for _, item in ipairs(data.Items) do
+    -- Set default value for Send
+    item.Send = item.Send or {}
+    -- Set default value for Send.Quantity
+    item.Send.Quantity = item.Send.Quantity or 1
+
+    -- Set default values for Send.To
+    item.Send.To = item.Send.To or {}
+    item.Send.To.Host = item.Send.To.Host or false
+
+    item.Send.To.CampChest = item.Send.To.CampChest or {}
+    item.Send.To.CampChest.Player1Chest = item.Send.To.CampChest.Player1Chest or true
+    item.Send.To.CampChest.Player2Chest = item.Send.To.CampChest.Player2Chest or true
+    item.Send.To.CampChest.Player3Chest = item.Send.To.CampChest.Player3Chest or true
+    item.Send.To.CampChest.Player4Chest = item.Send.To.CampChest.Player4Chest or true
+
+    -- Set default values for Send.On
+    item.Send.On = item.Send.On or {}
+    item.Send.On.SaveLoad = item.Send.On.SaveLoad or true
+    item.Send.On.DayEnd = item.Send.On.DayEnd or false
+
+    -- Set default value for Send.NotifyPlayer
+    item.Send.NotifyPlayer = item.Send.NotifyPlayer or true
+
+    -- Set default values for Send.CheckExistence
+    item.Send.CheckExistence = item.Send.CheckExistence or {}
+    item.Send.CheckExistence.CampChest = item.Send.CheckExistence.CampChest or {}
+    item.Send.CheckExistence.CampChest.Player1Chest = item.Send.CheckExistence.CampChest.Player1Chest or true
+    item.Send.CheckExistence.CampChest.Player2Chest = item.Send.CheckExistence.CampChest.Player2Chest or true
+    item.Send.CheckExistence.CampChest.Player3Chest = item.Send.CheckExistence.CampChest.Player3Chest or true
+    item.Send.CheckExistence.CampChest.Player4Chest = item.Send.CheckExistence.CampChest.Player4Chest or true
+
+    item.Send.CheckExistence.PartyMembers = item.Send.CheckExistence.PartyMembers or {}
+    item.Send.CheckExistence.PartyMembers.ActiveParty = item.Send.CheckExistence.PartyMembers.ActiveParty or true
+    item.Send.CheckExistence.PartyMembers.AtCamp = item.Send.CheckExistence.PartyMembers.AtCamp or true
+
+    item.Send.CheckExistence.FrameworkCheck = item.Send.CheckExistence.FrameworkCheck or true
+  end
+
+  return data
+end
+
+function ItemShipment:PreprocessData(data, modGUID)
+  local sanitizedData = self:SanitizeData(data, modGUID)
+  if not sanitizedData then
+    ISFWarn(0,
+      "Failed to sanitize data for mod: " ..
+      Ext.Mod.GetMod(modGUID).Info.Name ..
+      ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " for assistance.")
+    return
+  end
+
+  return self:ApplyDefaultValues(data)
+end
+
 --- Submit the data to the ItemShipment instance
 ---@param data table The item data to submit
 ---@param modGUID string The UUID of the mod that the item data belongs to
 function ItemShipment:SubmitData(data, modGUID)
-  self:InitializeModVarsForMod(data, modGUID)
-  self.mods[modGUID] = data
+  local preprocessedData = self:PreprocessData(data, modGUID)
+  if not preprocessedData then
+    return
+  end
+
+  self:InitializeModVarsForMod(preprocessedData, modGUID)
+  self.mods[modGUID] = preprocessedData
 end
 
 -- TODO: modularize CF code into different files
@@ -90,7 +183,7 @@ function ItemShipment:TryLoadConfig(configStr, modGUID)
   elseif modGUID ~= nil then
     ISFWarn(0,
       "Failed to parse config for mod: " ..
-      Ext.Mod.GetMod(modGUID).Info.Name .. "Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " for assistance.")
+      Ext.Mod.GetMod(modGUID).Info.Name .. ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " for assistance.")
   else
     ISFWarn(0, "Failed to parse config for mod: " .. modGUID .. ". Please contact the mod author for assistance.")
   end
