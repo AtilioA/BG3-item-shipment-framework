@@ -52,6 +52,7 @@ hasVisitedAct1Flag = "925c721d-686b-4fbe-8c3c-d1233bf863b7" -- "VISITEDREGION_WL
 --   [2] = parseVersion2Config,
 -- }
 
+
 -- TODO: manage per-campaign; currently shares data across campaigns/save files I think
 --- Initialize the mod vars for the mod, if they don't already exist. Might be redundant, but it's here for now.
 ---@param data table The item data to submit
@@ -296,7 +297,7 @@ function ItemShipment:InitializeMailboxes()
       ISFDebug(2, "Adding mailbox .. " .. self.mailboxTemplateUUID .. " .. to chest .. " .. chestUUID .. ".")
       Osi.TemplateAddTo(self.mailboxTemplateUUID, chestUUID, 1)
       -- TODO: use string handles
-      Osi.ShowNotification(Osi.GetHostCharacter(), "A mailbox has been added to your camp chest.")
+      Osi.ShowNotification(Osi.GetHostCharacter(), Messages.ResolvedMessages.mailbox_added_to_camp_chest)
       -- NOTE: Assignment to Mailboxes table is done in the OnTemplateAddedTo event handler
     end
   end
@@ -314,7 +315,7 @@ function ItemShipment:MakeSureMailboxesAreInsideChests()
         if Osi.IsInInventoryOf(mailboxUUID, campChestUUID) == 0 then
           Osi.ToInventory(mailboxUUID, campChestUUID, 1, 1, 1)
           -- TODO: use string handles
-          Osi.ShowNotification(Osi.GetHostCharacter(), "A mailbox has been moved to the camp chest.")
+          Osi.ShowNotification(Osi.GetHostCharacter(), Messages.ResolvedMessages.mailbox_moved_to_camp_chest)
         end
       end
     end
@@ -333,11 +334,12 @@ function ItemShipment:NotifyPlayer(item, modGUID)
           Osi.PlayEffect(Osi.GetHostCharacter(), "09ca988d-47dd-b10f-d8e4-b4744874a942")
         end
         -- TODO: use string handles
+        Messages.UpdateLocalizedMessage(Messages.Handles.mod_shipped_item_to_mailbox, Ext.Mod.GetMod(modGUID).Info.Name)
         Osi.ShowNotification(Osi.GetHostCharacter(),
-          "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+          Ext.Loca.GetTranslatedString(Messages.Handles.mod_shipped_item_to_mailbox))
         VCHelpers.Timer:OnTime(2500, function()
           Osi.ShowNotification(Osi.GetHostCharacter(),
-            "You have new items in your mailbox from the mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+            Ext.Loca.GetTranslatedString(Messages.Handles.mod_shipped_item_to_mailbox))
         end)
         if Config:getCfg().FEATURES.notifications.ping_chest == true then
           local chestPositionX, chestPositionY, chestPositionZ = Osi.GetPosition(chestUUID)
