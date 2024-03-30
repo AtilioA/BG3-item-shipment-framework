@@ -3,4 +3,7 @@
 	<content contentuid="h75a84579ga571g484dgb312g0081cbc12c23" version="1">Item Shipment Framework Mailbox</content>
     <content contentuid="h47d309efgf592g4ad5g9276g0a19c5de4c64" version="1">Stores items added by mod authors.</content>
     <content contentuid="hd978f2dfg78afg4ac4g8599g84d1f6f58e55" version="1">An unseen volition flows through this mystical box, drawing items shipped from the aether.</content>
+    <content contentuid="h7b114c9fge69cg4fbfg9389g430a24de7726" version="1">A mailbox has been added to your camp chest.</content>
+    <content contentuid="h3d963878g9a7bg4987g9cfcg886a9b47e0a0" version="1">A mailbox has been moved to your camp chest.</content>
+    <content contentuid="h1baaa2bdgfce5g4685g9b67g9055ee45c1dc" version="1">[1] has shipped new items to your mailbox.</content>
 </contentList>
