@@ -44,7 +44,8 @@ function ISChecks:CheckExistence(modGUID, item)
       end
     end
   end
-  ISFDebug(2, "Camp chests check passed. Item " .. item.TemplateUUID .. " does not exist in any camp chest that must be checked.")
+  ISFDebug(2,
+    "Camp chests check passed. Item " .. item.TemplateUUID .. " does not exist in any camp chest that must be checked.")
 
   ISFDebug(2, "== Checking party members ==")
   if item.Send.Check.ItemExistence.PartyMembers ~= nil then
@@ -60,11 +61,13 @@ function ISChecks:CheckExistence(modGUID, item)
           "Item " ..
           item.TemplateUUID ..
           " already exists in inventory " ..
-          VCHelpers.Loca:GetDisplayName(partyMember) .. " for mod " .. modGUID .. " and will not be shipped.")
+          VCHelpers.Loca:GetDisplayName(partyMember) ..
+          " for mod " .. Ext.Mod.GetMod(modGUID).Info.Name .. " and will not be shipped.")
         return true
       end
     end
-    ISFDebug(1, "Item " .. item.TemplateUUID .. " does not exist in any party member's inventory to be checked and may be shipped.")
+    ISFDebug(1,
+      "Item " .. item.TemplateUUID .. " does not exist in any party member's inventory to be checked and may be shipped.")
   end
 
   return false
