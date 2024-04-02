@@ -76,32 +76,32 @@ function ISDataProcessing:ApplyDefaultValues(data)
       item.Send.NotifyPlayer = true
     end
 
-    -- Set default values for Send.CheckExistence
-    item.Send.CheckExistence = item.Send.CheckExistence or {}
-    item.Send.CheckExistence.CampChest = item.Send.CheckExistence.CampChest or {}
-    if item.Send.CheckExistence.CampChest.Player1Chest == nil then
-      item.Send.CheckExistence.CampChest.Player1Chest = true
+    -- Set default values for Send.Check.ItemExistence
+    item.Send.Check.ItemExistence = item.Send.Check.ItemExistence or {}
+    item.Send.Check.ItemExistence.CampChest = item.Send.Check.ItemExistence.CampChest or {}
+    if item.Send.Check.ItemExistence.CampChest.Player1Chest == nil then
+      item.Send.Check.ItemExistence.CampChest.Player1Chest = true
     end
-    if item.Send.CheckExistence.CampChest.Player2Chest == nil then
-      item.Send.CheckExistence.CampChest.Player2Chest = true
+    if item.Send.Check.ItemExistence.CampChest.Player2Chest == nil then
+      item.Send.Check.ItemExistence.CampChest.Player2Chest = true
     end
-    if item.Send.CheckExistence.CampChest.Player3Chest == nil then
-      item.Send.CheckExistence.CampChest.Player3Chest = true
+    if item.Send.Check.ItemExistence.CampChest.Player3Chest == nil then
+      item.Send.Check.ItemExistence.CampChest.Player3Chest = true
     end
-    if item.Send.CheckExistence.CampChest.Player4Chest == nil then
-      item.Send.CheckExistence.CampChest.Player4Chest = true
-    end
-
-    item.Send.CheckExistence.PartyMembers = item.Send.CheckExistence.PartyMembers or {}
-    if item.Send.CheckExistence.PartyMembers.AtCamp == nil then
-      item.Send.CheckExistence.PartyMembers.AtCamp = true
-    end
-    if item.Send.CheckExistence.FrameworkCheck == nil then
-      item.Send.CheckExistence.FrameworkCheck = true
+    if item.Send.Check.ItemExistence.CampChest.Player4Chest == nil then
+      item.Send.Check.ItemExistence.CampChest.Player4Chest = true
     end
 
-    if item.Send.CheckExistence.FrameworkCheck == nil then
-      item.Send.CheckExistence.FrameworkCheck = true
+    item.Send.Check.ItemExistence.PartyMembers = item.Send.Check.ItemExistence.PartyMembers or {}
+    if item.Send.Check.ItemExistence.PartyMembers.AtCamp == nil then
+      item.Send.Check.ItemExistence.PartyMembers.AtCamp = true
+    end
+    if item.Send.Check.ItemExistence.FrameworkCheck == nil then
+      item.Send.Check.ItemExistence.FrameworkCheck = true
+    end
+
+    if item.Send.Check.ItemExistence.FrameworkCheck == nil then
+      item.Send.Check.ItemExistence.FrameworkCheck = true
     end
   end
 
