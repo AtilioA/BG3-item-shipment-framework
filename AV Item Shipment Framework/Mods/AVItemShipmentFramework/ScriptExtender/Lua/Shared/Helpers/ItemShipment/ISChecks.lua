@@ -22,47 +22,31 @@ function ISChecks:CheckExistence(modGUID, item)
   local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
   -- Check if the item has already been added
-  ISFDebug(2, "CHECKING MODVARS")
+  ISFDebug(2, "== Checking ModVars ==")
   if item.Send.Check.ItemExistence.FrameworkCheck then
     if ISFModVars.Shipments[modGUID][item.TemplateUUID] == true then
       ISFDebug(1, "Item " .. item.TemplateUUID .. " has already been shipped and will not be shipped again.")
       return true
     end
   end
+  ISFDebug(2, "ModVars check passed. Item " .. item.TemplateUUID .. " has not been shipped by ISF yet.")
 
   -- Check if the item exists in the camp chests
-  ISFDebug(2, "CHECKING CAMP CHESTS")
+  ISFDebug(2, "== Checking camp chests ==")
   if item.Send.Check.ItemExistence.CampChest then
-    if item.Send.Check.ItemExistence.CampChest.Player1Chest then
-      if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, ISFModVars.Mailboxes["65537"]) ~= nil then
-        ISFDebug(1, "Item already exists in the inventory of a camp chest and will not be shipped.")
-        return true
-      end
-    end
-
-    if item.Send.Check.ItemExistence.CampChest.Player2Chest then
-      if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, ISFModVars.Mailboxes["65538"]) ~= nil then
-        ISFDebug(1, "Item already exists in the inventory of a camp chest and will not be shipped.")
-        return true
-      end
-    end
-
-    if item.Send.Check.ItemExistence.CampChest.Player3Chest then
-      if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, ISFModVars.Mailboxes["65539"]) ~= nil then
-        ISFDebug(1, "Item already exists in the inventory of a camp chest and will not be shipped.")
-        return true
-      end
-    end
-
-    if item.Send.Check.ItemExistence.CampChest.Player4Chest then
-      if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, ISFModVars.Mailboxes["65540"]) ~= nil then
-        ISFDebug(1, "Item already exists in the inventory of a camp chest and will not be shipped.")
-        return true
+    for chestIndex = 1, 4 do
+      if item.Send.Check.ItemExistence.CampChest["Player" .. chestIndex .. "Chest"] then
+        if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, ISFModVars.Mailboxes[tostring(chestIndex)]) ~= nil then
+          ISFDebug(1,
+            "Item already exists in the inventory of camp chest .. " .. chestIndex .. " and will not be shipped.")
+          return true
+        end
       end
     end
   end
+  ISFDebug(2, "Camp chests check passed. Item " .. item.TemplateUUID .. " does not exist in any camp chest that must be checked.")
 
-  ISFDebug(2, "CHECKING PARTY MEMBERS")
+  ISFDebug(2, "== Checking party members ==")
   if item.Send.Check.ItemExistence.PartyMembers ~= nil then
     local partyMembers = {}
     if item.Send.Check.ItemExistence.PartyMembers.AtCamp == true then
@@ -80,7 +64,7 @@ function ISChecks:CheckExistence(modGUID, item)
         return true
       end
     end
-    ISFDebug(1, "Item " .. item.TemplateUUID .. " does not exist in any party member's inventory and may be shipped.")
+    ISFDebug(1, "Item " .. item.TemplateUUID .. " does not exist in any party member's inventory to be checked and may be shipped.")
   end
 
   return false

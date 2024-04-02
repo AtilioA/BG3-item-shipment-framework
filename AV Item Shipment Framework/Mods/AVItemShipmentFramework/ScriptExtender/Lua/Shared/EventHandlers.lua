@@ -27,6 +27,7 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
 end
 
 function EHandlers.OnUseStarted(character, item)
+  -- VCHelpers.Object:DumpObjectEntity(item, "isf")
   -- local entity = Ext.Entity.Get(item):GetAllComponents()
   -- if entity.InventoryMember == nil then
   --   return
@@ -49,9 +50,9 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
     end
 
     -- TODO: clean up this godawful mess
-    ISFModVars.Mailboxes[VCHelpers.Camp:GetPlayerIDFromCampChestName(campChestName)] = object2
-    ISFModVars.Mailboxes[VCHelpers.Camp:GetPlayerIDFromCampChestName(campChestName)] = ISFModVars.Mailboxes
-        [VCHelpers.Camp:GetPlayerIDFromCampChestName(campChestName)]
+    ISFModVars.Mailboxes[VCHelpers.Camp:GetIndexFromCampChestName(campChestName)] = object2
+    ISFModVars.Mailboxes[VCHelpers.Camp:GetIndexFromCampChestName(campChestName)] = ISFModVars.Mailboxes
+        [VCHelpers.Camp:GetIndexFromCampChestName(campChestName)]
     Ext.Vars.SyncModVariables(ModuleUUID)
     if ISFModVars then
       for varName, data in pairs(ISFModVars) do

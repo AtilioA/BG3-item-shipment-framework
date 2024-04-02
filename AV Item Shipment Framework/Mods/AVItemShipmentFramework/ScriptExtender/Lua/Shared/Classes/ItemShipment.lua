@@ -89,8 +89,8 @@ end
 function ItemShipment:NotifyPlayer(item, modGUID)
   -- TODO: slightly modularize this
   if Config:getCfg().FEATURES.notifications.enabled == true and item and item.Send.NotifyPlayer then
-    for playerID, chestUUID in pairs(VCHelpers.Camp:GetAllCampChestsUUIDs()) do
-      if item.Send.To.CampChest[ISMailboxes.PlayerIDMapping[playerID]] then
+    for index, chestUUID in pairs(VCHelpers.Camp:GetAllCampChestUUIDs()) do
+      if item.Send.To.CampChest[ISMailboxes.PlayerChestIndexMapping[index]] then
         if Config:getCfg().FEATURES.notifications.vfx == true then
           -- FIXME: only play once per shipment
           -- Osi.PlayEffect(Osi.GetHostCharacter(), "09ca988d-47dd-b10f-d8e4-b4744874a942")
@@ -126,6 +126,7 @@ function ItemShipment:ProcessModShipments(modGUID, skipChecks)
       if skipChecks or self:ShouldShipItem(modGUID, item) then
         ItemShipment:ShipItem(modGUID, item)
         -- NOTE: this is not accounting for multiplayer characters/mailboxes, and will likely never be
+        -- FIXME: should actually check if the item has been added, but it's a minor issue
         ItemShipment:NotifyPlayer(item, modGUID)
       end
     end
@@ -197,7 +198,7 @@ function ItemShipment:ShipItem(modGUID, item)
     notify = 1
   end
 
-  ISFPrint(1, "Adding item: " .. Ext.Json.Stringify(item), { Beautify = true })
+  ISFPrint(1, "About to add item with config: " .. Ext.Json.Stringify(item), { Beautify = true })
   ISFPrint(1, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
 
   -- Check each option in the Send.To field
@@ -206,18 +207,17 @@ function ItemShipment:ShipItem(modGUID, item)
   end
 
   -- Check each camp chest and add the corresponding mailbox to the targetInventories
-  local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
+  -- local campChestEntities = VCHelpers.Camp:GetAllCampChestEntities()
 
-  for playerID, campChestUUID in pairs(campChestUUIDs) do
-    local mailboxUUID = ISMailboxes:GetPlayerMailbox(playerID)
-    if mailboxUUID and item.Send.To.CampChest[ISMailboxes.PlayerIDMapping[tostring(playerID)]] then
+  for chestIndex = 1, 4 do
+    local mailboxUUID = ISMailboxes:GetPlayerMailbox(chestIndex)
+    if mailboxUUID and item.Send.To.CampChest[ISMailboxes.PlayerChestIndexMapping[chestIndex]] then
       ISFDebug(2, "Adding mailbox to delivery list: " .. item.TemplateUUID)
       table.insert(targetInventories, mailboxUUID)
     else
-      ISFDebug(2, "Skipping mailbox: " .. item.TemplateUUID .. " for playerID: " .. playerID)
+      ISFDebug(2, "Skipping mailbox for chestIndex: " .. chestIndex)
     end
   end
-
   ISFDebug(2, "Target inventories: " .. Ext.Json.Stringify(targetInventories), { Beautify = true })
 
   for _, targetInventory in ipairs(targetInventories) do

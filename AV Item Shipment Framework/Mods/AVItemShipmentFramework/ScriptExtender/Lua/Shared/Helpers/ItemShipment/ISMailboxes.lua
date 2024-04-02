@@ -2,20 +2,20 @@
 ISMailboxes = _Class:Create("HelperISMailboxes", Helper)
 
 ISMailboxes.MailboxTemplateUUID = "b99474ea-43f9-4dbb-9917-e0a6daa3b9e3"
-ISMailboxes.PlayerIDMapping = {
-  ["65537"] = "Player1Chest",
-  ["65538"] = "Player2Chest",
-  ["65539"] = "Player3Chest",
-  ["65540"] = "Player4Chest"
+ISMailboxes.PlayerChestIndexMapping = {
+  ["1"] = "Player1Chest",
+  ["2"] = "Player2Chest",
+  ["3"] = "Player3Chest",
+  ["4"] = "Player4Chest"
 }
 
---- Get the mailbox inside the camp chest for the specified player (e.g.: 65537 is player 1)
----@param playerID integer|string
+--- Get the mailbox inside the camp chest given an index
+---@param mailboxIndex integer|string
 ---@return string|nil
-function ISMailboxes:GetPlayerMailbox(playerID)
+function ISMailboxes:GetPlayerMailbox(mailboxIndex)
   local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
-  -- FIXME: fix this mess (it was supposed to work with both as strings, but it doesn't fml)
-  return ISFModVars.Mailboxes[tostring(playerID)] or ISFModVars.Mailboxes[tonumber(playerID)]
+  -- -- FIXME: fix this mess (it was supposed to work with both as strings, but it doesn't fml)
+  return ISFModVars.Mailboxes[tostring(mailboxIndex)] or ISFModVars.Mailboxes[tonumber(mailboxIndex)]
 end
 
 --- Initialize mailboxes for each player in the campaign
@@ -23,12 +23,12 @@ end
 function ISMailboxes:InitializeMailboxes()
   local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
-  local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
+  local campChestUUIDs = VCHelpers.Camp:GetAllCampChestUUIDs()
 
-  for playerID, chestUUID in pairs(campChestUUIDs) do
-    ISFDebug(2, "Initializing mailbox for playerID: " .. playerID .. ", chestUUID: " .. chestUUID)
+  for index, chestUUID in pairs(campChestUUIDs) do
+    ISFDebug(2, "Initializing mailbox for index: " .. index .. ", chestUUID: " .. chestUUID)
     ISFDebug(2, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
-    local mailboxUUID = self:GetPlayerMailbox(playerID)
+    local mailboxUUID = self:GetPlayerMailbox(index)
     if chestUUID and mailboxUUID == nil then
       ISFDebug(2, "Adding mailbox " .. self.MailboxTemplateUUID .. " to chest " .. chestUUID .. ".")
       Osi.TemplateAddTo(self.MailboxTemplateUUID, chestUUID, 1)
@@ -43,11 +43,10 @@ end
 function ISMailboxes:MakeSureMailboxesAreInsideChests()
   local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
   if ISFModVars.Mailboxes then
-    local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
-    for playerID, mailboxUUID in pairs(ISFModVars.Mailboxes) do
-      local campChestUUID = campChestUUIDs[tostring(playerID)]
+    local campChestUUIDs = VCHelpers.Camp:GetAllCampChestUUIDs()
+    for index, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+      local campChestUUID = campChestUUIDs[tostring(index)]
       if campChestUUID then
-        local campChestInventory = VCHelpers.Inventory:GetInventory(campChestUUID, false, false)
         if Osi.IsInInventoryOf(mailboxUUID, campChestUUID) == 0 then
           Osi.ToInventory(mailboxUUID, campChestUUID, 1, 1, 1)
           Osi.ShowNotification(Osi.GetHostCharacter(), Messages.ResolvedMessages.mailbox_moved_to_camp_chest)
