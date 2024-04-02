@@ -76,6 +76,9 @@ function ISDataProcessing:ApplyDefaultValues(data)
       item.Send.NotifyPlayer = true
     end
 
+    -- Set default values for Send.Check
+    item.Send.Check = item.Send.Check or {}
+
     -- Set default values for Send.Check.ItemExistence
     item.Send.Check.ItemExistence = item.Send.Check.ItemExistence or {}
     item.Send.Check.ItemExistence.CampChest = item.Send.Check.ItemExistence.CampChest or {}
@@ -102,6 +105,15 @@ function ISDataProcessing:ApplyDefaultValues(data)
 
     if item.Send.Check.ItemExistence.FrameworkCheck == nil then
       item.Send.Check.ItemExistence.FrameworkCheck = true
+    end
+
+    -- Set default values for Send.Check.PlayerProgression
+    item.Send.Check.PlayerProgression = item.Send.Check.PlayerProgression or {}
+    if item.Send.Check.PlayerProgression.Act == nil then
+      item.Send.Check.PlayerProgression.Act = 1
+    end
+    if item.Send.Check.PlayerProgression.Level == nil then
+      item.Send.Check.PlayerProgression.Level = 1
     end
   end
 
