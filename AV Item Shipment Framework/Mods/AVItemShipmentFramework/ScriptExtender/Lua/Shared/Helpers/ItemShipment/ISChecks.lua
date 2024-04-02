@@ -6,7 +6,7 @@ ISChecks.HasVisitedAct1Flag = "925c721d-686b-4fbe-8c3c-d1233bf863b7" -- "VISITED
 -- Check if the character has finished the tutorial or if spawning during tutorial is allowed
 function ISChecks:MandatoryShipmentsChecks()
   local allowDuringTutorial = Config:getCfg().FEATURES.spawning.allow_during_tutorial
-  if allowDuringTutorial or Osi.GetFlag(self.HasVisitedAct1Flag, Osi.GetHostCharacter()) then
+  if allowDuringTutorial or Osi.GetFlag(self.HasVisitedAct1Flag, Osi.GetHostCharacter()) == 1 then
     ISFDebug(2, "Character has visited Act 1 or spawning during tutorial is allowed, shipments can be processed.")
     return true
   end

@@ -150,7 +150,6 @@ function ItemShipment:ProcessShipments(skipChecks)
   VCHelpers.Timer:OnTime(3000, function()
     ISFDebug(2, "Processing shipments for all mods.")
 
-
     -- Iterate through each mod and process shipments
     for modGUID, modData in pairs(ItemShipmentInstance.mods) do
       self:ProcessModShipments(modGUID, skipChecks)
