@@ -1,27 +1,17 @@
 Ext.Vars.RegisterModVariable(ModuleUUID, "Shipments", {
   Server = true,
-  Client = true,
   Persistent = true,
-  SyncToServer = true,
-  SyncToClient = true,
-  WriteableOnServer = true,
-  WriteableOnClient = true,
-  SyncOnWrite = false,
+  SyncOnWrite = true,
   SyncOnTick = true,
-  DontCache = false,
+  DontCache = true,
 })
 
 Ext.Vars.RegisterModVariable(ModuleUUID, "Mailboxes", {
   Server = true,
-  Client = true,
   Persistent = true,
-  SyncToServer = true,
-  SyncToClient = true,
-  WriteableOnServer = true,
-  WriteableOnClient = true,
-  SyncOnWrite = false,
+  SyncOnWrite = true,
   SyncOnTick = true,
-  DontCache = false,
+  DontCache = true,
 })
 
 Ext.Require("Shared/_Init.lua")
