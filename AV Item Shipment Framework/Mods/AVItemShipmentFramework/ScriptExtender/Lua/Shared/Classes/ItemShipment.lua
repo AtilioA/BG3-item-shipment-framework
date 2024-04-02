@@ -190,6 +190,8 @@ function ItemShipment:ShipItem(modGUID, item)
     if mailboxUUID and item.Send.To.CampChest[ISMailboxes.PlayerIDMapping[tostring(playerID)]] then
       ISFDebug(2, "Adding mailbox to delivery list: " .. item.TemplateUUID)
       table.insert(targetInventories, mailboxUUID)
+    else
+      ISFDebug(2, "Skipping mailbox: " .. item.TemplateUUID .. " for playerID: " .. playerID)
     end
   end
 
@@ -197,10 +199,8 @@ function ItemShipment:ShipItem(modGUID, item)
 
   for _, targetInventory in ipairs(targetInventories) do
     if targetInventory ~= nil then
-      ISFPrint(0, "Adding item: " .. item.TemplateUUID)
-      -- _D(targetInventory)
+      ISFPrint(0, "Adding item: " .. item.TemplateUUID .. " to inventory: " .. targetInventory)
       Osi.TemplateAddTo(item.TemplateUUID, targetInventory, quantity, notify)
-      -- Osi.TemplateAddTo("398e7328-ce90-4c02-94a2-93341fac499a", "CONT_PlayerCampChest_A_00cb696b-2e5b-2927-cd35-a580b570f400", 10, 1)
     else
       ISFPrint(1, "No valid target inventory found for item: " .. item.TemplateUUID)
     end
