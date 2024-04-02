@@ -19,11 +19,19 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
 
   local trigger = "SaveLoad"
   -- Add small delay to ensure camp chests are loaded and that notifications can be read by the player
-  VCHelpers.Timer:OnTime(3000, function()
+  VCHelpers.Timer:OnTime(2500, function()
     ItemShipmentInstance:SetShipmentTrigger(trigger)
     -- Process shipments read from JSON files
     ItemShipmentInstance:ProcessShipments(false)
   end)
+end
+
+function EHandlers.OnUseStarted(character, item)
+  -- local entity = Ext.Entity.Get(item):GetAllComponents()
+  -- if entity.InventoryMember == nil then
+  --   return
+  -- end
+  -- _D(Ext.Entity.Get(item):GetAllComponents().InventoryMember.Inventory.InventoryIsOwned.Owner:GetAllComponents())
 end
 
 function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
