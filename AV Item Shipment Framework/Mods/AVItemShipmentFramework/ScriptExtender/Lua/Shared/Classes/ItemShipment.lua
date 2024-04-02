@@ -1,3 +1,4 @@
+-- TODO: add more level 2 debug messages to be able to track from user reports
 ---@class ItemShipment: MetaClass
 ItemShipment = _Class:Create("ItemShipment", nil, {
   mods = {},
@@ -51,7 +52,7 @@ end
 
 -- Set the trigger for the shipment, e.g. "ConsoleCommand", "LevelGameplayStarted", "EndTheDayRequested"
 --@param trigger string The trigger/reason to set
---@return void
+--@return nil
 function ItemShipment:SetShipmentTrigger(trigger)
   self.shipmentTrigger = trigger
 end
@@ -92,7 +93,7 @@ end
 --- Process shipments for a specific mod.
 ---@param modGUID string The UUID of the mod being processed
 ---@param skipChecks boolean Whether to skip checking if the item already exists
----@return void
+---@return nil
 function ItemShipment:ProcessModShipments(modGUID, skipChecks)
   if Ext.Mod.IsModLoaded(modGUID) then
     ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
@@ -108,7 +109,7 @@ end
 
 --- Process shipments for each mod that has been loaded.
 ---@param skipChecks boolean Whether to skip the existence check for the item in inventories, etc. before adding it to the destination
----@return void
+---@return nil
 function ItemShipment:ProcessShipments(skipChecks)
   -- Mandatory checks before processing shipments/mailboxes/camp chests
   if not ISChecks:MandatoryShipmentsChecks() then
@@ -162,7 +163,7 @@ end
 --- Add the item to the target inventory, based on the item's configuration for Send.To
 ---@param modGUID string The UUID of the mod being processed
 ---@param item table The item being processed
----@return void
+---@return nil
 function ItemShipment:ShipItem(modGUID, item)
   local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
@@ -185,7 +186,7 @@ function ItemShipment:ShipItem(modGUID, item)
   local campChestUUIDs = VCHelpers.Camp:GetAllCampChestsUUIDs()
 
   for playerID, campChestUUID in pairs(campChestUUIDs) do
-    local mailboxUUID = ISFModVars.Mailboxes[tonumber(playerID)]
+    local mailboxUUID = ISMailboxes:GetPlayerMailbox(playerID)
     if mailboxUUID and item.Send.To.CampChest[ISMailboxes.PlayerIDMapping[tostring(playerID)]] then
       ISFDebug(2, "Adding mailbox to delivery list: " .. item.TemplateUUID)
       table.insert(targetInventories, mailboxUUID)

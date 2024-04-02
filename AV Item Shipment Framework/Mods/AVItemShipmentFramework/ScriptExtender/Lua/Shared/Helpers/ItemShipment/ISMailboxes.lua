@@ -9,7 +9,17 @@ ISMailboxes.PlayerIDMapping = {
   ["65540"] = "Player4Chest"
 }
 
+--- Get the mailbox inside the camp chest for the specified player (e.g.: 65537 is player 1)
+---@param playerID integer|string
+---@return string|nil
+function ISMailboxes:GetPlayerMailbox(playerID)
+  local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+  -- FIXME: fix this mess (it was supposed to work with both as strings, but it doesn't fml)
+  return ISFModVars.Mailboxes[tostring(playerID)] or ISFModVars.Mailboxes[tonumber(playerID)]
+end
+
 --- Initialize mailboxes for each player in the campaign
+---@return nil
 function ISMailboxes:InitializeMailboxes()
   local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
@@ -18,7 +28,8 @@ function ISMailboxes:InitializeMailboxes()
   for playerID, chestUUID in pairs(campChestUUIDs) do
     ISFDebug(2, "Initializing mailbox for playerID: " .. playerID .. ", chestUUID: " .. chestUUID)
     ISFDebug(2, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
-    if chestUUID and ISFModVars.Mailboxes[tostring(playerID)] == nil then
+    local mailboxUUID = self:GetPlayerMailbox(playerID)
+    if chestUUID and mailboxUUID == nil then
       ISFDebug(2, "Adding mailbox .. " .. self.MailboxTemplateUUID .. " .. to chest .. " .. chestUUID .. ".")
       Osi.TemplateAddTo(self.MailboxTemplateUUID, chestUUID, 1)
       -- TODO: use string handles
@@ -29,6 +40,7 @@ function ISMailboxes:InitializeMailboxes()
 end
 
 --- Move mailboxes inside camp chests if they exist and are not already inside.
+---@return nil
 function ISMailboxes:MakeSureMailboxesAreInsideChests()
   local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
   if ISFModVars.Mailboxes then
