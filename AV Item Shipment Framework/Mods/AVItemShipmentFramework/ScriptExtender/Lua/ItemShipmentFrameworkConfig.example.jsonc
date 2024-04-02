@@ -2,7 +2,7 @@
   "FileVersion": 1,
   "Items": [
     {
-      "TemplateUUID": "...", // The TemplateUUID, also known as "MapKey" in a RootTemplate _merged.lsf file is the Unique Identifier which tells the Item Shipment Framework what item to spawn into the game. It could even be a container UUID instead of just an individual items. Replace the three dots between quotes with your item's UUID.
+      "TemplateUUID": "...", // The TemplateUUID, also known as "MapKey" in a RootTemplate _merged.lsf file is the Unique Identifier which tells the Item Shipment Framework what item to spawn into the game. It could even be a container UUID instead of just an individual vanilla item. Replace the three dots between quotes with your item's UUID.
       "Send": {
         "Quantity": 1, // Here, you can specify the amount of the item which you would like to spawn in.
         "To": { // In this section, you may specify all the destinations you wish to spawn the item into, like the Camp Chests and the player's inventory.

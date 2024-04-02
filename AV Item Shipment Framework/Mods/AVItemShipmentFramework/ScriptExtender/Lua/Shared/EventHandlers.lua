@@ -15,7 +15,7 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
   end
 
   -- Scan for mod JSON files to load
-  ItemShipmentInstance:LoadConfigFiles()
+  ItemShipmentInstance:LoadShipments()
 
   local trigger = "SaveLoad"
   -- Add small delay to ensure camp chests are loaded and that notifications can be read by the player
@@ -28,7 +28,7 @@ end
 
 function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
   local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
-  if objectTemplate == "CONT_ISF_Container_" .. ItemShipmentInstance.mailboxTemplateUUID then
+  if objectTemplate == "CONT_ISF_Container_" .. ISMailboxes.MailboxTemplateUUID then
     ISFDebug(2,
       "Entering OnTemplateAddedTo, objectTemplate: " ..
       objectTemplate .. ", object2: " .. object2 .. ", inventoryHolder: " .. inventoryHolder)

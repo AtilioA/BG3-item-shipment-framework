@@ -1,4 +1,5 @@
-Messages = {}
+---@class HelperMessages: Helper
+Messages = _Class:Create("HelperMessages", Helper)
 
 Messages.Handles = {
   mailbox_added_to_camp_chest = "h7b114c9fge69cg4fbfg9389g430a24de7726",
@@ -30,5 +31,3 @@ function Messages.UpdateLocalizedMessage(handle, dynamicContent)
 end
 
 Messages.ResolvedMessages = Messages.ResolveMessagesHandles()
-
-return Messages
