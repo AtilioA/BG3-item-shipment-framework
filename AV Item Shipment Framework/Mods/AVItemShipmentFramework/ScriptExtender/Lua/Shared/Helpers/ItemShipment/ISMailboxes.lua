@@ -30,7 +30,7 @@ function ISMailboxes:InitializeMailboxes()
     ISFDebug(2, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
     local mailboxUUID = self:GetPlayerMailbox(playerID)
     if chestUUID and mailboxUUID == nil then
-      ISFDebug(2, "Adding mailbox .. " .. self.MailboxTemplateUUID .. " .. to chest .. " .. chestUUID .. ".")
+      ISFDebug(2, "Adding mailbox " .. self.MailboxTemplateUUID .. " to chest " .. chestUUID .. ".")
       Osi.TemplateAddTo(self.MailboxTemplateUUID, chestUUID, 1)
       Osi.ShowNotification(Osi.GetHostCharacter(), Messages.ResolvedMessages.mailbox_added_to_camp_chest)
       -- NOTE: Assignment to Mailboxes table is done in the OnTemplateAddedTo event handler

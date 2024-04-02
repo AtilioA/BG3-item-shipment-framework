@@ -13,7 +13,7 @@ function ISUtils:InitializeModVarsForMod(data, modGUID)
   if not ISFModVars.Shipments[modGUID] then
     ISFModVars.Shipments[modGUID] = {}
   end
-
+  
   -- For each templateUUID in the data, create a key in the persistentVars table with a boolean value of false
   for _, item in pairs(data.Items) do
     ISFModVars.Shipments[modGUID][item.TemplateUUID] = false
