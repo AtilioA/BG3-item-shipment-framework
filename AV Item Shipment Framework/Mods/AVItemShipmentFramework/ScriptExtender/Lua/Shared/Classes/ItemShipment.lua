@@ -211,7 +211,7 @@ function ItemShipment:ShipItem(modGUID, item)
 
   for chestIndex = 1, 4 do
     local mailboxUUID = ISMailboxes:GetPlayerMailbox(chestIndex)
-    if mailboxUUID and item.Send.To.CampChest[ISMailboxes.PlayerChestIndexMapping[chestIndex]] then
+    if mailboxUUID and item.Send.To.CampChest[ISMailboxes.PlayerChestIndexMapping[tostring(chestIndex)]] then
       ISFDebug(2, "Adding mailbox to delivery list: " .. item.TemplateUUID)
       table.insert(targetInventories, mailboxUUID)
     else
