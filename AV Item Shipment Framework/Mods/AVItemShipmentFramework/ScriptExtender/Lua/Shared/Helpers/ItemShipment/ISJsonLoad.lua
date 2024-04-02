@@ -30,7 +30,6 @@ ISJsonLoad = _Class:Create("HelperISJsonLoad", Helper)
 ISJsonLoad.ConfigFilePathPatternJSON = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.json", "'", "\'")
 ISJsonLoad.ConfigFilePathPatternJSONC = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
 
--- TODO: modularize CF code into different files
 --- Load the JSONc file for the mod and submit the data to the ItemShipment instance
 ---@param configStr string The string representation of the JSONc file
 ---@param modGUID GUIDSTRING The UUID of the mod that the config file belongs to

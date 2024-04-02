@@ -108,6 +108,10 @@ function ISDataProcessing:ApplyDefaultValues(data)
   return data
 end
 
+--- PreprocessData is a wrapper function that calls the SanitizeData and ApplyDefaultValues functions.
+---@param data table The item data to process
+---@param modGUID string The GUID of the mod that the data belongs to
+---@return table|nil The processed item data, or nil if the data could not be processed (e.g. if it failed sanitization due to invalid data)
 function ISDataProcessing:PreprocessData(data, modGUID)
   local sanitizedData = self:SanitizeData(data, modGUID)
   if not sanitizedData then

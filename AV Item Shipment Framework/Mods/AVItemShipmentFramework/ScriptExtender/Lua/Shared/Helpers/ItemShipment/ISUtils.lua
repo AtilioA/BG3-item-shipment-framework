@@ -1,7 +1,7 @@
 ---@class HelperISUtils: Helper
 ISUtils = _Class:Create("HelperISUtils", Helper)
 
--- TODO: manage per-campaign; currently shares data across campaigns/save files I think
+-- TODO: manage per-campaign; currently shares data across campaigns/save files I think (no, seems like it doesn't)
 --- Initialize the mod vars for the mod, if they don't already exist. Might be redundant, but it's here for now.
 ---@param data table The item data to submit
 ---@param modGUID string The UUID of the mod that the item data belongs to

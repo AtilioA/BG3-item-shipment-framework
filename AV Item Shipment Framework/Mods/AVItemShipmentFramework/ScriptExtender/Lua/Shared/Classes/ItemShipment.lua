@@ -95,7 +95,6 @@ function ItemShipment:NotifyPlayer(item, modGUID)
           -- FIXME: only play once per shipment
           -- Osi.PlayEffect(Osi.GetHostCharacter(), "09ca988d-47dd-b10f-d8e4-b4744874a942")
         end
-        -- TODO: use string handles
         Messages.UpdateLocalizedMessage(Messages.Handles.mod_shipped_item_to_mailbox, Ext.Mod.GetMod(modGUID).Info.Name)
         Osi.ShowNotification(Osi.GetHostCharacter(),
           Ext.Loca.GetTranslatedString(Messages.Handles.mod_shipped_item_to_mailbox))
@@ -161,7 +160,6 @@ function ItemShipment:ProcessShipments(skipChecks)
   end)
 end
 
--- FIXME: not working for some reason
 function ItemShipment:IsTriggerCompatible(item)
   local triggerIsCompatible = self.shipmentTrigger == "ConsoleCommand"
 

@@ -28,6 +28,7 @@ Ext.RegisterConsoleCommand('isf_ship_mod', function(cmd, modUUID, skipChecks)
 end)
 
 --- Register console command for uninstalling Item Shipment Framework.
+-- TODO: check if ModVars are wiped after saving without the mod loaded
 ---@return nil
 Ext.RegisterConsoleCommand('isf_uninstall', function(cmd)
   ISFWarn(0,

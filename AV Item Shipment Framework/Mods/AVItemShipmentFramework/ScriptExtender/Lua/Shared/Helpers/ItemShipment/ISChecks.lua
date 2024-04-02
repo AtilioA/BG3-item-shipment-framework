@@ -34,7 +34,6 @@ function ISChecks:CheckExistence(modGUID, item)
   ISFDebug(2, "CHECKING CAMP CHESTS")
   if item.Send.CheckExistence.CampChest then
     if item.Send.CheckExistence.CampChest.Player1Chest then
-      -- FIXME: check mailbox instead
       if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, ISFModVars.Mailboxes["65537"]) ~= nil then
         ISFDebug(1, "Item already exists in the inventory of a camp chest and will not be shipped.")
         return true

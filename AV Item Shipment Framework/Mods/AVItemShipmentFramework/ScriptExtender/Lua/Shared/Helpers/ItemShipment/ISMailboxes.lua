@@ -32,7 +32,6 @@ function ISMailboxes:InitializeMailboxes()
     if chestUUID and mailboxUUID == nil then
       ISFDebug(2, "Adding mailbox .. " .. self.MailboxTemplateUUID .. " .. to chest .. " .. chestUUID .. ".")
       Osi.TemplateAddTo(self.MailboxTemplateUUID, chestUUID, 1)
-      -- TODO: use string handles
       Osi.ShowNotification(Osi.GetHostCharacter(), Messages.ResolvedMessages.mailbox_added_to_camp_chest)
       -- NOTE: Assignment to Mailboxes table is done in the OnTemplateAddedTo event handler
     end
@@ -51,7 +50,6 @@ function ISMailboxes:MakeSureMailboxesAreInsideChests()
         local campChestInventory = VCHelpers.Inventory:GetInventory(campChestUUID, false, false)
         if Osi.IsInInventoryOf(mailboxUUID, campChestUUID) == 0 then
           Osi.ToInventory(mailboxUUID, campChestUUID, 1, 1, 1)
-          -- TODO: use string handles
           Osi.ShowNotification(Osi.GetHostCharacter(), Messages.ResolvedMessages.mailbox_moved_to_camp_chest)
         end
       end
