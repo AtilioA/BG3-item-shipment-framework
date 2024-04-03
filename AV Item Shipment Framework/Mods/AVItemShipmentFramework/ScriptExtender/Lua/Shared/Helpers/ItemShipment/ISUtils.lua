@@ -74,6 +74,7 @@ end
 ---@param item table The item that was shipped
 ---@param modGUID string The UUID of the mod that shipped the item
 function ISUtils:NotifyPlayer(item, modGUID)
+    local config = Config:getCfg()
     local isNotificationEnabled = config.FEATURES.notifications.enabled
     local shouldNotifyPlayer = item and item.Send.NotifyPlayer
 
