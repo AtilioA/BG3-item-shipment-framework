@@ -1,9 +1,9 @@
----@class HelperISDataProcessing: Helper
-ISDataProcessing = _Class:Create("HelperISDataProcessing", Helper)
+---@class HelperISDataPreprocessing: Helper
+ISDataPreprocessing = _Class:Create("HelperISDataPreprocessing", Helper)
 
 --- Remove elements in the table that do not have a FileVersions, Items table, and any elements in the Items table that do not have a TemplateUUID
 ---@param data table The item data to sanitize
-function ISDataProcessing:SanitizeData(data, modGUID)
+function ISDataPreprocessing:SanitizeData(data, modGUID)
     -- Remove elements in the table that do not have a FileVersions table
     if not data.FileVersion then
         ISFWarn(0,
@@ -39,7 +39,7 @@ end
 
 --- ApplyDefaultValues ensures that any missing fields in the JSON data are assigned default values.
 ---@param data table The item data to process
-function ISDataProcessing:ApplyDefaultValues(data)
+function ISDataPreprocessing:ApplyDefaultValues(data)
     for _, item in ipairs(data.Items) do
         -- Set default value for Send
         item.Send = item.Send or {}
@@ -130,7 +130,7 @@ end
 ---@param data table The item data to process
 ---@param modGUID string The GUID of the mod that the data belongs to
 ---@return table|nil The processed item data, or nil if the data could not be processed (e.g. if it failed sanitization due to invalid data)
-function ISDataProcessing:PreprocessData(data, modGUID)
+function ISDataPreprocessing:PreprocessData(data, modGUID)
     local sanitizedData = self:SanitizeData(data, modGUID)
     if not sanitizedData then
         ISFWarn(0,

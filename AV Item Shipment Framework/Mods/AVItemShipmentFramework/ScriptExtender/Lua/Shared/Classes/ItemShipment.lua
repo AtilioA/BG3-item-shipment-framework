@@ -42,7 +42,7 @@ ItemShipment = _Class:Create("ItemShipment", nil, {
 ---@param data table The item data to submit
 ---@param modGUID string The UUID of the mod that the item data belongs to
 function ItemShipment:SubmitData(data, modGUID)
-    local preprocessedData = ISDataProcessing:PreprocessData(data, modGUID)
+    local preprocessedData = ISDataPreprocessing:PreprocessData(data, modGUID)
     if not preprocessedData then
         return
     end
