@@ -14,13 +14,21 @@ ISMailboxes.PlayerChestIndexMapping = {
 ---@return string|nil
 function ISMailboxes:GetPlayerMailbox(mailboxIndex)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+
+    if not ISFModVars.Mailboxes then
+        ISFDebug(1, "Mailboxes table is nil. Returning.")
+        return nil
+    end
+
     return ISFModVars.Mailboxes[mailboxIndex]
 end
 
---- Initialize mailboxes for each player in the campaign
+--- Initialize mailboxes for each player chest
 ---@return nil
 function ISMailboxes:InitializeMailboxes()
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    -- Initialize the mailboxes table ModVars if needed
+    ISUtils:InitializeMailboxesTable()
 
     local campChestUUIDs = VCHelpers.Camp:GetAllCampChestUUIDs()
 

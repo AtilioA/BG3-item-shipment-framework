@@ -1,11 +1,9 @@
 ---@class HelperISUtils: Helper
 ISUtils = _Class:Create("HelperISUtils", Helper)
 
--- REVIEW: manage per-campaign; currently shares data across campaigns/save files I think (no, seems like it doesn't)
---- Initialize the mod vars for the mod, if they don't already exist. Might be redundant, but it's here for now.
----@param data table The item data to submit
+--- Initialize the Shipments table for the given mod
 ---@param modGUID string The UUID of the mod that the item data belongs to
-function ISUtils:InitializeModVarsForMod(data, modGUID)
+function ISUtils:InitializeShipmentsTable(modGUID)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
     -- Initialize Shipments table
@@ -16,13 +14,28 @@ function ISUtils:InitializeModVarsForMod(data, modGUID)
     if not ISFModVars.Shipments[modGUID] then
         ISFModVars.Shipments[modGUID] = {}
     end
+    self:SyncModVariables()
+end
+
+--- Initialize the item entries in the Shipments table for the given mod and data
+---@param data table The item data to submit
+---@param modGUID string The UUID of the mod that the item data belongs to
+function ISUtils:InitializeItemEntries(data, modGUID)
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+
     -- For each TemplateUUID in the data, create a key in the mod table with a boolean value of false
     for _, item in pairs(data.Items) do
         ISFModVars.Shipments[modGUID][item.TemplateUUID] = false
     end
+    self:SyncModVariables()
+end
 
-    -- Initialize Mailboxes table
-    -- TODO: remove unnecessary mapping of indexes, we can now just index the table directly
+--- Initialize the Mailboxes table
+function ISUtils:InitializeMailboxesTable()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+
+    -- Each index in the Mailboxes table corresponds to a player chest
+    -- REVIEW: use chest template name instead?
     if not ISFModVars.Mailboxes then
         ISFModVars.Mailboxes = {
             nil,
@@ -31,9 +44,13 @@ function ISUtils:InitializeModVarsForMod(data, modGUID)
             nil
         }
     end
+    self:SyncModVariables()
+end
 
-    -- Sync the mod vars
-    -- TODO: reduce the redundancy of these syncs
+--- Sync the mod variables
+function ISUtils:SyncModVariables()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+
     if ISFModVars then
         for varName, data in pairs(ISFModVars) do
             ISFModVars[varName] = ISFModVars[varName]
@@ -41,6 +58,16 @@ function ISUtils:InitializeModVarsForMod(data, modGUID)
         Ext.Vars.DirtyModVariables(ModuleUUID)
         Ext.Vars.SyncModVariables(ModuleUUID)
     end
+end
+
+--- Initialize the mod vars for the mod, if they don't already exist. Might be redundant, but it's here for now.
+---@param data table The item data to submit
+---@param modGUID string The UUID of the mod that the item data belongs to
+function ISUtils:InitializeModVarsForMod(data, modGUID)
+    self:InitializeShipmentsTable(modGUID)
+    self:InitializeItemEntries(data, modGUID)
+    self:InitializeMailboxesTable()
+    self:SyncModVariables()
 end
 
 --- Notify the player that they have new items in their mailbox
