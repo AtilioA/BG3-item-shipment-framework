@@ -3,10 +3,10 @@ ISCommands = _Class:Create("HelperISCommands", Helper)
 
 --- Register console command for shipping items from all mods.
 ---@param modUUID string The UUID of the mod being processed
----@param skipChecks boolean Whether to skip checking if the item already exists
+---@param skipChecks string Whether to skip checking if the item already exists
 ---@return nil
 Ext.RegisterConsoleCommand('isf_ship_all', function(cmd, skipChecks)
-    skipChecks = skipChecks or true
+    skipChecks = skipChecks == 'true'
     local trigger = "ConsoleCommand"
     ItemShipmentInstance:SetShipmentTrigger(trigger)
 
@@ -16,10 +16,10 @@ end)
 
 --- Register console command for shipping items for a specific mod passed as argument.
 ---@param modUUID string The UUID of the mod being processed
----@param skipChecks boolean Whether to skip checking if the item already exists
+---@param skipChecks string Whether to skip checking if the item already exists
 ---@return nil
 Ext.RegisterConsoleCommand('isf_ship_mod', function(cmd, modUUID, skipChecks)
-    skipChecks = skipChecks or true
+    skipChecks = skipChecks == 'true'
     local trigger = "ConsoleCommand"
     ItemShipmentInstance:SetShipmentTrigger(trigger)
 
