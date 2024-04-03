@@ -6,12 +6,12 @@ ISCommands = _Class:Create("HelperISCommands", Helper)
 ---@param skipChecks boolean Whether to skip checking if the item already exists
 ---@return nil
 Ext.RegisterConsoleCommand('isf_ship_all', function(cmd, skipChecks)
-  skipChecks = skipChecks or true
-  local trigger = "ConsoleCommand"
-  ItemShipmentInstance:SetShipmentTrigger(trigger)
+    skipChecks = skipChecks or true
+    local trigger = "ConsoleCommand"
+    ItemShipmentInstance:SetShipmentTrigger(trigger)
 
-  ItemShipmentInstance:LoadShipments()
-  ItemShipmentInstance:ProcessShipments(skipChecks)
+    ItemShipmentInstance:LoadShipments()
+    ItemShipmentInstance:ProcessShipments(skipChecks)
 end)
 
 --- Register console command for shipping items for a specific mod passed as argument.
@@ -19,20 +19,20 @@ end)
 ---@param skipChecks boolean Whether to skip checking if the item already exists
 ---@return nil
 Ext.RegisterConsoleCommand('isf_ship_mod', function(cmd, modUUID, skipChecks)
-  skipChecks = skipChecks or true
-  local trigger = "ConsoleCommand"
-  ItemShipmentInstance:SetShipmentTrigger(trigger)
+    skipChecks = skipChecks or true
+    local trigger = "ConsoleCommand"
+    ItemShipmentInstance:SetShipmentTrigger(trigger)
 
-  ItemShipmentInstance:LoadShipments()
-  ItemShipmentInstance:ProcessModShipments(modUUID, skipChecks)
+    ItemShipmentInstance:LoadShipments()
+    ItemShipmentInstance:ProcessModShipments(modUUID, skipChecks)
 end)
 
 --- Register console command for uninstalling Item Shipment Framework.
 -- TODO: check if ModVars are wiped after saving without the mod loaded
 ---@return nil
 Ext.RegisterConsoleCommand('isf_uninstall', function(cmd)
-  ISFWarn(0,
-    "[UNIMPLEMENTED] Uninstalling Item Shipment Framework. All non-ISF items from the mailboxes will be moved to the camp chests and the mailboxes will be removed.")
+    ISFWarn(0,
+        "[UNIMPLEMENTED] Uninstalling Item Shipment Framework. All non-ISF items from the mailboxes may be moved to the camp chests. Mailboxes will be deleted.")
 
     -- TODO: implement this and modularize
     -- Move all items from mailboxes to their camp chests

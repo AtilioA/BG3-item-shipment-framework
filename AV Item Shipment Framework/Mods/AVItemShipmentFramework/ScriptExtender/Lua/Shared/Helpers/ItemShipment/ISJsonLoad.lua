@@ -26,7 +26,9 @@
 
 ---@class HelperISJsonLoad: Helper
 ISJsonLoad = _Class:Create("HelperISJsonLoad", Helper)
+ISJsonLoad = _MetaClass._Debug(ISJsonLoad)
 
+-- Patterns for the potential JSON and JSONc config file paths to be loaded
 ISJsonLoad.ConfigFilePathPatternJSON = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.json", "'", "\'")
 ISJsonLoad.ConfigFilePathPatternJSONC = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.jsonc", "'", "\'")
 
@@ -34,16 +36,21 @@ ISJsonLoad.ConfigFilePathPatternJSONC = string.gsub("Mods/%s/ItemShipmentFramewo
 ---@param configStr string The string representation of the JSONc file
 ---@param modGUID GUIDSTRING The UUID of the mod that the config file belongs to
 function ISJsonLoad:TryLoadConfig(configStr, modGUID)
-  ISFDebug(2, "Entering TryLoadConfig with parameters: " .. configStr .. ", " .. modGUID)
-  local success, data = pcall(Ext.Json.Parse, configStr)
-  if success then
-    return data
-  elseif modGUID ~= nil then
-    ISFWarn(0,
-      "Invalid config for mod " ..
-      Ext.Mod.GetMod(modGUID).Info.Name ..
-      ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " for assistance.")
-  else
-    ISFWarn(0, "Invalid config for mod " .. modGUID .. ". Please contact the mod author for assistance.")
-  end
+    ISFDebug(2, "Entering TryLoadConfig with parameters: " .. configStr .. ", " .. modGUID)
+
+    if modGUID == nil then
+        ISFWarn(0, "Invalid config for mod " .. modGUID .. ". Please contact the mod author for assistance.")
+        return
+    end
+
+    local success, data = pcall(Ext.Json.Parse, configStr)
+    if success then
+        return data
+    else
+        ISFWarn(0,
+            "Invalid config for mod " ..
+            Ext.Mod.GetMod(modGUID).Info.Name ..
+            ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " for assistance.")
+        return
+    end
 end

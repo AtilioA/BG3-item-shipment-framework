@@ -24,7 +24,7 @@ end
 
 local MODVERSION = Ext.Mod.GetMod(ModuleUUID).Info.ModVersion
 if MODVERSION == nil then
-    ISFWarn(0, "Volitio's AV Item Shipment Framework loaded (version unknown)")
+    ISFWarn(0, "Aether & Volitio's Item Shipment Framework loaded (version unknown)")
 else
     -- Remove the last element (build/revision number) from the MODVERSION table
     table.remove(MODVERSION)
@@ -35,8 +35,8 @@ end
 
 ItemShipmentInstance = ItemShipment:New()
 if Config:getCfg().DEBUG.level > 1 then
+    -- Add debug wrapper to ItemShipmentInstance (very useful for logging writes and reads)
     ItemShipmentInstance = _MetaClass._Debug(ItemShipmentInstance)
 end
-
 
 SubscribedEvents.SubscribeToEvents()

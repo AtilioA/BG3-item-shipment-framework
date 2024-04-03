@@ -18,7 +18,7 @@
         <node id="ModuleInfo">
           <attribute id="Author" type="LSString" value="Aetherpoint, Volitio" />
           <attribute id="CharacterCreationLevelName" type="FixedString" value="" />
-          <attribute id="Description" type="LSString" value="A framework designed to supersede Tutorial Chest usage by enabling mod authors to easily add new items to camp chests/player inventories." />
+          <attribute id="Description" type="LSString" value="A framework designed to supersede Tutorial Chest usage by enabling mod authors to easily and safely add new items to camp chests/player inventories." />
           <attribute id="Folder" type="LSString" value="AVItemShipmentFramework" />
           <attribute id="LobbyLevelName" type="FixedString" value="" />
           <attribute id="MD5" type="LSString" value="" />
