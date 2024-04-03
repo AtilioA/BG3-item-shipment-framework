@@ -56,29 +56,29 @@ function ItemShipment:LoadShipments()
     -- Ensure ModVars table is initialized
     -- self:InitializeModVars()
 
+    -- If only we had `continue` in Lua...
     for _, uuid in pairs(Ext.Mod.GetLoadOrder()) do
         local modData = Ext.Mod.GetMod(uuid)
         ISFDebug(3, "Checking mod: " .. modData.Info.Name)
 
-        -- Try to load both JSON and JSONC files
         local filePath = ISJsonLoad.ConfigFilePathPatternJSONC:format(modData.Info.Directory)
         local config = Ext.IO.LoadFile(filePath, "data")
         if config == nil then
             filePath = ISJsonLoad.ConfigFilePathPatternJSON:format(modData.Info.Directory)
             config = Ext.IO.LoadFile(filePath, "data")
         end
-        if config == nil or config == "" then
-            return
+        if config ~= nil and config ~= "" then
+            ISFDebug(2, "Found config for mod: " .. Ext.Mod.GetMod(uuid).Info.Name)
+            local data = ISJsonLoad:TryLoadConfig(config, uuid)
+            if data ~= nil then
+                self:SubmitData(data, uuid)
+            else
+                ISFWarn(0,
+                    "Failed to load config for mod: " ..
+                    Ext.Mod.GetMod(uuid).Info.Name ..
+                    ". Please contact " .. Ext.Mod.GetMod(uuid).Info.Author .. " about this issue.")
+            end
         end
-        ISFDebug(2, "Found config for mod: " .. Ext.Mod.GetMod(uuid).Info.Name)
-
-        local data = ISJsonLoad:TryLoadConfig(config, uuid)
-        if data == nil then
-            ISFWarn(1, "Failed to load config for mod: " .. Ext.Mod.GetMod(uuid).Info.Name)
-            return
-        end
-
-        self:SubmitData(data, uuid)
     end
 end
 
@@ -101,7 +101,8 @@ function ItemShipment:ProcessModShipments(modGUID, skipChecks)
 
     ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
     for _, item in pairs(ItemShipmentInstance.mods[modGUID].Items) do
-        if skipChecks or self:ShouldShipItem(modGUID, item) then
+        local shouldShipItem = self:ShouldShipItem(modGUID, item)
+        if (skipChecks or shouldShipItem) then
             self:ShipItem(modGUID, item)
             -- NOTE: this is not accounting for multiplayer characters/mailboxes, and will likely never be
             -- FIXME: should actually check if the item has been added, but it's a minor issue
@@ -182,7 +183,7 @@ function ItemShipment:GetTargetInventories(item)
     for chestIndex = 1, 4 do
         local mailboxUUID = ISMailboxes:GetPlayerMailbox(chestIndex)
         if mailboxUUID and item.Send.To.CampChest[ISMailboxes.PlayerChestIndexMapping[tostring(chestIndex)]] then
-            ISFDebug(2, "Adding mailbox to delivery list: " .. item.TemplateUUID)
+            ISFDebug(2, "Adding mailbox to delivery list: " .. mailboxUUID)
             table.insert(targetInventories, mailboxUUID)
         else
             ISFDebug(2, "Skipping mailbox for chestIndex: " .. chestIndex)
