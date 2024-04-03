@@ -24,13 +24,36 @@ function ISDataPreprocessing:SanitizeData(data, modGUID)
 
     -- Remove any elements in the Items table that do not have a TemplateUUID
     for i = #data.Items, 1, -1 do
-        if not data.Items[i].TemplateUUID then
-            ISFWarn(1,
+        local itemTemplateUUID = data.Items[i].TemplateUUID
+        if not itemTemplateUUID then
+            ISFWarn(0,
                 "ISF config file for mod " ..
                 Ext.Mod.GetMod(modGUID).Info.Name ..
                 " contains an item that does not have a TemplateUUID and will be ignored. Please contact " ..
                 Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
             table.remove(data.Items, i)
+        else
+            local success, result = pcall(function()
+                if VCHelpers.Template:HasTemplate(itemTemplateUUID) ~= true then
+                    ISFWarn(0,
+                        "ISF config file for mod " ..
+                        Ext.Mod.GetMod(modGUID).Info.Name ..
+                        " contains an item with a TemplateUUID ('" ..
+                        itemTemplateUUID .. "') that does not exist in the game and will be ignored. Please contact " ..
+                        Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
+                    table.remove(data.Items, i)
+                end
+            end)
+            if not success then
+                ISFWarn(0,
+                    "ISF config file for mod produced an error while checking item the item '" ..
+                    itemTemplateUUID .. "'. Error: " ..
+                    result ..
+                    ". For mod " ..
+                    Ext.Mod.GetMod(modGUID).Info.Name ..
+                    ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
+                table.remove(data.Items, i)
+            end
         end
     end
 
