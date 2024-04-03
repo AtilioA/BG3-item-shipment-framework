@@ -25,15 +25,15 @@ end
 ---@param item table The item being processed
 ---@return boolean True if the item already exists in the target inventories to be checked, false otherwise
 function ISChecks:CheckExistence(modGUID, item)
-    if CheckFrameworkExistence(item, modGUID) then
+    if self:CheckFrameworkExistence(item, modGUID) then
         return true
     end
 
-    if CheckCampChests(item, modGUID) then
+    if self:CheckCampChests(item, modGUID) then
         return true
     end
 
-    if CheckPartyMembers(item, modGUID) then
+    if self:CheckPartyMembers(item, modGUID) then
         return true
     end
 
@@ -44,7 +44,7 @@ end
 ---@param item table The item being processed
 ---@param modGUID string The UUID of the mod being processed
 ---@return boolean True if the item has already been shipped, false otherwise
-function CheckFrameworkExistence(item, modGUID)
+function ISChecks:CheckFrameworkExistence(item, modGUID)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
     ISFDebug(2, "== Checking ModVars ==")
@@ -62,7 +62,7 @@ end
 ---@param item table The item being processed
 ---@param chestIndex integer The index of the camp chest
 ---@return boolean True if the item already exists in a camp chest, false otherwise
-local function CheckCampChestForItem(item, chestIndex)
+function ISChecks:CheckCampChestForItem(item, chestIndex)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
     local shouldCheckChest = item.Send.Check.ItemExistence.CampChest["Player" .. chestIndex .. "Chest"]
@@ -74,7 +74,7 @@ local function CheckCampChestForItem(item, chestIndex)
     local chestUUID = VCHelpers.Camp:GetAllCampChestUUIDs()[chestIndex]
     if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, chestUUID) ~= nil then
         ISFDebug(1,
-            "Item already exists in the inventory of camp chest .. " ..
+            "Item already exists in the inventory of camp chest " ..
             chestIndex .. " and will not be shipped.")
         return true
     end
@@ -86,7 +86,7 @@ end
 ---@param item table The item being processed
 ---@param modGUID string The UUID of the mod being processed
 ---@return boolean True if the item already exists in any camp chest available, false otherwise
-function CheckCampChests(item, modGUID)
+function ISChecks:CheckCampChests(item, modGUID)
     -- local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
     local shouldCheckCampChests = item.Send.Check.ItemExistence.CampChest
 
@@ -97,7 +97,7 @@ function CheckCampChests(item, modGUID)
     end
 
     for chestIndex = 1, 4 do
-        if CheckCampChestForItem(item, chestIndex) then
+        if self:CheckCampChestForItem(item, chestIndex) then
             return true
         end
     end
@@ -112,7 +112,7 @@ end
 ---@param item table The item being processed
 ---@param modGUID string The UUID of the mod being processed
 ---@return boolean True if the item already exists in any party member's inventory, false otherwise
-function CheckPartyMembers(item, modGUID)
+function ISChecks:CheckPartyMembers(item, modGUID)
     ISFDebug(2, "== Checking party members ==")
     if item.Send.Check.ItemExistence.PartyMembers == nil then
         ISFPrint(1, "Party members check skipped for item " .. item.TemplateUUID)
