@@ -22,12 +22,13 @@ function ISUtils:InitializeModVarsForMod(data, modGUID)
     end
 
     -- Initialize Mailboxes table
+    -- TODO: remove unnecessary mapping of indexes, we can now just index the table directly
     if not ISFModVars.Mailboxes then
         ISFModVars.Mailboxes = {
-            ["1"] = nil,
-            ["2"] = nil,
-            ["3"] = nil,
-            ["4"] = nil
+            nil,
+            nil,
+            nil,
+            nil
         }
     end
 

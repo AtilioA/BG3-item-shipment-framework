@@ -71,7 +71,6 @@ local function CheckCampChestForItem(item, chestIndex)
     end
 
     -- FIXME: this is checking the mailbox, not the chest
-    -- local chestUUID = ISFModVars.Mailboxes[tostring(chestIndex)]
     local chestUUID = VCHelpers.Camp:GetAllCampChestUUIDs()[chestIndex]
     if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, chestUUID) ~= nil then
         ISFDebug(1,

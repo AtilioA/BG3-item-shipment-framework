@@ -10,12 +10,11 @@ ISMailboxes.PlayerChestIndexMapping = {
 }
 
 --- Get the mailbox inside the camp chest given an index
----@param mailboxIndex integer|string
+---@param mailboxIndex integer
 ---@return string|nil
 function ISMailboxes:GetPlayerMailbox(mailboxIndex)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
-    -- -- FIXME: fix this mess (it was supposed to work with both as strings, but it doesn't fml)
-    return ISFModVars.Mailboxes[tostring(mailboxIndex)] or ISFModVars.Mailboxes[tonumber(mailboxIndex)]
+    return ISFModVars.Mailboxes[mailboxIndex]
 end
 
 --- Initialize mailboxes for each player in the campaign
