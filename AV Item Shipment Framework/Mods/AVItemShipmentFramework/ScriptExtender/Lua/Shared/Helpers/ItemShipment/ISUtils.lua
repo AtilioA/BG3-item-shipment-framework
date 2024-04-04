@@ -14,6 +14,7 @@ function ISUtils:InitializeShipmentsTable(modGUID)
     if not ISFModVars.Shipments[modGUID] then
         ISFModVars.Shipments[modGUID] = {}
     end
+
     self:SyncModVariables()
 end
 
@@ -25,8 +26,11 @@ function ISUtils:InitializeItemEntries(data, modGUID)
 
     -- For each TemplateUUID in the data, create a key in the mod table with a boolean value of false
     for _, item in pairs(data.Items) do
-        ISFModVars.Shipments[modGUID][item.TemplateUUID] = false
+        if ISFModVars.Shipments[modGUID][item.TemplateUUID] == nil then
+            ISFModVars.Shipments[modGUID][item.TemplateUUID] = false
+        end
     end
+
     self:SyncModVariables()
 end
 
@@ -66,7 +70,6 @@ end
 function ISUtils:InitializeModVarsForMod(data, modGUID)
     self:InitializeShipmentsTable(modGUID)
     self:InitializeItemEntries(data, modGUID)
-    self:InitializeMailboxesTable()
     self:SyncModVariables()
 end
 

@@ -47,7 +47,7 @@ end
 function ISChecks:CheckFrameworkExistence(item, modGUID)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
-    ISFDebug(2, "== Checking ModVars ==")
+    ISFDebug(2, "=== Checking ModVars ===")
     if item.Send.Check.ItemExistence.FrameworkCheck and ISFModVars.Shipments[modGUID][item.TemplateUUID] == true then
         ISFDebug(1, "Item " .. item.TemplateUUID .. " has already been shipped and will not be shipped again.")
         return true
@@ -90,7 +90,7 @@ function ISChecks:CheckCampChests(item, modGUID)
     -- local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
     local shouldCheckCampChests = item.Send.Check.ItemExistence.CampChest
 
-    ISFDebug(2, "== Checking camp chests ==")
+    ISFDebug(2, "=== Checking camp chests ===")
     if not shouldCheckCampChests then
         ISFDebug(2, "Camp chests check passed. Camp chests checks are not enabled for item " .. item.TemplateUUID .. ".")
         return false
@@ -113,7 +113,7 @@ end
 ---@param modGUID string The UUID of the mod being processed
 ---@return boolean True if the item already exists in any party member's inventory, false otherwise
 function ISChecks:CheckPartyMembers(item, modGUID)
-    ISFDebug(2, "== Checking party members ==")
+    ISFDebug(2, "=== Checking party members ===")
     if item.Send.Check.ItemExistence.PartyMembers == nil then
         ISFPrint(1, "Party members check skipped for item " .. item.TemplateUUID)
         return false
