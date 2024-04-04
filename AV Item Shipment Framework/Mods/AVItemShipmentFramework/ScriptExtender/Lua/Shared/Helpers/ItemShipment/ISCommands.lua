@@ -35,13 +35,36 @@ Ext.RegisterConsoleCommand('isf_uninstall', function(cmd)
         "[UNIMPLEMENTED] Uninstalling Item Shipment Framework. All non-ISF items from the mailboxes may be moved to the camp chests. Mailboxes will be deleted.")
 
     -- TODO: implement this and modularize
-    -- Move all items from mailboxes to their camp chests
+    -- Step 1: Move all items from mailboxes to their camp chests
     -- Get all camp chests and their mailboxes
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    local campChestUUIDs = VCHelpers.Camp:GetAllCampChestUUIDs()
+
     -- Iterate mailboxes
-    -- Move items from mailboxes to camp chests
+    -- TODO: change this when refactoring to access mailboxes with the camp chest template name
+    for index, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+        local campChestUUID = campChestUUIDs[index]
+        ISFDebug(2, "Checking mailbox " .. mailboxUUID .. " in camp chest " .. campChestUUID)
+        if campChestUUID then
+            -- Move items from mailbox to camp chest
+            -- Get items in mailbox
+            local mailboxItems = VCHelpers.Inventory:GetInventory(mailboxUUID, true, true)
+            for _, item in pairs(mailboxItems) do
+                local amount, total = Osi.GetStackAmount(item.Guid)
+                Osi.ToInventory(item.Guid, campChestUUID, total, 0, 1)
+            end
 
-    -- Step 2: remove all mailboxes with Osi.RequestDelete
-    -- Iterate mailboxes and delete them
+            ISFDebug(0, "Moved items from mailbox " .. mailboxUUID .. " to camp chest " .. campChestUUID)
+        end
 
-    -- Print a message to the player (debug 0)
+        VCHelpers.Timer:OnTime(2000, function()
+            -- Delete mailbox
+            Osi.RequestDelete(mailboxUUID)
+            ISFDebug(0, "Deleted mailbox " .. mailboxUUID)
+        end)
+    end
+    VCHelpers.Timer:OnTime(2000, function()
+        ISFPrint(0,
+            "Item Shipment Framework has been uninstalled. You may now safely remove the mod from your load order.")
+    end)
 end)

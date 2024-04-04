@@ -35,12 +35,12 @@ ISJsonLoad.ConfigFilePathPatternJSONC = string.gsub("Mods/%s/ItemShipmentFramewo
 ---@param configStr string The string representation of the JSONc file
 ---@param modGUID GUIDSTRING The UUID of the mod that the config file belongs to
 function ISJsonLoad:TryLoadConfig(configStr, modGUID)
-    ISFDebug(2, "Entering TryLoadConfig with parameters: " .. configStr .. ", " .. modGUID)
-
     if modGUID == nil then
-        ISFWarn(0, "Invalid config for mod " .. modGUID .. ". Please contact the mod author for assistance.")
+        ISFWarn(1, "modGUID is nil. Cannot load config.")
         return
     end
+
+    ISFDebug(2, "Entering TryLoadConfig with parameters: " .. configStr .. ", " .. modGUID)
 
     local success, data = pcall(Ext.Json.Parse, configStr)
     if success then
