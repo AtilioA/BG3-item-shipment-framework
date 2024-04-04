@@ -46,15 +46,19 @@ end
 ---@return boolean True if the item has already been shipped, false otherwise
 function ISChecks:CheckFrameworkExistence(item, modGUID)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
-
     ISFDebug(2, "=== Checking ModVars ===")
-    if item.Send.Check.ItemExistence.FrameworkCheck and ISFModVars.Shipments[modGUID][item.TemplateUUID] == true then
-        ISFDebug(1, "Item " .. item.TemplateUUID .. " has already been shipped and will not be shipped again.")
-        return true
+    if not item.Send.Check.ItemExistence.FrameworkCheck then
+        ISFDebug(2, "FrameworkCheck is disabled. Skipping ModVars check for item " .. item.TemplateUUID .. ".")
+        return false
     end
 
-    ISFDebug(2, "ModVars check passed. Item " .. item.TemplateUUID .. " has not been shipped by ISF yet.")
-    return false
+    if ISFModVars.Shipments[modGUID][item.TemplateUUID] == true then
+        ISFDebug(1, "Item " .. item.TemplateUUID .. " has already been shipped and will not be shipped again.")
+        return true
+    else
+        ISFDebug(2, "ModVars check passed. Item " .. item.TemplateUUID .. " has not been shipped by ISF yet.")
+        return false
+    end
 end
 
 -- TODO: extract main logic to VC
@@ -114,7 +118,7 @@ end
 ---@return boolean True if the item already exists in any party member's inventory, false otherwise
 function ISChecks:CheckPartyMembers(item, modGUID)
     ISFDebug(2, "=== Checking party members ===")
-    if item.Send.Check.ItemExistence.PartyMembers == nil then
+    if not item.Send.Check.ItemExistence.PartyMembers then
         ISFPrint(1, "Party members check skipped for item " .. item.TemplateUUID)
         return false
     end
