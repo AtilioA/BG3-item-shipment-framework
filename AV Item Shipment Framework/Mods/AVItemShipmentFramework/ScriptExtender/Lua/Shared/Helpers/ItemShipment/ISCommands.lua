@@ -6,12 +6,12 @@ ISCommands = _Class:Create("HelperISCommands", Helper)
 ---@param skipChecks string Whether to skip checking if the item already exists
 ---@return nil
 Ext.RegisterConsoleCommand('isf_ship_all', function(cmd, skipChecks)
-    skipChecks = skipChecks == 'true'
+    local boolSkipChecks = skipChecks == 'true'
     local trigger = "ConsoleCommand"
     ItemShipmentInstance:SetShipmentTrigger(trigger)
 
     ItemShipmentInstance:LoadShipments()
-    ItemShipmentInstance:ProcessShipments(skipChecks)
+    ItemShipmentInstance:ProcessShipments(boolSkipChecks)
 end)
 
 --- Register console command for shipping items for a specific mod passed as argument.
@@ -19,12 +19,12 @@ end)
 ---@param skipChecks string Whether to skip checking if the item already exists
 ---@return nil
 Ext.RegisterConsoleCommand('isf_ship_mod', function(cmd, modUUID, skipChecks)
-    skipChecks = skipChecks == 'true'
+    local boolSkipChecks = skipChecks == 'true'
     local trigger = "ConsoleCommand"
     ItemShipmentInstance:SetShipmentTrigger(trigger)
 
     ItemShipmentInstance:LoadShipments()
-    ItemShipmentInstance:ProcessModShipments(modUUID, skipChecks)
+    ItemShipmentInstance:ProcessModShipments(modUUID, boolSkipChecks)
 end)
 
 --- Register console command for uninstalling Item Shipment Framework.
