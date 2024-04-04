@@ -15,7 +15,7 @@ function ISUtils:InitializeShipmentsTable(modGUID)
         ISFModVars.Shipments[modGUID] = {}
     end
 
-    self:SyncModVariables()
+    VCHelpers.ModVars:Sync(ModuleUUID)
 end
 
 --- Initialize the item entries in the Shipments table for the given mod and data
@@ -31,7 +31,7 @@ function ISUtils:InitializeItemEntries(data, modGUID)
         end
     end
 
-    self:SyncModVariables()
+    VCHelpers.ModVars:Sync(ModuleUUID)
 end
 
 --- Initialize the Mailboxes table
@@ -48,21 +48,7 @@ function ISUtils:InitializeMailboxesTable()
             nil
         }
     end
-    self:SyncModVariables()
-end
-
--- TODO: move to VC
---- Sync the mod variables
-function ISUtils:SyncModVariables()
-    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
-
-    if ISFModVars then
-        for varName, data in pairs(ISFModVars) do
-            ISFModVars[varName] = ISFModVars[varName]
-        end
-        Ext.Vars.DirtyModVariables(ModuleUUID)
-        Ext.Vars.SyncModVariables(ModuleUUID)
-    end
+    VCHelpers.ModVars:Sync(ModuleUUID)
 end
 
 --- Initialize the mod vars for the mod, if they don't already exist. Might be redundant, but it's here for now.
@@ -71,7 +57,7 @@ end
 function ISUtils:InitializeModVarsForMod(data, modGUID)
     self:InitializeShipmentsTable(modGUID)
     self:InitializeItemEntries(data, modGUID)
-    self:SyncModVariables()
+    VCHelpers.ModVars:Sync(ModuleUUID)
 end
 
 --- Notify the player that they have new items in their mailbox

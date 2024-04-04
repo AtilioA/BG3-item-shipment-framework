@@ -36,17 +36,6 @@ function EHandlers.OnUseStarted(character, item)
     -- _D(Ext.Entity.Get(item):GetAllComponents().InventoryMember.Inventory.InventoryIsOwned.Owner:GetAllComponents())
 end
 
-local function UpdateModVars()
-    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
-    if ISFModVars then
-        for varName, data in pairs(ISFModVars) do
-            ISFModVars[varName] = ISFModVars[varName]
-        end
-        Ext.Vars.DirtyModVariables(ModuleUUID)
-        Ext.Vars.SyncModVariables(ModuleUUID)
-    end
-end
-
 function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
     if objectTemplate ~= "CONT_ISF_Container_" .. ISMailboxes.MailboxTemplateUUID then
         return
@@ -57,7 +46,7 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
         "Entering OnTemplateAddedTo, objectTemplate: " ..
         objectTemplate .. ", object2: " .. object2 .. ", inventoryHolder: " .. inventoryHolder)
     ISFModVars.Mailboxes = ISFModVars.Mailboxes or {}
-    Ext.Vars.SyncModVariables(ModuleUUID)
+    VCHelpers.ModVars:Sync(ModuleUUID)
 
     local campChestName = VCHelpers.Format:GetTemplateName(inventoryHolder)
     if campChestName == nil then
@@ -67,8 +56,7 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
     -- TODO: clean up this godawful mess
     local campChestIndex = VCHelpers.Camp:GetIndexFromCampChestName(campChestName)
     ISFModVars.Mailboxes[campChestIndex] = object2
-    Ext.Vars.SyncModVariables(ModuleUUID)
-    UpdateModVars()
+    VCHelpers.ModVars:Sync(ModuleUUID)
 
     ISFDebug(2, "Mailboxes after initialization: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
 end

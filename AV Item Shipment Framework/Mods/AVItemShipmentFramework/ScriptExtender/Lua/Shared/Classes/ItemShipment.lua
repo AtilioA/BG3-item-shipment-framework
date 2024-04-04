@@ -228,15 +228,8 @@ function ItemShipment:ShipItem(modGUID, item)
 
     self:AddItemToTargetInventories(item, targetInventories)
 
-    -- TODO: clean this godawful mess
-    -- Update ModVars to track added items
+    -- ... Update ... and sync... ModVars to track added items ... 😔
     ISFModVars.Shipments[modGUID][item.TemplateUUID] = true
     ISFModVars.Shipments[modGUID][item.TemplateUUID] = ISFModVars.Shipments[modGUID][item.TemplateUUID]
-    if ISFModVars then
-        for varName, data in pairs(ISFModVars) do
-            ISFModVars[varName] = ISFModVars[varName]
-        end
-        Ext.Vars.DirtyModVariables(ModuleUUID)
-        Ext.Vars.SyncModVariables(ModuleUUID)
-    end
+    VCHelpers.ModVars:Sync(ModuleUUID)
 end
