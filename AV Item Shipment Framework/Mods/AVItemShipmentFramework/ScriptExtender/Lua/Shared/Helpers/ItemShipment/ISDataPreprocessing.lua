@@ -4,60 +4,101 @@ ISDataPreprocessing = _Class:Create("HelperISDataPreprocessing", Helper)
 --- Remove elements in the table that do not have a FileVersions, Items table, and any elements in the Items table that do not have a TemplateUUID
 ---@param data table The item data to sanitize
 function ISDataPreprocessing:SanitizeData(data, modGUID)
-    -- Remove elements in the table that do not have a FileVersions table
+    if not self:HasFileVersionsEntry(data, modGUID) then
+        return
+    end
+
+    if not self:HasItemsTable(data, modGUID) then
+        return
+    end
+
+    self:RemoveItemsWithoutTemplateUUID(data, modGUID)
+
+    return data
+end
+
+--- Check if the data table has a FileVersions table
+---@param data table The item data to check
+---@param modGUID string The UUID of the mod being processed
+---@return boolean True if the data table has a FileVersions table, false otherwise
+function ISDataPreprocessing:HasFileVersionsEntry(data, modGUID)
     if not data.FileVersion then
         ISFWarn(0,
             "No 'FileVersion' section found in data for mod: " ..
             Ext.Mod.GetMod(modGUID).Info.Name ..
             ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
-        return
+        return false
     end
 
-    -- Remove elements in the table that do not have an Items table
+    return true
+end
+
+--- Check if the data table has an Items table
+---@param data table The item data to check
+---@param modGUID string The UUID of the mod being processed
+---@return boolean True if the data table has an Items table, false otherwise
+function ISDataPreprocessing:HasItemsTable(data, modGUID)
     if not data.Items then
         ISFWarn(0,
             "No 'Items' section found in data for mod: " ..
             Ext.Mod.GetMod(modGUID).Info.Name ..
             ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
-        return
+        return false
     end
 
-    -- Remove any elements in the Items table that do not have a TemplateUUID
+    return true
+end
+
+--- Remove any elements in the Items table that do not have a TemplateUUID
+---@param data table The item data to sanitize
+---@param modGUID string The UUID of the mod being processed
+function ISDataPreprocessing:RemoveItemsWithoutTemplateUUID(data, modGUID)
     for i = #data.Items, 1, -1 do
-        local itemTemplateUUID = data.Items[i].TemplateUUID
-        if not itemTemplateUUID then
+        if not self:IsValidItemTemplateUUID(data.Items[i], modGUID) then
+            table.remove(data.Items, i)
+        end
+    end
+end
+
+--- Check if the item has a valid TemplateUUID
+---@param item table The item being processed
+---@param modGUID string The UUID of the mod being processed
+---@return boolean True if the item has a valid TemplateUUID, false otherwise
+function ISDataPreprocessing:IsValidItemTemplateUUID(item, modGUID)
+    local itemTemplateUUID = item.TemplateUUID
+    if not itemTemplateUUID then
+        ISFWarn(0,
+            "ISF config file for mod " ..
+            Ext.Mod.GetMod(modGUID).Info.Name ..
+            " contains an item that does not have a TemplateUUID and will be ignored. Please contact " ..
+            Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
+        return false
+    end
+
+    local success, result = pcall(function()
+        if VCHelpers.Template:HasTemplate(itemTemplateUUID) ~= true then
             ISFWarn(0,
                 "ISF config file for mod " ..
                 Ext.Mod.GetMod(modGUID).Info.Name ..
-                " contains an item that does not have a TemplateUUID and will be ignored. Please contact " ..
+                " contains an item with a TemplateUUID ('" ..
+                itemTemplateUUID .. "') that does not exist in the game and will be ignored. Please contact " ..
                 Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
-            table.remove(data.Items, i)
-        else
-            local success, result = pcall(function()
-                if VCHelpers.Template:HasTemplate(itemTemplateUUID) ~= true then
-                    ISFWarn(0,
-                        "ISF config file for mod " ..
-                        Ext.Mod.GetMod(modGUID).Info.Name ..
-                        " contains an item with a TemplateUUID ('" ..
-                        itemTemplateUUID .. "') that does not exist in the game and will be ignored. Please contact " ..
-                        Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
-                    table.remove(data.Items, i)
-                end
-            end)
-            if not success then
-                ISFWarn(0,
-                    "ISF config file for mod produced an error while checking item the item '" ..
-                    itemTemplateUUID .. "'. Error: " ..
-                    result ..
-                    ". For mod " ..
-                    Ext.Mod.GetMod(modGUID).Info.Name ..
-                    ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
-                table.remove(data.Items, i)
-            end
+            return false
         end
+    end)
+
+    if not success then
+        ISFWarn(0,
+            "ISF config file for mod produced an error while checking the item '" ..
+            itemTemplateUUID .. "'. Error: " ..
+            result ..
+            ". For mod " ..
+            Ext.Mod.GetMod(modGUID).Info.Name ..
+            ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
+        return false
     end
 
-    return data
+    return true
 end
 
 --- ApplyDefaultValues ensures that any missing fields in the JSON data are assigned default values.
