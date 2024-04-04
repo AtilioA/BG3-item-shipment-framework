@@ -26,7 +26,6 @@
 
 ---@class HelperISJsonLoad: Helper
 ISJsonLoad = _Class:Create("HelperISJsonLoad", Helper)
-ISJsonLoad = _MetaClass._Debug(ISJsonLoad)
 
 -- Patterns for the potential JSON and JSONc config file paths to be loaded
 ISJsonLoad.ConfigFilePathPatternJSON = string.gsub("Mods/%s/ItemShipmentFrameworkConfig.json", "'", "\'")

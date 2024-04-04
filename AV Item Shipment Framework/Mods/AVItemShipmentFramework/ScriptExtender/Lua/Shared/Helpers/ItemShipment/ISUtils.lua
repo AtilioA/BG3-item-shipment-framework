@@ -51,6 +51,7 @@ function ISUtils:InitializeMailboxesTable()
     self:SyncModVariables()
 end
 
+-- TODO: move to VC
 --- Sync the mod variables
 function ISUtils:SyncModVariables()
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)

@@ -138,7 +138,7 @@ function ISChecks:CheckPartyMembers(item, modGUID)
             ISFDebug(1,
                 "Item " ..
                 item.TemplateUUID ..
-                " already exists in inventory " ..
+                " already exists in the inventory of " ..
                 VCHelpers.Loca:GetDisplayName(partyMember) ..
                 " for mod " .. Ext.Mod.GetMod(modGUID).Info.Name .. " and will not be shipped.")
             return true

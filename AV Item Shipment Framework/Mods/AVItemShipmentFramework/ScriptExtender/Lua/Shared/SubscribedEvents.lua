@@ -6,7 +6,6 @@ function SubscribedEvents.SubscribeToEvents()
 
         Ext.Osiris.RegisterListener("TemplateAddedTo", 4, "after", EHandlers.OnTemplateAddedTo)
 
-        -- TODO: investigate better events for day end
         Ext.Osiris.RegisterListener("EndTheDayRequested", 1, "after", EHandlers.OnEndTheDayRequested)
         -- Ext.Osiris.RegisterListener("UseStarted", 2, "before", EHandlers.OnUseStarted)
     end
