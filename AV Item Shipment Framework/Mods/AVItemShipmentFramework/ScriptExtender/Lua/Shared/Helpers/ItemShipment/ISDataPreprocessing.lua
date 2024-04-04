@@ -84,8 +84,14 @@ function ISDataPreprocessing:IsValidItemTemplateUUID(item, modGUID)
                 itemTemplateUUID .. "') that does not exist in the game and will be ignored. Please contact " ..
                 Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
             return false
+        else
+            return true
         end
     end)
+
+    if not result then
+        return false
+    end
 
     if not success then
         ISFWarn(0,
