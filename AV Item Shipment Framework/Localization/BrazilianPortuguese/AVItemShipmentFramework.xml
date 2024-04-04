@@ -4,6 +4,20 @@
     <content contentuid="h47d309efgf592g4ad5g9276g0a19c5de4c64" version="1">Armazena itens adicionados por autores de mods.</content>
     <content contentuid="hd978f2dfg78afg4ac4g8599g84d1f6f58e55" version="1">Uma volição oculta flui através desta caixa mística, trazendo itens despachados do éter.</content>
     <content contentuid="h7b114c9fge69cg4fbfg9389g430a24de7726" version="1">Uma caixa de correio foi adicionada ao seu baú do acampamento.</content>
-    <content contentuid="h7b114c9fge69cg4fbfg9389g430a24de7726" version="1">Uma caixa de correio foi movida para o seu baú do acampamento.</content>
+    <content contentuid="h3d963878g9a7bg4987g9cfcg886a9b47e0a0" version="1">Uma caixa de correio foi movida para o seu baú do acampamento.</content>
     <content contentuid="h1baaa2bdgfce5g4685g9b67g9055ee45c1dc" version="1">[1] enviou novos itens para sua caixa de correio.</content>
+    <content contentuid="hcc8c11b0g7993g4f07g8841g4c817977e7f5" version="1">Item Shipment Framework Utilities</content>
+    <content contentuid="h6d92c153g006bg44baga003g7b320f8971cb" version="1">This container holds various spell scrolls, each of which will trigger a different Item Shipment Framework command.</content>
+    <content contentuid="h946466d7g8558g41a2g83fdgc6984f2091aa" version="1">Refill Player 1's Mailbox</content>
+    <content contentuid="h8fbe41a8gd9deg46cag9c9eg71b32f728f2b" version="1">Refill Player 2's Mailbox</content>
+    <content contentuid="h1812ddf2gb12eg4220ga17dg3f17f8157f8b" version="1">Refill Player 3's Mailbox</content>
+    <content contentuid="hbbb62bbdg8460g4eb7gbe1egb371bd830436" version="1">Refill Player 4's Mailbox</content>
+    <content contentuid="hcddd5bfdge692g4c9cgaa0fg6d338bb554af" version="1">Use this scroll to refill the inventory of Player 1's Item Shipment Framework Mailbox. It will force the Item Shipment Framework to respawn every item added to the camp chest by mod authors.</content>
+    <content contentuid="h466d7b86g7024g4de1gb1a5gdadc7ffffba3" version="1">Use this scroll to refill the inventory of Player 1's Item Shipment Framework Mailbox. It will force the Item Shipment Framework to respawn every item added to the camp chest by mod authors.</content>
+    <content contentuid="h8ab23c88gc328g4274ga65bg42198c6702c4" version="1">Use this scroll to refill the inventory of Player 1's Item Shipment Framework Mailbox. It will force the Item Shipment Framework to respawn every item added to the camp chest by mod authors.</content>
+    <content contentuid="h9b23dfb2g0659g4f60gb48dg577996a2c19e" version="1">Use this scroll to refill the inventory of Player 1's Item Shipment Framework Mailbox. It will force the Item Shipment Framework to respawn every item added to the camp chest by mod authors.</content>
+    <content contentuid="h086ba061g1407g47e4g8df8ge24190195c22" version="1">Uninstall Item Shipment Framework</content>
+    <content contentuid="h10726638ga8e4g4f61gbdb5gd12a81747cad" version="1">Use this scroll to uninstall the Item Shipment Framework. It will remove the Item Shipment Framework Mailbox and all of its contents from the camp chest, making it safe to uninstall the mod.</content>
+    <content contentuid="h377c8e8bga8d8g478dg93f2g9762dab81620" version="1">Spawn Tutorial Chest contents in Mailbox</content>
+    <content contentuid="hd94d53deg7f43g40ffg882cg819c3a85ab9c" version="1">Use this scroll to spawn the contents of the Tutorial Chest into the Item Shipment Framework Mailboxes.</content>
 </contentList>
