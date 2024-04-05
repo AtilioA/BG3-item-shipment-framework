@@ -39,7 +39,7 @@ function ISUtils:InitializeMailboxesTable()
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
     -- Each index in the Mailboxes table corresponds to a player chest
-    -- REVIEW: use chest template name instead?
+    -- REVIEW: use chest template name instead? Honestly, indexing feels more elegant and less complex
     if not ISFModVars.Mailboxes then
         ISFModVars.Mailboxes = {
             nil,
@@ -48,6 +48,18 @@ function ISUtils:InitializeMailboxesTable()
             nil
         }
     end
+
+    -- Use chest template name as key for the Mailboxes table
+    --     local playerChestsTemplateNames = VCHelpers.Camp:GetAllCampChestTemplateNames()
+    --     if not ISFModVars.Mailboxes then
+    --         ISFModVars.Mailboxes = {}
+    --         for _, templateName in ipairs(playerChestsTemplateNames) do
+    --             ISFModVars.Mailboxes[templateName] = ""
+    --         end
+    --     end
+    --     VCHelpers.ModVars:Sync(ModuleUUID)
+    -- end
+
     VCHelpers.ModVars:Sync(ModuleUUID)
 end
 
