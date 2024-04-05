@@ -20,4 +20,7 @@
     <content contentuid="h10726638ga8e4g4f61gbdb5gd12a81747cad" version="1">Use this scroll to uninstall the Item Shipment Framework. It will attempt to move all of the items currently inside of each mailbox directly into the associated camp chest, then it will remove all of the mailboxes. Making it safe to uninstall the mod from your game.</content>
     <content contentuid="h377c8e8bga8d8g478dg93f2g9762dab81620" version="1">Spawn Tutorial Chest contents in Mailbox</content>
     <content contentuid="hd94d53deg7f43g40ffg882cg819c3a85ab9c" version="1">Use this scroll to spawn the contents of the Tutorial Chest into the Item Shipment Framework Mailboxes.</content>
+    <content contentuid="h83df85eeg6476g4cf3g8c59g95499388910d" version="1">Starting uninstall procedure.&lt;br&gt;&lt;br&gt;Mailboxes will be deleted; do you want their items to be moved to the camp chests?</content>
+    <content contentuid="h93f3b749g83deg4eaagb114g0bafaf8d15bc" version="1">Are you sure you want to uninstall the mod?&lt;br&gt;&lt;br&gt;You can instead disable it through its JSON configuration file, as explained in the mod page.&lt;br&gt;&lt;br&gt;You are aware that reinstalling this mod later on may cause a minority of mods to resend their items.</content>
+    <content contentuid="h5f8290f2gf829g4170gbf39gc6088811945a" version="1">Item Shipment Framework has been uninstalled.&lt;br&gt;&lt;br&gt;You may now safely remove the mod from your load order.</content>
 </contentList>
