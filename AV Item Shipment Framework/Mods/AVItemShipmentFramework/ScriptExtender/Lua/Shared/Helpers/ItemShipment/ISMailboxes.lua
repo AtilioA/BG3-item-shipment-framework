@@ -63,3 +63,52 @@ function ISMailboxes:MakeSureMailboxesAreInsideChests()
         end
     end
 end
+
+--- Move all items from mailboxes to their respective camp chests
+---@return nil
+function ISMailboxes:MoveItemsFromMailboxesToCampChests()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    local campChestUUIDs = VCHelpers.Camp:GetAllCampChestUUIDs()
+
+    for index, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+        local campChestUUID = campChestUUIDs[index]
+        ISFDebug(2, "Checking mailbox " .. mailboxUUID .. " in camp chest " .. campChestUUID)
+        if campChestUUID then
+            -- Move items from mailbox to camp chest
+            if EHandlers.moveItems then
+                self:MoveItemsFromMailboxToCampChest(mailboxUUID, campChestUUID)
+            end
+            ISFPrint(0, "Moved items from mailbox " .. mailboxUUID .. " to camp chest " .. campChestUUID)
+        end
+    end
+end
+
+--- Move all non-ISF items from a mailbox to a camp chest
+---@param mailboxUUID string The UUID of the mailbox
+---@param campChestUUID string The UUID of the camp chest
+---@return nil
+function ISMailboxes:MoveItemsFromMailboxToCampChest(mailboxUUID, campChestUUID)
+    local mailboxItems = VCHelpers.Inventory:GetInventory(mailboxUUID, true, false)
+    for _, item in pairs(mailboxItems) do
+        -- Only move non-ISF items
+        if not string.match(item.TemplateName, "^ISF_") then
+            local _, total = Osi.GetStackAmount(item.Guid)
+            Osi.ToInventory(item.Guid, campChestUUID, total, 0, 1)
+        end
+    end
+end
+
+--- Delete all mailboxes
+function ISMailboxes:DeleteMailboxes()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+        VCHelpers.Timer:OnTime(2000, function()
+            -- Delete mailbox
+            Osi.RequestDelete(mailboxUUID)
+            ISFPrint(0, "Deleted mailbox " .. mailboxUUID)
+        end)
+    end
+    ISFModVars.Mailboxes = nil
+    ISFModVars.Mailboxes = ISFModVars.Mailboxes
+    VCHelpers.ModVars:Sync(ModuleUUID)
+end

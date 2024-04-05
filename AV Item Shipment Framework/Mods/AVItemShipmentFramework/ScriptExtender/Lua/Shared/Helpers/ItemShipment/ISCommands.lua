@@ -53,7 +53,7 @@ Ext.RegisterConsoleCommand('isf_uninstall', function(cmd)
         "Uninstalling A&V Item Shipment Framework. All non-ISF items from the mailboxes may be moved to the camp chests. Mailboxes will be deleted.")
 
     DustyMessageBox('isf_uninstall_move_items',
-        "Starting uninstall procedure.\nMailboxes will be deleted; do you want their items to be moved to the camp chests?")
+    Messages.ResolvedMessages.uninstall_should_move_out_of_mailboxes)
 end)
 
 --- Register console command for refilling all mailboxes with items.

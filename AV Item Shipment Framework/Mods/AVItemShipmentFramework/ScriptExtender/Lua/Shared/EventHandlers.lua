@@ -40,6 +40,7 @@ function EHandlers.OnUseStarted(character, item)
     -- _D(Ext.Entity.Get(item):GetAllComponents().InventoryMember.Inventory.InventoryIsOwned.Owner:GetAllComponents())
 end
 
+--- Used to catch the event when a mailbox is added to a camp chest, so that the mailbox can be stored in the ModVars
 function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
     if objectTemplate ~= "CONT_ISF_Container_" .. ISMailboxes.MailboxTemplateUUID then
         return
@@ -75,6 +76,7 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
     -- end
 end
 
+--- Used to handle DayEnd for ISF configs
 function EHandlers.OnEndTheDayRequested(character)
     ISFDebug(2, "Entering OnEndTheDayRequested, character: " .. character)
     local trigger = "DayEnd"
@@ -82,6 +84,7 @@ function EHandlers.OnEndTheDayRequested(character)
     ItemShipmentInstance:ProcessShipments(false)
 end
 
+--- Handle the event when the player declines a ReadyCheck
 function EHandlers.OnReadyCheckFailed(eventId)
     ISFDebug(2,
         "Entering OnReadyCheckFailed, eventId: " .. eventId)
@@ -92,6 +95,7 @@ function EHandlers.OnReadyCheckFailed(eventId)
     end
 end
 
+--- Handle the event when the player confirms a ReadyCheck
 function EHandlers.OnReadyCheckPassed(eventId)
     ISFDebug(2,
         "Entering OnReadyCheckPassed, eventId: " .. eventId)
@@ -99,51 +103,33 @@ function EHandlers.OnReadyCheckPassed(eventId)
     if eventId == "isf_uninstall_move_items" then
         EHandlers.moveItems = true
         DustyMessageBox('isf_uninstall_confirmation',
-            "Are you sure you want to uninstall the mod?\nYou can instead disable it through its JSON configuration file, as explained in the mod page.\nYou are aware that reinstalling this mod later on may cause a minority of mods to resend their items.")
+            Messages.ResolvedMessages.uninstall_confirmation_prompt)
     elseif eventId == "isf_uninstall_confirmation" then
         ISFWarn(0, "Uninstalling Item Shipment Framework")
-        -- TODO: implement this and modularize
-        -- Step 1: Move all items from mailboxes to their camp chests
-        -- Get all camp chests and their mailboxes
-        local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
-        local campChestUUIDs = VCHelpers.Camp:GetAllCampChestUUIDs()
+        EHandlers.UninstallISF()
+    end
+end
 
-        -- Iterate mailboxes
-        _D(ISFModVars.Mailboxes)
-        for index, mailboxUUID in pairs(ISFModVars.Mailboxes) do
-            _D(index, mailboxUUID)
-            local campChestUUID = campChestUUIDs[index]
-            ISFDebug(2, "Checking mailbox " .. mailboxUUID .. " in camp chest " .. campChestUUID)
-            if campChestUUID then
-                -- Move items from mailbox to camp chest
-                -- Get items in mailbox
-                if EHandlers.moveItems then
-                    local mailboxItems = VCHelpers.Inventory:GetInventory(mailboxUUID, true, false)
-                    for _, item in pairs(mailboxItems) do
-                        -- Only move non-ISF items
-                        if not string.match(item.TemplateName, "^ISF_") then
-                            local amount, total = Osi.GetStackAmount(item.Guid)
-                            Osi.ToInventory(item.Guid, campChestUUID, total, 0, 1)
-                        end
-                    end
-                end
-
-                ISFPrint(0, "Moved items from mailbox " .. mailboxUUID .. " to camp chest " .. campChestUUID)
-            end
-
-            VCHelpers.Timer:OnTime(2000, function()
-                -- Delete mailbox
-                Osi.RequestDelete(mailboxUUID)
-                ISFPrint(0, "Deleted mailbox " .. mailboxUUID)
-            end)
-        end
+--- Uninstall ISF, moving all items from mailboxes to camp chests and deleting mailboxes
+function EHandlers.UninstallISF()
+    --- Open a message box to inform the player that the uninstallation is complete
+    local function NotifyUninstallComplete()
         VCHelpers.Timer:OnTime(2000, function()
-            ISFPrint(0,
-                "Item Shipment Framework has been uninstalled.\nYou may now safely remove the mod from your load order.")
-            Osi.OpenMessageBox(Osi.GetHostCharacter(),
-                "Item Shipment Framework has been uninstalled.\nYou may now safely remove the mod from your load order.")
+            ISFPrint(0, Messages.ResolvedMessages.uninstall_completed)
+            Osi.OpenMessageBox(Osi.GetHostCharacter(), Messages.ResolvedMessages.uninstall_completed)
         end)
     end
+
+    -- Step 1: Move all items from mailboxes to their camp chests (if enabled)
+    if EHandlers.moveItems then
+        ISMailboxes:MoveItemsFromMailboxesToCampChests()
+    end
+
+    -- Step 2: Delete mailboxes
+    ISMailboxes:DeleteMailboxes()
+
+    -- Step 3: Notify the player that the uninstall is complete
+    NotifyUninstallComplete()
 end
 
 return EHandlers
