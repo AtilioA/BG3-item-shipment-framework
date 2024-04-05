@@ -70,7 +70,7 @@ function ISDataPreprocessing:IsValidItemTemplateUUID(item, modGUID)
         ISFWarn(0,
             "ISF config file for mod " ..
             Ext.Mod.GetMod(modGUID).Info.Name ..
-            " contains an item that does not have a TemplateUUID and will be ignored. Please contact " ..
+            " contains an item entry that does not have a TemplateUUID and will be ignored. Please contact " ..
             Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
         return false
     end
@@ -80,7 +80,7 @@ function ISDataPreprocessing:IsValidItemTemplateUUID(item, modGUID)
             ISFWarn(0,
                 "ISF config file for mod " ..
                 Ext.Mod.GetMod(modGUID).Info.Name ..
-                " contains an item with a TemplateUUID ('" ..
+                " contains an item entry with a TemplateUUID ('" ..
                 itemTemplateUUID .. "') that does not exist in the game and will be ignored. Please contact " ..
                 Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
             return false

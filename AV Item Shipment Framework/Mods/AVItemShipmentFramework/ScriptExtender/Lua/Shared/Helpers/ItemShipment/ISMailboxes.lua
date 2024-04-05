@@ -112,3 +112,57 @@ function ISMailboxes:DeleteMailboxes()
     ISFModVars.Mailboxes = ISFModVars.Mailboxes
     VCHelpers.ModVars:Sync(ModuleUUID)
 end
+
+--- Refill all mailboxes with items.
+---@return nil
+function ISMailboxes:RefillMailboxes()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    local campChestUUIDs = VCHelpers.Camp:GetAllCampChestUUIDs()
+
+    for index, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+        local campChestUUID = campChestUUIDs[index]
+        if mailboxUUID and campChestUUID then
+            self:RefillMailbox(index, mailboxUUID)
+        end
+    end
+end
+
+--- Refill a single mailbox with items.
+---@param index number The index of the mailbox
+---@param mailboxUUID string The UUID of the mailbox
+---@return nil
+function ISMailboxes:RefillMailbox(index, mailboxUUID)
+    for modGUID, modData in pairs(ItemShipmentInstance.mods) do
+        for _, item in pairs(modData.Items) do
+            if item.Send.To.CampChest["Player" .. index .. "Chest"] == true then
+                self:RefillMailboxWithItem(item, mailboxUUID)
+            end
+        end
+    end
+end
+
+--- Refill a mailbox with a specific item.
+---@param item table The item data
+---@param mailboxUUID string The UUID of the mailbox
+---@return nil
+function ISMailboxes:RefillMailboxWithItem(item, mailboxUUID)
+    -- Get all items of the same template in the mailbox
+    local mailboxItems = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(
+        item.TemplateUUID,
+        mailboxUUID, true, false)
+    -- Compute the difference between the number of items in the mailbox and the number of items in the camp chest
+    local itemsToAdd = item.Send.Quantity - (#mailboxItems or 0)
+
+    -- Add the difference to the mailbox, if any
+    if itemsToAdd > 0 then
+        local itemName = Ext.Loca.GetTranslatedString(Ext.Template.GetTemplate(item.TemplateUUID).UnknownDisplayName
+            .Handle.Handle) or item.TemplateUUID
+        ISFDebug(2,
+            "Adding " ..
+            itemsToAdd ..
+            " copies of item '" ..
+            itemName ..
+            "' to mailbox " .. mailboxUUID)
+        Osi.TemplateAddTo(item.TemplateUUID, mailboxUUID, itemsToAdd, 0)
+    end
+end
