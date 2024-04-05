@@ -259,6 +259,31 @@
 						</node>
 					</children>
 				</node>
+				<!--New Tutorial Chest | UUID = 38b65f43-6681-4e78-961b-e6797c7d52bb-->
+				<node id="GameObjects">
+					<attribute id="Description" type="TranslatedString" handle="h0b885e4dge5a9g4c28gb236ge555c1500a0f" version="5" />
+					<attribute id="DisplayName" type="TranslatedString" handle="h2def6237g88a4g4da3g92cfgd2fb7db0e312" version="3" />
+					<attribute id="Icon" type="FixedString" value="Item_CONT_MF_Chest_A" />
+					<attribute id="LevelName" type="FixedString" value="" />
+					<attribute id="MapKey" type="FixedString" value="38b65f43-6681-4e78-961b-e6797c7d52bb" />
+					<attribute id="Name" type="LSString" value="CONT_ISF_TutorialChest_Container" />
+					<attribute id="ParentTemplateId" type="FixedString" value="8188cbf2-4618-401e-b9e1-c2be419efdb8" />
+					<attribute id="PhysicsTemplate" type="FixedString" value="47a0e693-26d2-bd3a-b31f-861c61341614" />
+					<attribute id="Stats" type="FixedString" value="OBJ_ISF_TutorialChest_Container" />
+					<attribute id="Type" type="FixedString" value="item" />
+					<attribute id="VisualTemplate" type="FixedString" value="4db354ee-eb42-61a0-8917-0ed52f01e626" />
+					<attribute id="_OriginalFileVersion_" type="int64" value="144396663052566628" />
+					<children>
+						<node id="InventoryList">
+							<children>
+								<node id="InventoryItem">
+									<attribute id="Object" type="FixedString" value="TUT_Chest_Potions" />
+								</node>
+							</children>
+						</node>
+						<node id="StatusList" />
+					</children>
+				</node>
 			</children>
 		</node>
 	</region>
