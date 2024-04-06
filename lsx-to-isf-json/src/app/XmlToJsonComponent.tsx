@@ -48,17 +48,35 @@ export const XmlToJsonComponent: React.FC = () => {
   };
 
   return (
-    <div>
-      <div {...getRootProps()} onPaste={handlePaste} style={{ border: '2px dashed #007bff', padding: '20px', cursor: 'pointer' }}>
+    <div className="flex flex-col items-center justify-center w-full max-w-3xl">
+      <div
+        {...getRootProps()}
+        onPaste={handlePaste}
+        className="w-full h-64 p-8 border-2 border-dashed border-blue-500 rounded-lg cursor-pointer flex items-center justify-center"
+      >
         <input {...getInputProps()} />
-        <p>Drag and drop an XML file here, or paste its content.</p>
+        <p className="text-lg text-white">Drag and drop an XML file here, or paste its content.</p>
       </div>
       {jsonOutput && (
-        <>
-          <button onClick={handleSaveJSON}>Save JSON</button>
-          <pre onClick={handleSaveJSON} style={{ cursor: "pointer" }} title="Click to save ISF JSON">{jsonOutput}</pre>
-        </>
+        <div className="mt-8 w-full max-h-[50vh] overflow-auto">
+          <button
+            onClick={handleSaveJSON}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Save JSON
+          </button>
+          <hr className="border-gray-600 my-4" />
+          <p className='mt-4 mb-2'>JSON preview:</p>
+          <pre
+            onClick={handleSaveJSON}
+            style={{ cursor: 'pointer' }}
+            title="Click to save ISF JSON"
+            className="mt-4 p-4 bg-gray-800 rounded-lg text-white"
+          >
+            {jsonOutput}
+          </pre>
+        </div>
       )}
-    </div >
+    </div>
   );
 };
