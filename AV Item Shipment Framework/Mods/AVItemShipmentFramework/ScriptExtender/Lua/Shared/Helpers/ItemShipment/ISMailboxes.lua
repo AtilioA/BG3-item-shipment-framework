@@ -168,6 +168,24 @@ function ISMailboxes:RefillMailboxWithItem(item, mailboxUUID)
     end
 end
 
+--- Update the host's mailbox with a new Tutorial Chest instance
+function ISMailboxes:UpdateHostMailboxTutorialChest()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    local hostMailboxUUID = ISFModVars.Mailboxes[1]
+    if hostMailboxUUID then
+        self:IntegrateTutorialChest(hostMailboxUUID)
+    end
+end
+
+--- Update the remaining mailboxes with a new Tutorial Chest instance
+function ISMailboxes:UpdateRemainingMailboxesTutorialChests()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    for i = 2, #ISFModVars.Mailboxes do
+        local mailboxUUID = ISFModVars.Mailboxes[i]
+        self:IntegrateTutorialChest(mailboxUUID)
+    end
+end
+
 --- Update all mailboxes with a new Tutorial Chest instance
 function ISMailboxes:UpdateTutorialChests()
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
