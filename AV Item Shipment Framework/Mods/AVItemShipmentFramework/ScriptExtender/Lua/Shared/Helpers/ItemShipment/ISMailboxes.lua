@@ -91,7 +91,7 @@ function ISMailboxes:MoveItemsFromMailboxToCampChest(mailboxUUID, campChestUUID)
     local mailboxItems = VCHelpers.Inventory:GetInventory(mailboxUUID, true, false)
     for _, item in pairs(mailboxItems) do
         -- Only move non-ISF items
-        if not string.match(item.TemplateName, "^ISF_") then
+        if not string.match(item.TemplateName, "_ISF_") then
             local _, total = Osi.GetStackAmount(item.Guid)
             Osi.ToInventory(item.Guid, campChestUUID, total, 0, 1)
         end
