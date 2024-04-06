@@ -32,14 +32,14 @@ jobs:
           
       - name: Install dependencies and build with Next.js
         run: |
-          cd BG3-item-shipment-framework/lsx-to-isf-json
+          cd lsx-to-isf-json
           yarn install
           yarn build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: BG3-item-shipment-framework/lsx-to-isf-json/.next
+          path: lsx-to-isf-json/.next
 
   deploy:
     environment:
