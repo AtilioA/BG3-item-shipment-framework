@@ -29,6 +29,7 @@
 ItemShipment = _Class:Create("ItemShipment", nil, {
     mods = {},
     shipmentTrigger = nil,
+    hasNotifiedForThisShipment = nil,
 })
 
 -- NOTE: When introducing new (breaking) versions of the config file, add a new function to parse the new version and update the version number in the config file
@@ -83,11 +84,18 @@ function ItemShipment:LoadShipments()
     end
 end
 
--- Set the trigger for the shipment, e.g. "ConsoleCommand", "LevelGameplayStarted", "EndTheDayRequested"
---@param trigger string The trigger/reason to set
---@return nil
+--- Set the trigger for the shipment, e.g. "ConsoleCommand", "LevelGameplayStarted", "EndTheDayRequested"
+---@param trigger string|nil The trigger/reason to set
+---@return nil
 function ItemShipment:SetShipmentTrigger(trigger)
     self.shipmentTrigger = trigger
+end
+
+--- Set the flag for whether the player has been notified for the current shipment
+---@param value boolean The value to set
+---@return nil
+function ItemShipment:SetNotifiedForThisShipment(value)
+    self.hasNotifiedForThisShipment = value
 end
 
 --- Process shipments for a specific mod.
@@ -137,6 +145,7 @@ function ItemShipment:ProcessShipments(skipChecks)
         end
 
         self:SetShipmentTrigger(nil)
+        self:SetNotifiedForThisShipment(false)
     end)
 end
 

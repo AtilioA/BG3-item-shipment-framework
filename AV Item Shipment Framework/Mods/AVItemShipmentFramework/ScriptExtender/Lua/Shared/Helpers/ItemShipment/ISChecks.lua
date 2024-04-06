@@ -74,8 +74,8 @@ function ISChecks:CheckCampChestForItem(item, chestIndex)
         return false
     end
 
-    -- FIXME: this is checking the mailbox, not the chest
     local chestUUID = VCHelpers.Camp:GetAllCampChestUUIDs()[chestIndex]
+    -- This checks recursively and will check the mailbox eventually
     if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, chestUUID) ~= nil then
         ISFDebug(1,
             "Item already exists in the inventory of camp chest " ..

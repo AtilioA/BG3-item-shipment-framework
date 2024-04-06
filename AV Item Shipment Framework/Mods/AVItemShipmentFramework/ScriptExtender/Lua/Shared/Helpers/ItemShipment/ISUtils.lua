@@ -80,16 +80,26 @@ function ISUtils:NotifyPlayer(item, modGUID)
     local isNotificationEnabled = config.FEATURES.notifications.enabled
     local shouldNotifyPlayer = item and item.Send.NotifyPlayer
 
+    -- ISFDebug(2,
+    --     "NotifyPlayer: isNotificationEnabled: " ..
+    --     tostring(isNotificationEnabled) .. ", shouldNotifyPlayer: " .. tostring(shouldNotifyPlayer))
+
     if not (isNotificationEnabled and shouldNotifyPlayer) then
         return
     end
 
+    if ItemShipmentInstance.hasNotifiedForThisShipment == true then
+        ISFDebug(3, "Already notified player for this shipment, skipping")
+        return
+    end
+
     for index, chestUUID in pairs(VCHelpers.Camp:GetAllCampChestUUIDs()) do
-        local isItemForThisChest = item.Send.To.CampChest[ISMailboxes.PlayerChestIndexMapping[index]]
+        local isItemForThisChest = item.Send.To.CampChest['Player' .. index .. 'Chest']
         if isItemForThisChest then
             self:HandleNotifications(chestUUID, Ext.Mod.GetMod(modGUID).Info.Name)
         end
     end
+    ItemShipmentInstance:SetNotifiedForThisShipment(true)
 end
 
 --- Handle the notifications to be sent to the player
@@ -100,8 +110,7 @@ function ISUtils:HandleNotifications(chestUUID, modName)
     local config = Config:getCfg()
 
     if config.FEATURES.notifications.vfx then
-        -- FIXME: only play once per shipment
-        -- Osi.PlayEffect(Osi.GetHostCharacter(), "09ca988d-47dd-b10f-d8e4-b4744874a942")
+        Osi.PlayEffect(Osi.GetHostCharacter(), "09ca988d-47dd-b10f-d8e4-b4744874a942")
     end
 
     -- Notify player that they have new items in their mailbox
@@ -124,9 +133,8 @@ end
 ---@return nil
 function ISUtils:PingChest(chestUUID)
     local chestPositionX, chestPositionY, chestPositionZ = Osi.GetPosition(chestUUID)
-    -- FIXME: only play once per shipment
     if chestPositionX and chestPositionY and chestPositionZ then
-        -- Osi.RequestPing(chestPositionX, chestPositionY, chestPositionZ, chestUUID, Osi.GetHostCharacter())
+        Osi.RequestPing(chestPositionX, chestPositionY, chestPositionZ, chestUUID, Osi.GetHostCharacter())
         -- Osi.PlayEffect(chestUUID, "00630e26-964d-c3e1-fcce-7f267c75e606")
     end
 end
