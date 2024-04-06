@@ -55,7 +55,7 @@ export const XmlToJsonComponent: React.FC = () => {
         className="w-full h-64 p-8 border-2 border-dashed border-blue-500 rounded-lg cursor-pointer flex items-center justify-center"
       >
         <input {...getInputProps()} />
-        <p className="text-lg text-white">Drag and drop an XML file here, or paste its content.</p>
+        <p className="text-lg text-white">Drag and drop an LSX file here, or paste its content.</p>
       </div>
       {jsonOutput && (
         <div className="mt-8 w-full max-h-[50vh] overflow-auto">
