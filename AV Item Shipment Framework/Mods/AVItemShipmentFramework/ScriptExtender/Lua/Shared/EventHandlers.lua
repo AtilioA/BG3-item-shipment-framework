@@ -77,7 +77,10 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
 
     ISFDebug(2, "Mailboxes after initialization: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
 
-    ISMailboxes:IntegrateTutorialChest(object2)
+    -- Only integrate tutorial chests if it's the first camp chest. We don't need to preload the others since most users play 'offline'
+    if campChestIndex < 2 then
+        ISMailboxes:IntegrateTutorialChest(object2)
+    end
 
     -- if campChestName ~= nil then
     --     ISFModVars.Mailboxes[campChestName] = object2
