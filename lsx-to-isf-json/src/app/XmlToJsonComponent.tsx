@@ -26,9 +26,11 @@ export const XmlToJsonComponent: React.FC = () => {
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  const handlePaste = async (event) => {
+  const handlePaste = async (event: React.ClipboardEvent<HTMLDivElement>) => {
     const text = event.clipboardData.getData('Text');
-    if (text) {
+    if (!text) {
+      console.info('No text found in clipboard.');
+    } else {
       const mapKeys = parseXML(text);
       const finalJSON = constructJSON(mapKeys);
       setJsonOutput(JSON.stringify(finalJSON, null, 2));
