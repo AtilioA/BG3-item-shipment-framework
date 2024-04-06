@@ -65,3 +65,8 @@ Ext.RegisterConsoleCommand('isf_refill', function(cmd)
 
     ISMailboxes:RefillMailboxes()
 end)
+
+Ext.RegisterConsoleCommand('isf_tut_update', function(cmd)
+    ISFPrint(0, "Updating tutorial chests in mailboxes.")
+    ISMailboxes:UpdateTutorialChests()
+end)
