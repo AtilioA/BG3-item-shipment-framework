@@ -39,7 +39,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: lsx-to-isf-json/.next
+          path: lsx-to-isf-json/out
 
   deploy:
     environment:
