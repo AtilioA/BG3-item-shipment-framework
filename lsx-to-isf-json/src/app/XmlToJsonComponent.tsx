@@ -51,8 +51,12 @@ export const XmlToJsonComponent: React.FC = () => {
         <input {...getInputProps()} />
         <p>Drag and drop an XML file here, or paste its content.</p>
       </div>
-      <button onClick={handleSaveJSON}>Save JSON</button>
-      <pre onClick={handleSaveJSON} style={{ cursor: "pointer" }} title="Click to save ISF JSON">{jsonOutput}</pre>
+      {jsonOutput && (
+        <>
+          <button onClick={handleSaveJSON}>Save JSON</button>
+          <pre onClick={handleSaveJSON} style={{ cursor: "pointer" }} title="Click to save ISF JSON">{jsonOutput}</pre>
+        </>
+      )}
     </div >
   );
 };
