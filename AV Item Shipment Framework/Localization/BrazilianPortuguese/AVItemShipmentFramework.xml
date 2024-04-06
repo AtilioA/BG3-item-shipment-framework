@@ -20,4 +20,7 @@
     <content contentuid="h10726638ga8e4g4f61gbdb5gd12a81747cad" version="1">Use este pergaminho para desinstalar o Item Shipment Framework. Isso removerá as Caixas de Correio do Item Shipment Framework e potencialmente mover todo os seus conteúdos para os baús do acampamento, tornando seguro desinstalar o mod.</content>
     <content contentuid="h377c8e8bga8d8g478dg93f2g9762dab81620" version="1">Gerar conteúdos do Tutorial Chest na Caixa de Correio</content>
     <content contentuid="hd94d53deg7f43g40ffg882cg819c3a85ab9c" version="1">Use este pergaminho para trazer os conteúdos do Tutorial Chest para as Caixas de Correio do Item Shipment Framework.</content>
+    <content contentuid="h83df85eeg6476g4cf3g8c59g95499388910d" version="1">Iniciando procedimento de desinstalação.&lt;br&gt;&lt;br&gt;As caixas de correio serão excluídas; você deseja que os itens sejam movidos para os baús do acampamento?</content>
+    <content contentuid="h93f3b749g83deg4eaagb114g0bafaf8d15bc" version="1">Tem certeza de que deseja desinstalar o mod?&lt;br&gt;&lt;br&gt;Em vez disso, você pode desativá-lo por meio de seu arquivo de configuração JSON, conforme explicado na página do mod.&lt;br&gt;&lt;br&gt;Você está ciente de que reinstalar este mod posteriormente pode fazer com que uma minoria de mods reenvie seus itens.</content>
+    <content contentuid="h5f8290f2gf829g4170gbf39gc6088811945a" version="1">O Item Shipment Framework foi desinstalado.&lt;br&gt;&lt;br&gt;Agora você pode remover o mod com segurança da sua load order.</content>
 </contentList>
