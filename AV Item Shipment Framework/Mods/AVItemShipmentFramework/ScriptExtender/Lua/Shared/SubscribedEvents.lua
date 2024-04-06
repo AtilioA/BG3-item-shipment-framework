@@ -10,6 +10,7 @@ function SubscribedEvents.SubscribeToEvents()
         Ext.Osiris.RegisterListener("UseStarted", 2, "before", EHandlers.OnUseStarted)
         Ext.Osiris.RegisterListener("ReadyCheckFailed", 1, "after", EHandlers.OnReadyCheckFailed)
         Ext.Osiris.RegisterListener("ReadyCheckPassed", 1, "after", EHandlers.OnReadyCheckPassed)
+        Ext.Osiris.RegisterListener("UserConnected", 3, "after", EHandlers.OnUserConnected)
     end
 end
 

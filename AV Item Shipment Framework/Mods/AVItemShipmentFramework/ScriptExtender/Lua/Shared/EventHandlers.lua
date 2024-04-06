@@ -27,8 +27,14 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
         -- Process shipments read from JSON files
         ItemShipmentInstance:ProcessShipments(false)
 
-        ISMailboxes:UpdateTutorialChests()
+        ISMailboxes:UpdateHostMailboxTutorialChest()
     end)
+end
+
+function EHandlers.OnUserConnected(userID, userName, userProfileID)
+    ISMailboxes:UpdateRemainingMailboxesTutorialChests()
+    ISFDebug(1, "User connected: " .. userName .. ", ID: " .. userID .. ", profileID: " .. userProfileID)
+    ISFDebug(1, "Updated remaining mailboxes with Tutorial Chests.")
 end
 
 function EHandlers.OnUseStarted(character, item)
