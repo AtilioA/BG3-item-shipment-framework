@@ -26,6 +26,8 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
         ItemShipmentInstance:SetShipmentTrigger(trigger)
         -- Process shipments read from JSON files
         ItemShipmentInstance:ProcessShipments(false)
+
+        ISMailboxes:UpdateTutorialChests()
     end)
 end
 
@@ -68,6 +70,8 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
     VCHelpers.ModVars:Sync(ModuleUUID)
 
     ISFDebug(2, "Mailboxes after initialization: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
+
+    ISMailboxes:IntegrateTutorialChest(object2)
 
     -- if campChestName ~= nil then
     --     ISFModVars.Mailboxes[campChestName] = object2
