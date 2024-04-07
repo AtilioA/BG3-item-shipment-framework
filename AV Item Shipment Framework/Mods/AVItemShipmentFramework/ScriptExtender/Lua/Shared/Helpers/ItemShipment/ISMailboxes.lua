@@ -133,6 +133,8 @@ end
 ---@param mailboxUUID string The UUID of the mailbox
 ---@return nil
 function ISMailboxes:RefillMailbox(index, mailboxUUID)
+    -- FIXME: just add this when reset is called instead of every time shipments are expected
+    ItemShipmentInstance:LoadShipments()
     for modGUID, modData in pairs(ItemShipmentInstance.mods) do
         for _, item in pairs(modData.Items) do
             if item.Send.To.CampChest["Player" .. index .. "Chest"] == true then
@@ -140,6 +142,7 @@ function ISMailboxes:RefillMailbox(index, mailboxUUID)
             end
         end
     end
+    ISMailboxes:IntegrateTutorialChest(mailboxUUID)
 end
 
 --- Refill a mailbox with a specific item.
@@ -156,6 +159,7 @@ function ISMailboxes:RefillMailboxWithItem(item, mailboxUUID)
 
     -- Add the difference to the mailbox, if any
     if itemsToAdd > 0 then
+        -- ISFDebug(2, Ext.Template.GetTemplate(item.TemplateUUID))
         local itemName = Ext.Loca.GetTranslatedString(Ext.Template.GetTemplate(item.TemplateUUID).UnknownDisplayName
             .Handle.Handle) or item.TemplateUUID
         ISFDebug(2,

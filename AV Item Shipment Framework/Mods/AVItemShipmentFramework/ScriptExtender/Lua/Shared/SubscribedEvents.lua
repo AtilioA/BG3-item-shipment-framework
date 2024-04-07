@@ -11,6 +11,7 @@ function SubscribedEvents.SubscribeToEvents()
         Ext.Osiris.RegisterListener("ReadyCheckFailed", 1, "after", EHandlers.OnReadyCheckFailed)
         Ext.Osiris.RegisterListener("ReadyCheckPassed", 1, "after", EHandlers.OnReadyCheckPassed)
         Ext.Osiris.RegisterListener("UserConnected", 3, "after", EHandlers.OnUserConnected)
+        Ext.Osiris.RegisterListener("CastedSpell", 5, "after", EHandlers.OnCastedSpell)
     end
 end
 
