@@ -7,7 +7,9 @@ import { constructJSON } from '@/services/xmlToJson';
 const DragAndDropContainer: React.FC = () => {
   const [jsonOutput, setJsonOutput] = useState('');
   const [isDragging, setIsDragging] = useState(false);
+  const [hasDropped, setHasDropped] = useState(false);
   const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
+  const [selectedTemplateNames, setSelectedTemplateNames] = useState<string[]>([]);
 
   // Step 1: Gathering Data
   interface FileAndPath {
@@ -15,13 +17,13 @@ const DragAndDropContainer: React.FC = () => {
     path: string;
   }
 
-  const gatherData = useCallback(async (item: FileSystemEntry, path: string = ''): Promise<FileAndPath[]> => {
-    let files: FileAndPath[] = [];
+  const gatherData = useCallback(async (item: FileSystemEntry, path: string = ''): Promise<File[]> => {
+    let files: File[] = [];
     if (item.isFile) {
       // Correct handling of FileSystemFileEntry to get a File object
       const fileEntry = item as FileSystemFileEntry;
       const file: File = await new Promise((resolve) => fileEntry.file(resolve));
-      files.push({ file: file, path: `${path}/${file.name}` });
+      files.push(file);
     } else if (item.isDirectory) {
       const dirReader = (item as FileSystemDirectoryEntry).createReader();
       let readEntries: FileSystemEntry[] = await new Promise((resolve, reject) => dirReader.readEntries(resolve, reject));
@@ -35,28 +37,32 @@ const DragAndDropContainer: React.FC = () => {
   }, []);
 
   // Step 2: Parsing LSX Files
-  const parseLSXFiles = async (files: FileAndPath[]): Promise<GameObjectData[]> => {
-    console.log(files);
-    const lsxFiles = files.filter((file) => file.file.name.endsWith('.lsx') && file.file.webkitRelativePath.includes('RootTemplates'));
+  const parseLSXFiles = async (files: File[]): Promise<GameObjectData[]> => {
+    const lsxFiles = files.filter((file) => file.name.endsWith('.lsx') && file.webkitRelativePath.includes('RootTemplates'));
+    console.debug("LSX files: ", lsxFiles);
     const parsedData: GameObjectData[] = [];
     for (let file of lsxFiles) {
-      const text = await file.file.text();
+      const text = await file.text();
       const xmlDoc = new DOMParser().parseFromString(text, 'text/xml');
       const parsed = parseRootTemplate(xmlDoc);
       parsedData.push(...parsed);
     }
+    console.debug("Parsed data: ", parsedData);
     return parsedData;
   };
 
   // Step 3: Parsing Treasure Table Files
   const parseTreasureTables = async (files: File[]): Promise<TreasureItem[]> => {
-    const treasureFiles = files.filter((file) => file.name.endsWith('.txt') && file.webkitRelativePath.includes('Generated'));
+    const treasureFiles = files.filter((file) => file.name.endsWith('TreasureTable.txt') && file.webkitRelativePath.includes('Generated'));
+    console.debug("Treasure files: ", treasureFiles)
     const treasureData: TreasureItem[] = [];
     for (let file of treasureFiles) {
       const text = await file.text();
       const parsed = parseTreasureTableData(text);
       treasureData.push(...parsed);
     }
+
+    console.debug("Treasure data: ", treasureData);
     return treasureData;
   };
 
@@ -71,7 +77,21 @@ const DragAndDropContainer: React.FC = () => {
     const lsxData = await parseLSXFiles(files);
     const treasureData = await parseTreasureTables(files);
     const finalData = removeItemsFromLSX(lsxData, treasureData);
+    console.debug("Final data: ", finalData);
+
+    if (finalData.length > 0) {
+      setHasDropped(true);
+    }
+
+    // Extract template names from finalData
+    const templateNames = finalData.map((item) => item.templateName);
+    if (templateNames) {
+      setSelectedTemplateNames(templateNames);
+    }
+
     setGameObjectData(finalData);
+    const ISFJSON = constructJSON(finalData);
+    setJsonOutput(JSON.stringify(ISFJSON, null, 2));
   }, [gatherData]);
 
   const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -103,16 +123,19 @@ const DragAndDropContainer: React.FC = () => {
 
 
   const onDragEnter = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    setHasDropped(false);
     setIsDragging(true);
     event.preventDefault();
   }, []);
 
   const onDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    setHasDropped(false);
     setIsDragging(false);
     event.preventDefault();
   }, []);
 
   const onPaste = useCallback((event: React.ClipboardEvent<HTMLDivElement>) => {
+    setHasDropped(false);
     setIsDragging(true);
     event.preventDefault();
     const items: DataTransferItemList = event.clipboardData.items;
@@ -134,7 +157,7 @@ const DragAndDropContainer: React.FC = () => {
       onDragLeave={onDragLeave}
       onPaste={onPaste}
       onDragOver={(event: React.DragEvent<HTMLDivElement>) => event.preventDefault()}
-      className={`flex flex-col items-center justify-center my-2 w-full h-screen w-full border-2 border-dashed p-8 ${isDragging ? 'border-blue-500' : 'border-gray-400'
+      className={`flex flex-col items-center justify-center my-2 w-full h-screen w-full border-2 border-dashed p-8 ${isDragging ? 'border-blue-500' : hasDropped ? 'border-gray-800' : 'border-gray-400'
         }`}
     >
       {isDragging ? (
@@ -150,6 +173,7 @@ const DragAndDropContainer: React.FC = () => {
         <DragAndDropPreview
           jsonOutput={jsonOutput}
           handleSaveJSON={handleSaveJSON}
+          templateNames={selectedTemplateNames}
         />
       )}
     </div>
