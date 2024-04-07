@@ -2,62 +2,77 @@ import React, { useCallback, useEffect, useState } from 'react';
 import DragAndDropPreview from './DragAndDropPreview';
 import { GameObjectData, parseRootTemplate } from '@/services/parseGameObjects';
 import { TreasureItem, parseTreasureTableData } from '@/services/parseTreasureTable';
+import { constructJSON } from '@/services/xmlToJson';
 
 const DragAndDropContainer: React.FC = () => {
   const [jsonOutput, setJsonOutput] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
 
-  const traverseFileTree = useCallback((item: FileSystemEntry, path: string = "") => {
-    if (item.isFile) {
-      const fileEntry = item as FileSystemFileEntry;
-      fileEntry.file(async (file: File) => {
-        if (file.name.endsWith('.lsx') && path.includes('RootTemplates')) {
-          const parser = new DOMParser();
-          const text = await file.text();
-          const xml = parser.parseFromString(text, 'application/xml');
-          if (xml.getElementsByTagName('parsererror').length) {
-            console.error('Error parsing XML');
-            return;
-          }
+  // Step 1: Gathering Data
+  interface FileAndPath {
+    file: File;
+    path: string;
+  }
 
-          const parsedGameObjectData = parseRootTemplate(xml);
-          if (parsedGameObjectData.length > 0) {
-            setGameObjectData(currentData => [...currentData, ...parsedGameObjectData]);
-          }
-        }
-        if (file.name.endsWith('.txt') && path.includes('Generated')) {
-          const text = await file.text();
-          const parsedTreasureTable = parseTreasureTableData(text);
-          setGameObjectData(currentData => {
-            const newData = [...currentData]; // Create a shallow copy
-            removeMatchingTreasureItems(parsedTreasureTable, newData);
-            return newData;
-          });
-        }
-      });
+  const gatherData = useCallback(async (item: FileSystemEntry, path: string = ''): Promise<FileAndPath[]> => {
+    let files: FileAndPath[] = [];
+    if (item.isFile) {
+      // Correct handling of FileSystemFileEntry to get a File object
+      const fileEntry = item as FileSystemFileEntry;
+      const file: File = await new Promise((resolve) => fileEntry.file(resolve));
+      files.push({ file: file, path: `${path}/${file.name}` });
     } else if (item.isDirectory) {
-      const directoryEntry = item as FileSystemDirectoryEntry;
-      const dirReader = directoryEntry.createReader();
-      dirReader.readEntries((entries: FileSystemEntry[]) => {
-        for (let i = 0; i < entries.length; i++) {
-          traverseFileTree(entries[i], `${path}/${directoryEntry.name}`);
-        }
-      });
+      const dirReader = (item as FileSystemDirectoryEntry).createReader();
+      let readEntries: FileSystemEntry[] = await new Promise((resolve, reject) => dirReader.readEntries(resolve, reject));
+      for (let entry of readEntries) {
+        const entryFiles = await gatherData(entry, `${path}/${entry.name}`);
+        files = files.concat(entryFiles);
+      }
     }
+
+    return files;
   }, []);
 
-  function removeMatchingTreasureItems(parsedTreasureTable: TreasureItem[], gameObjectData: GameObjectData[]) {
-    console.log("Removing matching treasure items...")
-    parsedTreasureTable.forEach(treasureItem => {
-      for (let i = gameObjectData.length - 1; i >= 0; i--) {
-        if (gameObjectData[i].templateName === treasureItem.templateName) {
-          gameObjectData.splice(i, 1);
-        }
-      }
-    });
-    console.log("Matching treasure items removed:", gameObjectData);
-  }
+  // Step 2: Parsing LSX Files
+  const parseLSXFiles = async (files: FileAndPath[]): Promise<GameObjectData[]> => {
+    console.log(files);
+    const lsxFiles = files.filter((file) => file.file.name.endsWith('.lsx') && file.file.webkitRelativePath.includes('RootTemplates'));
+    const parsedData: GameObjectData[] = [];
+    for (let file of lsxFiles) {
+      const text = await file.file.text();
+      const xmlDoc = new DOMParser().parseFromString(text, 'text/xml');
+      const parsed = parseRootTemplate(xmlDoc);
+      parsedData.push(...parsed);
+    }
+    return parsedData;
+  };
+
+  // Step 3: Parsing Treasure Table Files
+  const parseTreasureTables = async (files: File[]): Promise<TreasureItem[]> => {
+    const treasureFiles = files.filter((file) => file.name.endsWith('.txt') && file.webkitRelativePath.includes('Generated'));
+    const treasureData: TreasureItem[] = [];
+    for (let file of treasureFiles) {
+      const text = await file.text();
+      const parsed = parseTreasureTableData(text);
+      treasureData.push(...parsed);
+    }
+    return treasureData;
+  };
+
+  // Step 4: Removing Items
+  const removeItemsFromLSX = (lsxData: GameObjectData[], treasureData: TreasureItem[]): GameObjectData[] => {
+    return lsxData.filter((lsxItem) => !treasureData.some((treasureItem) => treasureItem.templateName === lsxItem.templateName));
+  };
+
+  // Pipeline Executor
+  const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
+    const files = await gatherData(rootItem);
+    const lsxData = await parseLSXFiles(files);
+    const treasureData = await parseTreasureTables(files);
+    const finalData = removeItemsFromLSX(lsxData, treasureData);
+    setGameObjectData(finalData);
+  }, [gatherData]);
 
   const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -67,13 +82,13 @@ const DragAndDropContainer: React.FC = () => {
       const item: DataTransferItem = items[i];
       const entry: FileSystemEntry | null = item.webkitGetAsEntry();
       if (entry) {
-        traverseFileTree(entry);
+        executePipeline(entry);
       }
     }
 
     setIsDragging(false);
     event.preventDefault();
-  }, [traverseFileTree]);
+  }, [executePipeline]);
 
 
   const handleSaveJSON = () => {
@@ -106,11 +121,11 @@ const DragAndDropContainer: React.FC = () => {
       const item: DataTransferItem = items[i];
       const entry: FileSystemEntry | null = item.webkitGetAsEntry();
       if (entry) {
-        traverseFileTree(entry);
+        executePipeline(entry);
       }
     }
     setIsDragging(false);
-  }, [traverseFileTree]);
+  }, [executePipeline]);
 
   return (
     <div
