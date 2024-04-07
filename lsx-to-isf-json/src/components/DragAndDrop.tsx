@@ -157,11 +157,10 @@ const DragAndDropContainer: React.FC = () => {
         }`}
     >
       {isDragging ? (
-        <p className="text-blue-500 font-bold">Drop to generate the ISF config JSON</p>
+        <p className="text-2xl text-blue-500 font-bold">Drop to generate the ISF config JSON</p>
       ) : (
         <>
-          <p className="text-gray-400">Drag and drop or paste your mod folder here</p>
-          <p className="text-gray-400"></p>
+          <p className="text-xl text-gray-400">Drag and drop or paste your mod folder here</p>
         </>
       )}
       {jsonOutput && (
