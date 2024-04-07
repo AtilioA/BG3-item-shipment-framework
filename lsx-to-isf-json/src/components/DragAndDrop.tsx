@@ -1,21 +1,40 @@
-// import { constructJSON, parseXML } from '@/services/xmlToJson';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import DragAndDropPreview from './DragAndDropPreview';
+import { GameObjectData, parseRootTemplate } from '@/services/parseGameObjects';
+import { TreasureItem, parseTreasureTableData } from '@/services/parseTreasureTable';
 
 const DragAndDropContainer: React.FC = () => {
   const [jsonOutput, setJsonOutput] = useState('');
   const [isDragging, setIsDragging] = useState(false);
+  const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
 
   const traverseFileTree = useCallback((item: FileSystemEntry, path: string = "") => {
     if (item.isFile) {
       const fileEntry = item as FileSystemFileEntry;
-      fileEntry.file((file: File) => {
-        console.log(`File: ${path}/${file.name}`);
-        const fileReader = new FileReader();
-        fileReader.onload = () => {
-          // console.log(`Contents of ${path}/${file.name}:\n${fileReader.result}`);
-        };
-        fileReader.readAsText(file);
+      fileEntry.file(async (file: File) => {
+        if (file.name.endsWith('.lsx') && path.includes('RootTemplates')) {
+          const parser = new DOMParser();
+          const text = await file.text();
+          const xml = parser.parseFromString(text, 'application/xml');
+          if (xml.getElementsByTagName('parsererror').length) {
+            console.error('Error parsing XML');
+            return;
+          }
+
+          const parsedGameObjectData = parseRootTemplate(xml);
+          if (parsedGameObjectData.length > 0) {
+            setGameObjectData(currentData => [...currentData, ...parsedGameObjectData]);
+          }
+        }
+        if (file.name.endsWith('.txt') && path.includes('Generated')) {
+          const text = await file.text();
+          const parsedTreasureTable = parseTreasureTableData(text);
+          setGameObjectData(currentData => {
+            const newData = [...currentData]; // Create a shallow copy
+            removeMatchingTreasureItems(parsedTreasureTable, newData);
+            return newData;
+          });
+        }
       });
     } else if (item.isDirectory) {
       const directoryEntry = item as FileSystemDirectoryEntry;
@@ -27,6 +46,18 @@ const DragAndDropContainer: React.FC = () => {
       });
     }
   }, []);
+
+  function removeMatchingTreasureItems(parsedTreasureTable: TreasureItem[], gameObjectData: GameObjectData[]) {
+    console.log("Removing matching treasure items...")
+    parsedTreasureTable.forEach(treasureItem => {
+      for (let i = gameObjectData.length - 1; i >= 0; i--) {
+        if (gameObjectData[i].templateName === treasureItem.templateName) {
+          gameObjectData.splice(i, 1);
+        }
+      }
+    });
+    console.log("Matching treasure items removed:", gameObjectData);
+  }
 
   const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -43,6 +74,7 @@ const DragAndDropContainer: React.FC = () => {
     setIsDragging(false);
     event.preventDefault();
   }, [traverseFileTree]);
+
 
   const handleSaveJSON = () => {
     const element = document.createElement('a');
