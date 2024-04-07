@@ -1,6 +1,7 @@
 "use client"
 
 import DragAndDropContainer from '@/components/DragAndDrop';
+import Footer from '@/components/Footer';
 import React from 'react';
 
 const Page: React.FC = () => {
@@ -8,7 +9,8 @@ const Page: React.FC = () => {
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white">
       <h1 className="text-3xl items-center align-center font-bold mb-6 mt-4">ISF config JSON generator</h1>
       <DragAndDropContainer />
-    </div >
+      <Footer />
+    </div>
   );
 };
 
