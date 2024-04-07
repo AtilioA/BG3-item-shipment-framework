@@ -1,6 +1,8 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 interface DragAndDropPreviewProps {
   jsonOutput: string;
@@ -34,15 +36,19 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
           </button>
 
           <p className="mt-4 mb-2">JSON preview:</p>
-          <div className="max-h-[40vh] rounded-[4px] overflow-auto">
-            <pre
-              onClick={handleSaveJSON}
-              style={{ cursor: 'pointer' }}
-              title="Click to save ISF JSON"
-              className="p-4 bg-gray-800 rounded-lg text-white"
-            >
-              {jsonOutput}
-            </pre>
+          <div className="max-h-[40vh] rounded-4 overflow-auto">
+            <div className="max-h-[35vh] rounded-4 overflow-auto">
+              <SyntaxHighlighter
+                onClick={handleSaveJSON}
+                title="Click to save ISF JSON"
+                language="json"
+                style={vscDarkPlus} className="p-4 rounded-lg"
+                customStyle={{ cursor: 'pointer', backgroundColor: '#1e1e1e', color: 'white' }}
+              >
+                {jsonOutput}
+              </SyntaxHighlighter>
+            </div>
+
           </div>
         </div>
       </div>
