@@ -1,44 +1,48 @@
-import { constructJSON, parseXML } from '@/services/xmlToJson';
+// import { constructJSON, parseXML } from '@/services/xmlToJson';
 import React, { useCallback, useState } from 'react';
-import { FileRejection, useDropzone } from 'react-dropzone';
 import DragAndDropPreview from './DragAndDropPreview';
-// import DragAndDropInput from './DragAndDropInput';
-import FolderDropComponent from './DragDropFolder';
 
 const DragAndDropContainer: React.FC = () => {
   const [jsonOutput, setJsonOutput] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
 
-  const onDrop = useCallback((acceptedFiles: File[], fileRejections: FileRejection[]) => {
-    // Only one file is accepted
-    const file = acceptedFiles[0];
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-      const xmlContent = (event.target as FileReader).result;
-      if (typeof xmlContent !== 'string') {
-        alert('Error reading LSX file.');
-        return;
-      }
-      const mapKeys = parseXML(xmlContent);
-      const finalJSON = constructJSON(mapKeys);
-      setJsonOutput(JSON.stringify(finalJSON, null, 2));
-    };
-
-    reader.readAsText(file);
+  const traverseFileTree = useCallback((item: FileSystemEntry, path: string = "") => {
+    if (item.isFile) {
+      const fileEntry = item as FileSystemFileEntry;
+      fileEntry.file((file: File) => {
+        console.log(`File: ${path}/${file.name}`);
+        const fileReader = new FileReader();
+        fileReader.onload = () => {
+          // console.log(`Contents of ${path}/${file.name}:\n${fileReader.result}`);
+        };
+        fileReader.readAsText(file);
+      });
+    } else if (item.isDirectory) {
+      const directoryEntry = item as FileSystemDirectoryEntry;
+      const dirReader = directoryEntry.createReader();
+      dirReader.readEntries((entries: FileSystemEntry[]) => {
+        for (let i = 0; i < entries.length; i++) {
+          traverseFileTree(entries[i], `${path}/${directoryEntry.name}`);
+        }
+      });
+    }
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const items: DataTransferItemList = event.dataTransfer.items;
 
-  const handlePaste = async (event: React.ClipboardEvent<HTMLDivElement>) => {
-    const text = event.clipboardData.getData('Text');
-    if (!text) {
-      console.info('No text found in clipboard.');
-    } else {
-      const mapKeys = parseXML(text);
-      const finalJSON = constructJSON(mapKeys);
-      setJsonOutput(JSON.stringify(finalJSON, null, 2));
+    for (let i = 0; i < items.length; i++) {
+      const item: DataTransferItem = items[i];
+      const entry: FileSystemEntry | null = item.webkitGetAsEntry();
+      if (entry) {
+        traverseFileTree(entry);
+      }
     }
-  };
+
+    setIsDragging(false);
+    event.preventDefault();
+  }, [traverseFileTree]);
 
   const handleSaveJSON = () => {
     const element = document.createElement('a');
@@ -50,9 +54,51 @@ const DragAndDropContainer: React.FC = () => {
     document.body.removeChild(element);
   };
 
+
+  const onDragEnter = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    event.preventDefault();
+  }, []);
+
+  const onDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    setIsDragging(false);
+    event.preventDefault();
+  }, []);
+
+  const onPaste = useCallback((event: React.ClipboardEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    event.preventDefault();
+    const items: DataTransferItemList = event.clipboardData.items;
+
+    for (let i = 0; i < items.length; i++) {
+      const item: DataTransferItem = items[i];
+      const entry: FileSystemEntry | null = item.webkitGetAsEntry();
+      if (entry) {
+        traverseFileTree(entry);
+      }
+    }
+    setIsDragging(false);
+  }, [traverseFileTree]);
+
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-3xl">
-      <FolderDropComponent />
+    <div
+      onDrop={onDrop}
+      onDragEnter={onDragEnter}
+      onDragLeave={onDragLeave}
+      onPaste={onPaste}
+      onDragOver={(event: React.DragEvent<HTMLDivElement>) => event.preventDefault()}
+      className={`flex flex-col items-center justify-center my-2 w-full h-screen w-full border-2 border-dashed p-8 ${isDragging ? 'border-blue-500' : 'border-gray-400'
+        }`}
+    >
+      {isDragging ? (
+        <p className="text-blue-500 font-bold">Drop to generate the ISF config JSON</p>
+      ) : (
+        <>
+          <p className="text-gray-400">Drag and drop or paste your mod folder here</p>
+          <p className="text-gray-400"></p>
+        </>
+      )}
+      {/* <FolderDropComponent /> */}
       {jsonOutput && (
         <DragAndDropPreview
           jsonOutput={jsonOutput}
