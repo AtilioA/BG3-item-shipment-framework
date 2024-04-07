@@ -7,7 +7,7 @@ import { constructJSON } from '@/services/xmlToJson';
 const DragAndDropContainer: React.FC = () => {
   const [jsonOutput, setJsonOutput] = useState('');
   const [isDragging, setIsDragging] = useState(false);
-  const [hasDropped, setHasDropped] = useState(false);
+  const [isFolderLoaded, setIsFolderLoaded] = useState(false);
   const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
   const [selectedTemplateNames, setSelectedTemplateNames] = useState<string[]>([]);
 
@@ -75,7 +75,7 @@ const DragAndDropContainer: React.FC = () => {
 
     console.debug("Final data: ", finalData);
     if (finalData.length > 0) {
-      setHasDropped(true);
+      setIsFolderLoaded(true);
     }
 
     // Extract template names from finalData to display in the preview
@@ -119,19 +119,19 @@ const DragAndDropContainer: React.FC = () => {
 
 
   const onDragEnter = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-    setHasDropped(false);
+    setIsFolderLoaded(false);
     setIsDragging(true);
     event.preventDefault();
   }, []);
 
   const onDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-    setHasDropped(false);
+    setIsFolderLoaded(false);
     setIsDragging(false);
     event.preventDefault();
   }, []);
 
   const onPaste = useCallback((event: React.ClipboardEvent<HTMLDivElement>) => {
-    setHasDropped(false);
+    setIsFolderLoaded(false);
     setIsDragging(true);
     event.preventDefault();
     const items: DataTransferItemList = event.clipboardData.items;
@@ -153,15 +153,17 @@ const DragAndDropContainer: React.FC = () => {
       onDragLeave={onDragLeave}
       onPaste={onPaste}
       onDragOver={(event: React.DragEvent<HTMLDivElement>) => event.preventDefault()}
-      className={`flex flex-col items-center justify-center my-2 h-screen w-full border-2 border-dashed p-8 ${isDragging ? 'border-blue-500' : hasDropped ? 'border-gray-800' : 'border-gray-400'
+      className={`flex flex-col items-center justify-center h-screen w-full border-2 border-dashed ${isDragging ? 'border-blue-500' : isFolderLoaded ? 'border-gray-800' : 'border-gray-400'
         }`}
     >
-      {isDragging ? (
-        <p className="text-2xl text-blue-500 font-bold">Drop to generate the ISF config JSON</p>
-      ) : (
-        <>
-          <p className="text-xl text-gray-400">Drag and drop or paste your mod folder here</p>
-        </>
+      {!isFolderLoaded && (
+        isDragging ? (
+          <p className="text-2xl text-blue-500 font-bold">Drop to generate the ISF config JSON</p>
+        ) : (
+          <>
+            <p className="text-xl text-gray-400">Drag and drop or paste your mod folder here</p>
+          </>
+        )
       )}
       {jsonOutput && (
         <DragAndDropPreview
