@@ -11,16 +11,10 @@ const DragAndDropContainer: React.FC = () => {
   const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
   const [selectedTemplateNames, setSelectedTemplateNames] = useState<string[]>([]);
 
-  // Step 1: Gathering Data
-  interface FileAndPath {
-    file: File;
-    path: string;
-  }
-
+  // Step 1: Gathering data from the dropped folder
   const gatherData = useCallback(async (item: FileSystemEntry, path: string = ''): Promise<File[]> => {
     let files: File[] = [];
     if (item.isFile) {
-      // Correct handling of FileSystemFileEntry to get a File object
       const fileEntry = item as FileSystemFileEntry;
       const file: File = await new Promise((resolve) => fileEntry.file(resolve));
       files.push(file);
@@ -36,7 +30,7 @@ const DragAndDropContainer: React.FC = () => {
     return files;
   }, []);
 
-  // Step 2: Parsing LSX Files
+  // Step 2: Parsing LSX file(s?) from RootTemplates
   const parseLSXFiles = async (files: File[]): Promise<GameObjectData[]> => {
     const lsxFiles = files.filter((file) => file.name.endsWith('.lsx') && file.webkitRelativePath.includes('RootTemplates'));
     console.debug("LSX files: ", lsxFiles);
@@ -51,7 +45,7 @@ const DragAndDropContainer: React.FC = () => {
     return parsedData;
   };
 
-  // Step 3: Parsing Treasure Table Files
+  // Step 3: Parsing Treasure Table file(s?)
   const parseTreasureTables = async (files: File[]): Promise<TreasureItem[]> => {
     const treasureFiles = files.filter((file) => file.name.endsWith('TreasureTable.txt') && file.webkitRelativePath.includes('Generated'));
     console.debug("Treasure files: ", treasureFiles)
@@ -66,30 +60,31 @@ const DragAndDropContainer: React.FC = () => {
     return treasureData;
   };
 
-  // Step 4: Removing Items
+  // Step 4: Removing items that are already in Treasure Tables
   const removeItemsFromLSX = (lsxData: GameObjectData[], treasureData: TreasureItem[]): GameObjectData[] => {
     return lsxData.filter((lsxItem) => !treasureData.some((treasureItem) => treasureItem.templateName === lsxItem.templateName));
   };
 
-  // Pipeline Executor
+  // Pipeline for processing dropped folder
   const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
     const files = await gatherData(rootItem);
     const lsxData = await parseLSXFiles(files);
     const treasureData = await parseTreasureTables(files);
     const finalData = removeItemsFromLSX(lsxData, treasureData);
-    console.debug("Final data: ", finalData);
+    setGameObjectData(finalData);
 
+    console.debug("Final data: ", finalData);
     if (finalData.length > 0) {
       setHasDropped(true);
     }
 
-    // Extract template names from finalData
+    // Extract template names from finalData to display in the preview
     const templateNames = finalData.map((item) => item.templateName);
     if (templateNames) {
       setSelectedTemplateNames(templateNames);
     }
 
-    setGameObjectData(finalData);
+    // Construct JSON output
     const ISFJSON = constructJSON(finalData);
     setJsonOutput(JSON.stringify(ISFJSON, null, 2));
   }, [gatherData]);
@@ -157,7 +152,7 @@ const DragAndDropContainer: React.FC = () => {
       onDragLeave={onDragLeave}
       onPaste={onPaste}
       onDragOver={(event: React.DragEvent<HTMLDivElement>) => event.preventDefault()}
-      className={`flex flex-col items-center justify-center my-2 w-full h-screen w-full border-2 border-dashed p-8 ${isDragging ? 'border-blue-500' : hasDropped ? 'border-gray-800' : 'border-gray-400'
+      className={`flex flex-col items-center justify-center my-2 h-screen w-full border-2 border-dashed p-8 ${isDragging ? 'border-blue-500' : hasDropped ? 'border-gray-800' : 'border-gray-400'
         }`}
     >
       {isDragging ? (
@@ -168,7 +163,6 @@ const DragAndDropContainer: React.FC = () => {
           <p className="text-gray-400"></p>
         </>
       )}
-      {/* <FolderDropComponent /> */}
       {jsonOutput && (
         <DragAndDropPreview
           jsonOutput={jsonOutput}

@@ -1,23 +1,5 @@
 import { GameObjectData } from "./parseGameObjects";
 
-// TODO: Extend with interfaces/types for better type checking
-export function parseXML(xmlString: string): string[] {
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(xmlString, "text/xml");
-  const mapKeys: string[] = [];
-  const gameObjects = xmlDoc.getElementsByTagName("node");
-
-  for (let gameObject of Array.from(gameObjects)) {
-      if (gameObject.getAttribute("id") === "GameObjects") {
-          const mapKey = gameObject.querySelector("[id='MapKey']");
-          if (mapKey) {
-              mapKeys.push(mapKey.getAttribute("value") || '');
-          }
-      }
-  }
-  return mapKeys;
-}
-
 export function constructJSON(gameData: GameObjectData[]): object {
     // TODO: use actual JSON from ISF
   const items = gameData.map((data) => ({
