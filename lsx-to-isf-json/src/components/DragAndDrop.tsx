@@ -79,10 +79,11 @@ const DragAndDropContainer: React.FC = () => {
     }
 
     // Extract template names from finalData to display in the preview
-    const templateNames = finalData.map((item) => item.templateName);
-    if (templateNames) {
+    const templateNames = finalData.map(item => item.templateName).filter(name => name !== null) as string[];
+    if (templateNames.length > 0) {
       setSelectedTemplateNames(templateNames);
     }
+
 
     // Construct JSON output
     const ISFJSON = constructJSON(finalData);
