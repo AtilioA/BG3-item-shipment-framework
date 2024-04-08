@@ -20,4 +20,6 @@
     <content contentuid="h10726638ga8e4g4f61gbdb5gd12a81747cad" version="1">Utilisez ce parchemin pour désinstaller le Item Shipment Framework. Il tentera de déplacer tous les objets actuellement dans chaque boîte aux lettres directement dans le coffre de camp associé, puis supprimera toutes les boîtes aux lettres, rendant ainsi la désinstallation du mod sûre pour votre jeu.</content>
     <content contentuid="h377c8e8bga8d8g478dg93f2g9762dab81620" version="1">Générer le contenu du Tutorial Chest dans la boîte aux lettres</content>
     <content contentuid="hd94d53deg7f43g40ffg882cg819c3a85ab9c" version="1">Utilisez ce parchemin pour générer le contenu du Tutorial Chest dans les boîtes aux lettres du Item Shipment Framework.</content>
+    <content contentuid="ha521e34fg52d2g413ag9623g6ddb937058cf" version="1">Tutorial Chest</content>
+    <content contentuid="hff01ce89g89c6g49cegb1fcg6ab2da5fec19" version="1">This "Tutorial Chest" will be reset upon saving and loading your game.&lt;br&gt;&lt;br&gt;It serves as legacy mod compatibility, for those mods which have not been updated to support the Item Shipment Framework.</content>
 </contentList>
