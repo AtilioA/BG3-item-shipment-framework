@@ -13,7 +13,7 @@ const WarningModal: React.FC<WarningModalProps> = ({ isVisible, onClose }) => {
 
     return (
         <div className="fixed inset-0 z-10 flex items-center justify-center overflow-y-auto bg-gray-900 bg-opacity-75">
-            <div className="rounded-lg shadow-lg p-6 max-w-md w-full bg-gray-800">
+            <div className="rounded-lg shadow-lg p-6 max-w-lg w-full bg-gray-800">
                 <h2 className="text-2xl font-bold mb-4">Warning</h2>
                 <p>This mod contains more than {MAX_NON_CONTAINER_ITEMS} items outside of a container. This will led to a cluttered mailbox for your users.</p>
                 <p>Please consider <a
@@ -41,7 +41,7 @@ const WarningModal: React.FC<WarningModalProps> = ({ isVisible, onClose }) => {
                             onClose();
                         }}
                     >
-                        I'll do it
+                        I&apos;ll do it
                     </button>
                 </div>
             </div>
