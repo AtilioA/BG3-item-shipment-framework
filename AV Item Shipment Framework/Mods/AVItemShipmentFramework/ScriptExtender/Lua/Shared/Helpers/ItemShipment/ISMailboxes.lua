@@ -133,8 +133,6 @@ end
 ---@param mailboxUUID string The UUID of the mailbox
 ---@return nil
 function ISMailboxes:RefillMailbox(index, mailboxUUID)
-    -- FIXME: just add this when reset is called instead of every time shipments are expected
-    ItemShipmentInstance:LoadShipments()
     for modGUID, modData in pairs(ItemShipmentInstance.mods) do
         for _, item in pairs(modData.Items) do
             if item.Send.To.CampChest["Player" .. index .. "Chest"] == true then

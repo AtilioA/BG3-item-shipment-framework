@@ -101,6 +101,11 @@ function EHandlers.OnEndTheDayRequested(character)
     ItemShipmentInstance:ProcessShipments(false)
 end
 
+function EHandlers.OnReset()
+    ISFDebug(0, "'reset' command was called in the SE console, reloading shipments.")
+    ItemShipmentInstance:LoadShipments()
+end
+
 --- Handle the event when the player declines a ReadyCheck
 function EHandlers.OnReadyCheckFailed(eventId)
     ISFDebug(2,
