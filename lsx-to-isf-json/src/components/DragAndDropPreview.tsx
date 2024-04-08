@@ -32,7 +32,7 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
             <div className="flex flex-col">
                 <button
                     onClick={handleSaveJSON}
-                    className="bg-[#6f69e0] text-white font-bold py-4 px-4 mt-0 rounded transition-colors duration-150 ease-in-out hover:bg-[#544fb8] flex items-center justify-center"
+                    className="bg-volition-purple/80 text-white font-bold py-4 px-4 mt-0 rounded transition-hover hover:bg-volition-purple/60 flex items-center justify-center"
                 >
                     <FontAwesomeIcon icon={faSave} className="mr-2 text-xl flex items-center" />
                     <span className="text-center text-xl flex items-center">Save ISF JSON</span>

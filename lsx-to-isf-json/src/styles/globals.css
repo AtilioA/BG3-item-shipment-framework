@@ -31,4 +31,7 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+  .transition-hover {
+    @apply transition-colors duration-200 ease-in-out;
+  }
 }
