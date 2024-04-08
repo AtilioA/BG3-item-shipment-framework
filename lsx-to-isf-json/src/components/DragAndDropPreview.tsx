@@ -45,7 +45,7 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
                     <span className="text-center text-xl flex items-center">Save ISF JSON</span>
                 </button>
                 <p className="mt-4 mb-2">JSON preview:</p>
-                <div className="rounded-4 overflow-auto max-h-[45vh]">
+                <div className="rounded-4 overflow-auto max-h-[40vh]">
                     <SyntaxHighlighter
                         onClick={handleSaveJSON}
                         title="Click to save ISF JSON"

@@ -141,7 +141,7 @@ const DragAndDropContainer: React.FC = () => {
         } else if (isFolderLoaded) {
             return (
                 <div className="flex flex-col items-center text-xl text-gray-400">
-                    <p className='text-bold'>{modName} parsed successfully.</p>
+                    <p><span className='font-bold'>{modName}</span> has been parsed successfully.</p>
                     <p className="ml-2">You can still drop in another mod.</p>
                 </div>
             );
