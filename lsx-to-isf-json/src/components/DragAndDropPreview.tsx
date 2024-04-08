@@ -42,8 +42,11 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
                     className="bg-volition-purple/80 text-white font-bold py-4 px-4 mt-0 rounded transition-hover hover:bg-volition-purple/60 flex items-center justify-center"
                 >
                     <FontAwesomeIcon icon={faSave} className="mr-2 text-xl flex items-center" />
-                    <span className="text-center text-xl flex items-center">Save ISF JSON</span>
+                    <p className="text-center text-xl flex items-center">Save ISF JSON</p>
                 </button>
+                <p className="mt-1 text-center text-base text-gray-500 cursor-default">*Save this JSON beside your mod's meta.lsx file.</p>
+                <hr className="w-full border-1 rounded-[10px] mt-4 border-gray-500 opacity-[50%]" />
+
                 <p className="mt-4 mb-2">JSON preview:</p>
                 <div className="rounded-4 overflow-auto max-h-[40vh]">
                     <SyntaxHighlighter
