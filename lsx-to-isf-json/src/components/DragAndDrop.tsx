@@ -5,6 +5,7 @@ import { constructJSON } from '@/services/xmlToJson';
 import { gatherData, parseLSXFiles, parseTreasureTables, removeItemsFromLSX } from '@/services/parseFolder';
 import WarningModal from './WarningModal';
 import LoadingSpinner from './LoadingSpinner';
+import { MAX_NON_CONTAINER_ITEMS } from '@/config/config';
 
 const DragAndDropContainer: React.FC = () => {
     const [jsonOutput, setJsonOutput] = useState('');
@@ -19,7 +20,7 @@ const DragAndDropContainer: React.FC = () => {
     // Pipeline for processing dropped folder
     const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
         setIsProcessing(true);
-        
+
         // Clean up previous data
         setGameObjectData([]);
         setModName(rootItem.name);
@@ -31,11 +32,10 @@ const DragAndDropContainer: React.FC = () => {
         setGameObjectData(finalData);
 
         // Count non-container items
-        const nonContainerItems = finalData.filter(item => !item.isContainer);
-        console.debug("Non-container item count: ", nonContainerItemCount);
+        const nonContainerItems = finalData.filter(item => item.isContainer === false);
         setNonContainerItemCount(nonContainerItems.length);
-        if (nonContainerItemCount > 15) {
-            console.debug("Too many items outside of a container. Showing warning modal.");
+        if (nonContainerItemCount > MAX_NON_CONTAINER_ITEMS) {
+            console.debug(`Too many items outside of a container (${nonContainerItemCount}). Showing warning modal.`);
             setShowWarningModal(true);
         }
 

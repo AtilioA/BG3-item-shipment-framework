@@ -1,0 +1,1 @@
+export const MAX_NON_CONTAINER_ITEMS = 15;

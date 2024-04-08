@@ -1,3 +1,4 @@
+import { MAX_NON_CONTAINER_ITEMS } from '@/config/config';
 import React, { useState } from 'react';
 
 interface WarningModalProps {
@@ -14,7 +15,7 @@ const WarningModal: React.FC<WarningModalProps> = ({ isVisible, onClose }) => {
         <div className="fixed inset-0 z-10 flex items-center justify-center overflow-y-auto bg-gray-900 bg-opacity-75">
             <div className="rounded-lg shadow-lg p-6 max-w-md w-full bg-gray-800">
                 <h2 className="text-2xl font-bold mb-4">Warning</h2>
-                <p>This mod contains more than 20 items outside of a container. This will led to a cluttered mailbox for your users.</p>
+                <p>This mod contains more than {MAX_NON_CONTAINER_ITEMS} items outside of a container. This will led to a cluttered mailbox for your users.</p>
                 <p>Please consider <a
                     className='font-bold text-volition-purple hover:text-volition-purple/80 transition-hover'
                     href="https://www.nexusmods.com/baldursgate3/mods/8418"
