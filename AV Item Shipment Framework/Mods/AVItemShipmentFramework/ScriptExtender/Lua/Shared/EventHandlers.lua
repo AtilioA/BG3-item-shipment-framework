@@ -160,23 +160,27 @@ end
 --- Uninstall ISF, moving all items from mailboxes to camp chests and deleting mailboxes
 function EHandlers.UninstallISF()
     --- Open a message box to inform the player that the uninstallation is complete
-    local function NotifyUninstallComplete()
+    local function notifyUninstallComplete()
         VCHelpers.Timer:OnTime(2000, function()
             ISFPrint(0, Messages.ResolvedMessages.uninstall_completed)
             Osi.OpenMessageBox(Osi.GetHostCharacter(), Messages.ResolvedMessages.uninstall_completed)
         end)
     end
 
+    -- Step 0: Delete Tutorial Chest (not modded, but also not from the user)
+    -- Even if spawning is disabled, because the user might have disabled it after it was created
+    ISMailboxes:RemoveTutorialChestsFromAllMailboxes()
+
     -- Step 1: Move all items from mailboxes to their camp chests (if enabled)
     if EHandlers.moveItems then
         ISMailboxes:MoveItemsFromMailboxesToCampChests()
     end
 
-    -- Step 2: Delete mailboxes
+    -- Step 2: Delete mailboxes (will include ISF items such as the scroll case)
     ISMailboxes:DeleteMailboxes()
 
     -- Step 3: Notify the player that the uninstall is complete
-    NotifyUninstallComplete()
+    notifyUninstallComplete()
 end
 
 return EHandlers

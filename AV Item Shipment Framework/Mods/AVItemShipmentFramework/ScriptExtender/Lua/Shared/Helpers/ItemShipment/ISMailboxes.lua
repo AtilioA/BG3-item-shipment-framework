@@ -203,27 +203,35 @@ end
 ---@return nil
 function ISMailboxes:IntegrateTutorialChest(mailboxUUID)
     ISFDebug(2, "Processing mailbox: " .. mailboxUUID .. " for Tutorial Chest integration.")
-    self:RemoveTutorialChestFromContainer(self.TutChestTemplateUUID, mailboxUUID)
-    self:AddTutorialChestToContainer(self.TutChestTemplateUUID, mailboxUUID)
+    self:RemoveTutorialChestFromContainer(mailboxUUID)
+    self:AddTutorialChestToContainer(mailboxUUID)
 end
 
 --- Remove any Tutorial Chest copies from a container.
----@param tutorialChestUUID string The UUID of the Tutorial Chest template.
 ---@param mailboxUUID string The UUID of the container
 ---@return nil
-function ISMailboxes:RemoveTutorialChestFromContainer(tutorialChestUUID, mailboxUUID)
-    local tutorialChestsInMailbox = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(tutorialChestUUID, mailboxUUID)
+function ISMailboxes:RemoveTutorialChestFromContainer(mailboxUUID)
+    local tutorialChestsInMailbox = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(self.TutChestTemplateUUID,
+        mailboxUUID)
     for _, tutorialChestInMailbox in pairs(tutorialChestsInMailbox) do
         ISFDebug(3, "Removing Tutorial Chest from mailbox: " .. mailboxUUID)
         Osi.RequestDelete(tutorialChestInMailbox.Guid)
     end
 end
 
+--- Remove any Tutorial Chest copies from all mailboxes.
+---@return nil
+function ISMailboxes:RemoveTutorialChestsFromAllMailboxes()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+        self:RemoveTutorialChestFromContainer(mailboxUUID)
+    end
+end
+
 --- Add the Tutorial Chest to a container.
----@param tutorialChestUUID string The UUID of the Tutorial Chest template.
 ---@param mailboxUUID string The UUID of the container
 ---@return nil
-function ISMailboxes:AddTutorialChestToContainer(tutorialChestUUID, mailboxUUID)
+function ISMailboxes:AddTutorialChestToContainer(mailboxUUID)
     ISFDebug(3, "Adding Tutorial Chest to mailbox: " .. mailboxUUID)
-    Osi.TemplateAddTo(tutorialChestUUID, mailboxUUID, 1, 0)
+    Osi.TemplateAddTo(self.TutChestTemplateUUID, mailboxUUID, 1, 0)
 end
