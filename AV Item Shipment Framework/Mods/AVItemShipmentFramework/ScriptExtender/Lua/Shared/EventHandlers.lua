@@ -127,27 +127,30 @@ end
 function EHandlers.OnCastedSpell(caster, spell, spellType, spellElement, storyActionID)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
     ISFDebug(2,
-        "CastedSpell: " ..
-        caster .. " " .. spell .. " " .. spellType .. " " .. spellElement .. " " .. storyActionID)
+        "CastedSpell: " .. caster .. " " .. spell .. " " .. spellType .. " " .. spellElement .. " " .. storyActionID)
+
     if Osi.IsInPartyWith(caster, Osi.GetHostCharacter()) then
         ISFDebug(2, "Party casted ISF spell")
-        if spell == "ISF_Refill_PlayerChest_1" then
-            ISMailboxes:RefillMailbox(1, ISFModVars.Mailboxes[1])
-        end
-        if spell == "ISF_Refill_PlayerChest_2" then
-            ISMailboxes:RefillMailbox(2, ISFModVars.Mailboxes[2])
-        end
-        if spell == "ISF_Refill_PlayerChest_3" then
-            ISMailboxes:RefillMailbox(3, ISFModVars.Mailboxes[3])
-        end
-        if spell == "ISF_Refill_PlayerChest_4" then
-            ISMailboxes:RefillMailbox(4, ISFModVars.Mailboxes[4])
-        end
-        if spell == "ISF_Uninstall" then
-            DustyMessageBox('isf_uninstall_move_items',
-                Messages.ResolvedMessages.uninstall_should_move_out_of_mailboxes)
-        end
+        EHandlers.HandleCastedSpell(spell, ISFModVars)
     end
+end
+
+function EHandlers.HandleCastedSpell(spell, ISFModVars)
+    if spell == "ISF_Refill_PlayerChest_1" then
+        ISMailboxes:RefillMailbox(1, ISFModVars.Mailboxes[1])
+    elseif spell == "ISF_Refill_PlayerChest_2" then
+        ISMailboxes:RefillMailbox(2, ISFModVars.Mailboxes[2])
+    elseif spell == "ISF_Refill_PlayerChest_3" then
+        ISMailboxes:RefillMailbox(3, ISFModVars.Mailboxes[3])
+    elseif spell == "ISF_Refill_PlayerChest_4" then
+        ISMailboxes:RefillMailbox(4, ISFModVars.Mailboxes[4])
+    elseif spell == "ISF_Uninstall" then
+        EHandlers.HandleUninstallSpell()
+    end
+end
+
+function EHandlers.HandleUninstallSpell()
+    DustyMessageBox('isf_uninstall_move_items', Messages.ResolvedMessages.uninstall_should_move_out_of_mailboxes)
 end
 
 --- Uninstall ISF, moving all items from mailboxes to camp chests and deleting mailboxes
