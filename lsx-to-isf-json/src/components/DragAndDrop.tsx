@@ -155,7 +155,7 @@ const DragAndDropContainer: React.FC = () => {
             onDragOver={(event: React.DragEvent<HTMLDivElement>) => event.preventDefault()}
             className={`flex flex-col items-center ${isFolderLoaded ? 'justify-start' : 'justify-center'} h-screen w-full border-2 border-dashed ${getBorderClass()}`}
         >
-            <div className="flex flex-col items-center justify-center h-[100px] w-full">
+            <div className="flex flex-col items-center justify-center h-[100px] w-full my-4">
                 {renderContent()}
             </div>
             {jsonOutput && (
