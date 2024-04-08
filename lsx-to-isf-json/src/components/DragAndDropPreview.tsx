@@ -16,6 +16,13 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
     handleSaveJSON,
     gameObjectData
 }) => {
+    // Split the JSON output into lines and limit it to 500 lines
+    const lines = jsonOutput.split('\n');
+    const truncatedJsonOutput = lines.length > 500
+        ? `${lines.slice(0, 500).join('\n')}\n...\n(JSON output has been truncated.)\n(Please download it and view it full in a text editor.)`
+        : jsonOutput;
+
+
     return (
         <div className="w-full max-w-[50%] mx-4 mt-8 flex flex-col">
             <div className="flex-1 overflow-scroll">
@@ -46,7 +53,7 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
                         style={atomDark} className="p-4 rounded-lg"
                         customStyle={{ cursor: 'pointer', backgroundColor: '#1e1e1e', color: 'white' }}
                     >
-                        {jsonOutput}
+                        {truncatedJsonOutput}
                     </SyntaxHighlighter>
                 </div>
             </div>
