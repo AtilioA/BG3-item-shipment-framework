@@ -3,6 +3,7 @@ import DragAndDropPreview from './DragAndDropPreview';
 import { GameObjectData } from '@/services/parseGameObjects';
 import { constructJSON } from '@/services/xmlToJson';
 import { gatherData, parseLSXFiles, parseTreasureTables, removeItemsFromLSX } from '@/services/parseFolder';
+import WarningModal from './WarningModal';
 
 const DragAndDropContainer: React.FC = () => {
     const [jsonOutput, setJsonOutput] = useState('');
@@ -10,6 +11,8 @@ const DragAndDropContainer: React.FC = () => {
     const [isFolderLoaded, setIsFolderLoaded] = useState(false);
     const [modName, setModName] = useState('Mod');
     const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
+    const [nonContainerItemCount, setNonContainerItemCount] = useState(0);
+    const [showWarningModal, setShowWarningModal] = useState(false);
 
     // Pipeline for processing dropped folder
     const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
@@ -19,6 +22,15 @@ const DragAndDropContainer: React.FC = () => {
         const treasureData = await parseTreasureTables(files);
         const finalData = removeItemsFromLSX(lsxData, treasureData);
         setGameObjectData(finalData);
+
+        // Count non-container items
+        const nonContainerItems = finalData.filter(item => !item.isContainer);
+        console.debug("Non-container item count: ", nonContainerItemCount);
+        setNonContainerItemCount(nonContainerItems.length);
+        if (nonContainerItemCount > 15) {
+            console.debug("Too many items outside of a container. Showing warning modal.");
+            setShowWarningModal(true);
+        }
 
         console.debug("Final data: ", finalData);
         if (finalData.length > 0) {
@@ -161,6 +173,13 @@ const DragAndDropContainer: React.FC = () => {
                     />
                 </>
             )}
+            <WarningModal
+                isVisible={showWarningModal}
+                onClose={() => {
+                    setShowWarningModal(false);
+                    setIsDragging(false);
+                }}
+            />
         </div>
     );
 };
