@@ -129,6 +129,11 @@ function EHandlers.OnReadyCheckPassed(eventId)
     elseif eventId == "isf_uninstall_confirmation" then
         ISFWarn(0, "Uninstalling Item Shipment Framework")
         EHandlers.UninstallISF()
+    elseif eventId == "ReadyCheckContent_GoToNight" then
+        -- ReadyCheck for RequestGatherAtCampSuccess, used by the camp button and bonfire interaction
+        local trigger = "DayEnd"
+        ItemShipmentInstance:SetShipmentTrigger(trigger)
+        ItemShipmentInstance:ProcessShipments(false)
     end
 end
 
