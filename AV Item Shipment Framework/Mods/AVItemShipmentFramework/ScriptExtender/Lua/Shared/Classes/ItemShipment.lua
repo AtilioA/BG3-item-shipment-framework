@@ -124,11 +124,6 @@ end
 ---@param skipChecks boolean Whether to skip the existence check for the item in inventories, etc. before adding it to the destination
 ---@return nil
 function ItemShipment:ProcessShipments(skipChecks)
-    -- Mandatory checks before processing shipments/mailboxes/camp chests
-    if not ISChecks:PassesMandatoryShipmentChecks() then
-        return
-    end
-
     -- Make sure mailboxes are inside chests, if not, move them
     ISMailboxes:MakeSureMailboxesAreInsideChests()
 
@@ -172,10 +167,22 @@ end
 ---@param item table The item being processed
 ---@return boolean True if the item should be shipped, false otherwise
 function ItemShipment:ShouldShipItem(modGUID, item)
+    local passedProgressionChecks = ISChecks:ProgressionShipmentChecks(item)
     local IsTriggerCompatible = self:IsTriggerCompatible(item)
     local itemExists = ISChecks:CheckExistence(modGUID, item)
 
-    return IsTriggerCompatible and not itemExists
+    if not passedProgressionChecks then
+        ISFDebug(2, "Item " .. item.TemplateUUID .. " did not pass progression checks.")
+        return false
+    elseif not IsTriggerCompatible then
+        ISFDebug(2, "Item " .. item.TemplateUUID .. " is not compatible with the current trigger.")
+        return false
+    elseif itemExists then
+        ISFDebug(2, "Item " .. item.TemplateUUID .. " already exists in inventories or camp chests.")
+        return false
+    end
+
+    return true
 end
 
 --- Get the target inventories to receive an item template based on the ISF item's configuration
