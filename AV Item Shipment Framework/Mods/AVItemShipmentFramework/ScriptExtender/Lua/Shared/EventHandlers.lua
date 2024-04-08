@@ -27,14 +27,18 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
         -- Process shipments read from JSON files
         ItemShipmentInstance:ProcessShipments(false)
 
-        ISMailboxes:UpdateHostMailboxTutorialChest()
+        if Config:getCfg().FEATURES.spawning.tutorial_chest then
+            ISMailboxes:UpdateHostMailboxTutorialChest()
+        end
     end)
 end
 
 function EHandlers.OnUserConnected(userID, userName, userProfileID)
-    ISMailboxes:UpdateRemainingMailboxesTutorialChests()
     ISFDebug(1, "User connected: " .. userName .. ", ID: " .. userID .. ", profileID: " .. userProfileID)
-    ISFDebug(1, "Updated remaining mailboxes with Tutorial Chests.")
+    if Config:getCfg().FEATURES.spawning.tutorial_chest then
+        ISMailboxes:UpdateRemainingMailboxesTutorialChests()
+        ISFDebug(1, "Updated remaining mailboxes with Tutorial Chests.")
+    end
 end
 
 function EHandlers.OnUseStarted(character, item)
@@ -78,7 +82,7 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
     ISFDebug(2, "Mailboxes after initialization: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
 
     -- Only integrate tutorial chests if it's the first camp chest. We don't need to preload the others since most users play 'offline'
-    if campChestName == "CONT_PlayerCampChest_A" then
+    if campChestName == "CONT_PlayerCampChest_A" and Config:getCfg().FEATURES.spawning.tutorial_chest then
         ISMailboxes:IntegrateTutorialChest(object2)
     end
 

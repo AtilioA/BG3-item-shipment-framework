@@ -3,15 +3,16 @@ Config = VCHelpers.Config:New({
     configFilePath = "av_item_shipment_framework_config.json",
     defaultConfig = {
         GENERAL = {
-            enabled = true, -- Toggle the mod on/off
+            enabled = true,        -- Toggle the mod on/off
         },
-        FEATURES = {       -- Options that can override values set by mod authors
+        FEATURES = {               -- Options that can override values set by mod authors
             notifications = {
-                enabled = true, -- Set to false to disable all item shipment notifications, regardless of mod author settings
+                enabled = true,    -- Set to false to disable all item shipment notifications, regardless of mod author settings
                 ping_chest = true, -- Set to false to disable the ping on chest upon item shipment
-                vfx = true, -- Set to false to disable the VFX on receiving items in the mailbox
+                vfx = true,        -- Set to false to disable the VFX on receiving items in the mailbox
             },
             spawning = {
+                tutorial_chest = true,         -- Set to false to disable the tutorial chest integration
                 allow_during_tutorial = false, -- Set to true to allow item spawning during the tutorial
             },
         },
