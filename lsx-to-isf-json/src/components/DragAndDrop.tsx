@@ -10,7 +10,6 @@ const DragAndDropContainer: React.FC = () => {
     const [isFolderLoaded, setIsFolderLoaded] = useState(false);
     const [modName, setModName] = useState('Mod');
     const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
-    const [selectedTemplateNames, setSelectedTemplateNames] = useState<string[]>([]);
 
     // Pipeline for processing dropped folder
     const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
@@ -24,12 +23,6 @@ const DragAndDropContainer: React.FC = () => {
         console.debug("Final data: ", finalData);
         if (finalData.length > 0) {
             setIsFolderLoaded(true);
-        }
-
-        // Extract template names from finalData to display in the preview
-        const templateNames = finalData.map(item => item.templateName).filter(name => name !== null) as string[];
-        if (templateNames.length > 0) {
-            setSelectedTemplateNames(templateNames);
         }
 
         // Construct JSON output
@@ -164,7 +157,7 @@ const DragAndDropContainer: React.FC = () => {
                     <DragAndDropPreview
                         jsonOutput={jsonOutput}
                         handleSaveJSON={handleSaveJSON}
-                        templateNames={selectedTemplateNames}
+                        gameObjectData={gameObjectData}
                     />
                 </>
             )}
