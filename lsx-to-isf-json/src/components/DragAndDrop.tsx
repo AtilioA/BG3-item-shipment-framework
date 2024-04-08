@@ -131,11 +131,11 @@ const DragAndDropContainer: React.FC = () => {
 
     const getBorderClass = () => {
         if (isDragging) {
-            return 'border-blue-500';
+            return 'border-2 border-dashed border-blue-500';
         } else if (isFolderLoaded) {
-            return 'border-gray-800';
+            return '';
         } else {
-            return 'border-gray-400';
+            return 'border-2 border-dashed border-gray-400';
         }
     };
 
@@ -146,7 +146,7 @@ const DragAndDropContainer: React.FC = () => {
             onDragLeave={onDragLeave}
             onPaste={onPaste}
             onDragOver={(event: React.DragEvent<HTMLDivElement>) => event.preventDefault()}
-            className={`flex flex-col items-center ${isFolderLoaded ? 'justify-start' : 'justify-center'} h-screen w-full border-2 border-dashed ${getBorderClass()}`}
+            className={`flex flex-col items-center ${isFolderLoaded ? 'justify-start' : 'justify-center'} h-full w-full ${getBorderClass()}`}
         >
             <div className="flex flex-col items-center justify-center h-[100px] w-full my-4">
                 {renderContent()}
