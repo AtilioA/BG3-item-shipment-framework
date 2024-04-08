@@ -3,7 +3,9 @@ The Item Shipment Framework (ISF for short) allows mod authors to directly ship 
 
 When users first load into the game with this mod installed, all four potential camp chests will receive the Item Shipment Framework Mailbox. This mailbox is the main location where mod authors will send their items to users, however, authors can additionally choose to place items directly into the inventory of the host player of the game session.
 
-Users will also find the Item Shipment Framework Utilities scroll case inside the mailbox, which houses various utility scrolls that trigger commands for the framework, as well as an automatically refilling Tutorial Chest. You can see a list of the Utility scrolls and how they function in the images section of this mod page.
+Users will also find the Item Shipment Framework Utilities scroll case inside the mailbox, which houses various utility scrolls that trigger commands for the framework. You can see a list of the Utility scrolls and how they function in the images section of this mod page.
+
+Finally, users will also find an automatically refilling Tutorial Chest. This "Tutorial Chest" will be reset upon saving and loading your game. It serves as legacy mod compatibility, for those mods which have not been updated to support the Item Shipment Framework.
 
 If you'd like to find out how to integrate this framework with your mods, check out the [Aether & Volitio's Item Shipment Framework Wiki](https://github.com/AtilioA/BG3-item-shipment-framework/wiki).
 
