@@ -16,7 +16,10 @@ const DragAndDropContainer: React.FC = () => {
 
     // Pipeline for processing dropped folder
     const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
+        // Clean up previous data
+        setGameObjectData([]);
         setModName(rootItem.name);
+        
         const files = await gatherData(rootItem);
         const lsxData = await parseLSXFiles(files);
         const treasureData = await parseTreasureTables(files);
