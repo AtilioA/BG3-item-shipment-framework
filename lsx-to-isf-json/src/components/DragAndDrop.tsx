@@ -48,7 +48,7 @@ const DragAndDropContainer: React.FC = () => {
             setJsonOutput(JSON.stringify(ISFJSON, null, 2));
         }
         setIsProcessing(false);
-    }, []);
+    }, [nonContainerItemCount]);
 
     const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
