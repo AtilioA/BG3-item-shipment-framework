@@ -147,7 +147,7 @@ const DragAndDropContainer: React.FC = () => {
             );
         } else {
             return (
-                <p className="text-xl text-gray-400">Drag and drop or paste your main mod folder here</p>
+                <p className="text-xl text-gray-400 text-center">Drag and drop or paste your main mod folder here</p>
             );
         }
     };
@@ -171,7 +171,7 @@ const DragAndDropContainer: React.FC = () => {
             onDragOver={(event: React.DragEvent<HTMLDivElement>) => event.preventDefault()}
             className={`flex flex-col items-center ${isFolderLoaded ? 'justify-start' : 'justify-center'} h-full w-full ${getBorderClass()}`}
         >
-            <div className="flex flex-col items-center justify-center h-[100px] w-full my-4">
+            <div className="flex flex-col items-center justify-center h-[100px] w-full px-2 my-4">
                 {renderContent()}
             </div>
             {jsonOutput && (
