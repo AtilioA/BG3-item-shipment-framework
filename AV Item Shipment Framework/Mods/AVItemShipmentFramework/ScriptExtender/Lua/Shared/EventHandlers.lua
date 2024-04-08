@@ -144,12 +144,12 @@ function EHandlers.OnCastedSpell(caster, spell, spellType, spellElement, storyAc
         "CastedSpell: " .. caster .. " " .. spell .. " " .. spellType .. " " .. spellElement .. " " .. storyActionID)
 
     if Osi.IsInPartyWith(caster, Osi.GetHostCharacter()) then
-        ISFDebug(2, "Party casted ISF spell")
         EHandlers.HandleCastedSpell(spell, ISFModVars)
     end
 end
 
 function EHandlers.HandleCastedSpell(spell, ISFModVars)
+    ISFDebug(2, "Party casted ISF spell")
     if spell == "ISF_Refill_PlayerChest_1" then
         ISMailboxes:RefillMailbox(1, ISFModVars.Mailboxes[1])
     elseif spell == "ISF_Refill_PlayerChest_2" then
