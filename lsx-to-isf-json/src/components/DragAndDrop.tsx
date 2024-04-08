@@ -147,7 +147,7 @@ const DragAndDropContainer: React.FC = () => {
             );
         } else {
             return (
-                <p className="text-xl text-gray-400">Drag and drop or paste your mod folder here</p>
+                <p className="text-xl text-gray-400">Drag and drop or paste your main mod folder here</p>
             );
         }
     };

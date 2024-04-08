@@ -26,8 +26,8 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
     return (
         <div className="w-full max-w-[50%] mx-4 mt-8 flex flex-col">
             <div className="flex-1 overflow-scroll">
-                <b className="text-xl mt-4 mb-2">Templates included in the JSON:</b>
-                <ul className="list-disc pl-8 mb-8 max-h-[20vh] overflow-auto">
+                <b className="text-xl mt-4 mb-">Templates included in the JSON for shipping:</b>
+                <ul className="list-disc pl-4 mb-8 mt-2 max-h-[20vh] overflow-auto">
                     {gameObjectData.map((gameObject) => (
                         <li key={gameObject.templateUUID} className="flex justify-between mx-2">
                             <span className="font-bold">{gameObject.templateName}</span>
