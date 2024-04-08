@@ -4,6 +4,7 @@ import { GameObjectData } from '@/services/parseGameObjects';
 import { constructJSON } from '@/services/xmlToJson';
 import { gatherData, parseLSXFiles, parseTreasureTables, removeItemsFromLSX } from '@/services/parseFolder';
 import WarningModal from './WarningModal';
+import LoadingSpinner from './LoadingSpinner';
 
 const DragAndDropContainer: React.FC = () => {
     const [jsonOutput, setJsonOutput] = useState('');
@@ -13,13 +14,16 @@ const DragAndDropContainer: React.FC = () => {
     const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
     const [nonContainerItemCount, setNonContainerItemCount] = useState(0);
     const [showWarningModal, setShowWarningModal] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     // Pipeline for processing dropped folder
     const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
+        setIsProcessing(true);
+        
         // Clean up previous data
         setGameObjectData([]);
         setModName(rootItem.name);
-        
+
         const files = await gatherData(rootItem);
         const lsxData = await parseLSXFiles(files);
         const treasureData = await parseTreasureTables(files);
@@ -38,12 +42,13 @@ const DragAndDropContainer: React.FC = () => {
         console.debug("Final data: ", finalData);
         if (finalData.length > 0) {
             setIsFolderLoaded(true);
-        }
 
-        // Construct JSON output
-        const ISFJSON = constructJSON(finalData);
-        setJsonOutput(JSON.stringify(ISFJSON, null, 2));
-    }, [gatherData]);
+            // Construct JSON output
+            const ISFJSON = constructJSON(finalData);
+            setJsonOutput(JSON.stringify(ISFJSON, null, 2));
+        }
+        setIsProcessing(false);
+    }, []);
 
     const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -126,7 +131,10 @@ const DragAndDropContainer: React.FC = () => {
     };
 
     const renderContent = () => {
-        if (isDragging) {
+        if (isProcessing) {
+            return <LoadingSpinner />;
+        }
+        else if (isDragging) {
             return (
                 <p className="text-2xl text-blue-500 font-bold">Drop to generate the ISF config JSON</p>
             );
