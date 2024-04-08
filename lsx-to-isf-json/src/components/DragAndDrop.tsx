@@ -34,7 +34,7 @@ const DragAndDropContainer: React.FC = () => {
         // Count non-container items
         const nonContainerItems = finalData.filter(item => item.isContainer === false);
         setNonContainerItemCount(nonContainerItems.length);
-        if (nonContainerItemCount > MAX_NON_CONTAINER_ITEMS) {
+        if (nonContainerItems.length > MAX_NON_CONTAINER_ITEMS) {
             console.debug(`Too many items outside of a container (${nonContainerItemCount}). Showing warning modal.`);
             setShowWarningModal(true);
         }
