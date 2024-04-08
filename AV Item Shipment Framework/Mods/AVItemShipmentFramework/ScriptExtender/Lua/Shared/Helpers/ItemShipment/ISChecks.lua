@@ -9,14 +9,19 @@ ISChecks.HasVisitedAct1Flag = "925c721d-686b-4fbe-8c3c-d1233bf863b7" -- "VISITED
 function ISChecks:ProgressionShipmentChecks(item)
     -- TODO: add level check
     local allowDuringTutorial = Config:getCfg().FEATURES.spawning.allow_during_tutorial
-    local shouldShipDuringTutorial = item.Send.Check.Progression.Act == 0
+    local shouldShipDuringTutorial = item.Send.Check.PlayerProgression.Act == 0
     local hasVisitedAct1 = Osi.GetFlag(self.HasVisitedAct1Flag, Osi.GetHostCharacter()) == 1
 
     -- If spawning during tutorial is not allowed, and the item is not set for 'Act 0', and the character has not visited Act 1, shipments cannot be processed.
-    if not allowDuringTutorial then
+    -- TODO: refactor when Act 2 and 3 are added
+    if hasVisitedAct1 then
+        ISFDebug(2, "Character has visited Act 1. Proceeding with shipment checks.")
+        return true
+        -- User config takes precedence over item config
+    elseif not allowDuringTutorial then
         ISFDebug(1, "Spawning during tutorial is not allowed, shipments will not be processed.")
         return false
-    elseif not shouldShipDuringTutorial and not hasVisitedAct1 then
+    elseif not shouldShipDuringTutorial then
         ISFDebug(1,
             "Character has not visited Act 1 and spawning during tutorial is not allowed, shipments will not be processed.")
         return false
