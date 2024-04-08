@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import DragAndDropPreview from './DragAndDropPreview';
-import { GameObjectData, parseRootTemplate } from '@/services/parseGameObjects';
-import { TreasureItem, parseTreasureTableData } from '@/services/parseTreasureTable';
+import { GameObjectData } from '@/services/parseGameObjects';
 import { constructJSON } from '@/services/xmlToJson';
+import { gatherData, parseLSXFiles, parseTreasureTables, removeItemsFromLSX } from '@/services/parseFolder';
 
 const DragAndDropContainer: React.FC = () => {
     const [jsonOutput, setJsonOutput] = useState('');
@@ -11,60 +11,6 @@ const DragAndDropContainer: React.FC = () => {
     const [modName, setModName] = useState('Mod');
     const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
     const [selectedTemplateNames, setSelectedTemplateNames] = useState<string[]>([]);
-
-    // Step 1: Gathering data from the dropped folder
-    const gatherData = useCallback(async (item: FileSystemEntry, path: string = ''): Promise<File[]> => {
-        let files: File[] = [];
-        if (item.isFile) {
-            const fileEntry = item as FileSystemFileEntry;
-            const file: File = await new Promise((resolve) => fileEntry.file(resolve));
-            files.push(file);
-        } else if (item.isDirectory) {
-            const dirReader = (item as FileSystemDirectoryEntry).createReader();
-            let readEntries: FileSystemEntry[] = await new Promise((resolve, reject) => dirReader.readEntries(resolve, reject));
-            for (let entry of readEntries) {
-                const entryFiles = await gatherData(entry, `${path}/${entry.name}`);
-                files = files.concat(entryFiles);
-            }
-        }
-
-        return files;
-    }, []);
-
-    // Step 2: Parsing LSX file(s?) from RootTemplates
-    const parseLSXFiles = async (files: File[]): Promise<GameObjectData[]> => {
-        const lsxFiles = files.filter((file) => file.name.endsWith('.lsx') && file.webkitRelativePath.includes('RootTemplates'));
-        console.debug("LSX files: ", lsxFiles);
-        const parsedData: GameObjectData[] = [];
-        for (let file of lsxFiles) {
-            const text = await file.text();
-            const xmlDoc = new DOMParser().parseFromString(text, 'text/xml');
-            const parsed = parseRootTemplate(xmlDoc);
-            parsedData.push(...parsed);
-        }
-        console.debug("Parsed data: ", parsedData);
-        return parsedData;
-    };
-
-    // Step 3: Parsing Treasure Table file(s?)
-    const parseTreasureTables = async (files: File[]): Promise<TreasureItem[]> => {
-        const treasureFiles = files.filter((file) => file.name.endsWith('TreasureTable.txt') && file.webkitRelativePath.includes('Generated'));
-        console.debug("Treasure files: ", treasureFiles)
-        const treasureData: TreasureItem[] = [];
-        for (let file of treasureFiles) {
-            const text = await file.text();
-            const parsed = parseTreasureTableData(text);
-            treasureData.push(...parsed);
-        }
-
-        console.debug("Treasure data: ", treasureData);
-        return treasureData;
-    };
-
-    // Step 4: Removing items that are already in Treasure Tables
-    const removeItemsFromLSX = (lsxData: GameObjectData[], treasureData: TreasureItem[]): GameObjectData[] => {
-        return lsxData.filter((lsxItem) => !treasureData.some((treasureItem) => treasureItem.templateName === lsxItem.templateName));
-    };
 
     // Pipeline for processing dropped folder
     const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
