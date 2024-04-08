@@ -12,8 +12,8 @@ Config = VCHelpers.Config:New({
                 vfx = true,        -- Set to false to disable the VFX on receiving items in the mailbox
             },
             spawning = {
-                tutorial_chest = true,         -- Set to false to disable the tutorial chest integration
-                allow_during_tutorial = false, -- Set to true to allow item spawning during the tutorial
+                tutorial_chest = true,        -- Set to false to disable the tutorial chest integration
+                allow_during_tutorial = true, -- Set to true to allow item spawning during the tutorial
             },
         },
         DEBUG = {
