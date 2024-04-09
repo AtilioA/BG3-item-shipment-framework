@@ -149,31 +149,41 @@ end
 ---@param mailboxUUID string The UUID of the mailbox
 ---@return nil
 function ISMailboxes:RefillMailboxWithItem(item, mailboxUUID)
-    -- Get all items of the same template in the mailbox
-    local mailboxItems = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(
-        item.TemplateUUID,
-        mailboxUUID, true, false)
+    return self:RefillContainerWithItem(item.TemplateUUID, item.Send.Quantity, mailboxUUID)
+end
 
-    -- Get the total number of items in the mailbox, including different stacks
+-- TODO: move to VC
+--- Refill a container with a certain quantity of an specific item.
+---@param templateUUID string The UUID of the item template
+---@param quantity integer The quantity of items to add
+---@param containerUUID string The UUID of the container
+---@return nil
+function ISMailboxes:RefillContainerWithItem(templateUUID, quantity, containerUUID)
+    -- Get all items of the same template in the container
+    local containerItems = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(
+        templateUUID,
+        containerUUID, true, false)
+
+    -- Get the total number of items in the container, including different stacks
     local totalItemCount = 0
-    for _, itemInfo in ipairs(mailboxItems) do
+    for _, itemInfo in ipairs(containerItems) do
         local exact, total = Osi.GetStackAmount(itemInfo.Guid)
         totalItemCount = totalItemCount + total
     end
 
-    -- Compute the difference between the number of items in the mailbox and the number of items in the ISF JSON
-    local itemsToAdd = item.Send.Quantity - totalItemCount
+    -- Compute the difference between the number of items in the container and the desired quantity
+    local itemsToAdd = quantity - totalItemCount
 
-    -- Add the difference to the mailbox, if any
+    -- Add the difference to the container, if any
     if itemsToAdd > 0 then
-        local itemName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID) or item.TemplateUUID
+        local itemName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateUUID) or templateUUID
         ISFDebug(2,
             "Adding " ..
             itemsToAdd ..
             " copies of item '" ..
             itemName ..
-            "' to mailbox " .. mailboxUUID)
-        Osi.TemplateAddTo(item.TemplateUUID, mailboxUUID, itemsToAdd, 0)
+            "' to container " .. containerUUID)
+        Osi.TemplateAddTo(templateUUID, containerUUID, itemsToAdd, 0)
     end
 end
 
