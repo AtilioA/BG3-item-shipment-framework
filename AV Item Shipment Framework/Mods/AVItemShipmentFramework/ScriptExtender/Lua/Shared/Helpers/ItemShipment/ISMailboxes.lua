@@ -158,9 +158,7 @@ function ISMailboxes:RefillMailboxWithItem(item, mailboxUUID)
 
     -- Add the difference to the mailbox, if any
     if itemsToAdd > 0 then
-        -- ISFDebug(2, Ext.Template.GetTemplate(item.TemplateUUID))
-        local itemName = Ext.Loca.GetTranslatedString(Ext.Template.GetTemplate(item.TemplateUUID).UnknownDisplayName
-            .Handle.Handle) or item.TemplateUUID
+        local itemName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID) or item.TemplateUUID
         ISFDebug(2,
             "Adding " ..
             itemsToAdd ..
