@@ -153,8 +153,16 @@ function ISMailboxes:RefillMailboxWithItem(item, mailboxUUID)
     local mailboxItems = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(
         item.TemplateUUID,
         mailboxUUID, true, false)
-    -- Compute the difference between the number of items in the mailbox and the number of items in the camp chest
-    local itemsToAdd = item.Send.Quantity - (#mailboxItems or 0)
+
+    -- Get the total number of items in the mailbox, including different stacks
+    local totalItemCount = 0
+    for _, itemInfo in ipairs(mailboxItems) do
+        local exact, total = Osi.GetStackAmount(itemInfo.Guid)
+        totalItemCount = totalItemCount + total
+    end
+
+    -- Compute the difference between the number of items in the mailbox and the number of items in the ISF JSON
+    local itemsToAdd = item.Send.Quantity - totalItemCount
 
     -- Add the difference to the mailbox, if any
     if itemsToAdd > 0 then
