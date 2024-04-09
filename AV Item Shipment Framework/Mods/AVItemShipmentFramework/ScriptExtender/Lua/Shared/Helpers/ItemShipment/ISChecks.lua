@@ -73,26 +73,27 @@ function ISChecks:CheckFrameworkExistence(item, modGUID)
     end
 end
 
--- TODO: extract main logic to VC
---- Check if the item already exists in the camp chest
+--- Check if the item already exists in the camp chest, excluding the ISF tutorial chest
 ---@param item table The item being processed
 ---@param chestIndex integer The index of the camp chest
 ---@return boolean True if the item already exists in a camp chest, false otherwise
 function ISChecks:CheckCampChestForItem(item, chestIndex)
-    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
-
     local shouldCheckChest = item.Send.Check.ItemExistence.CampChest["Player" .. chestIndex .. "Chest"]
     if not shouldCheckChest then
         return false
     end
 
     local chestUUID = VCHelpers.Camp:GetAllCampChestUUIDs()[chestIndex]
-    -- This checks recursively and will check the mailbox eventually
-    if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, chestUUID) ~= nil then
-        ISFDebug(1,
-            "Item already exists in the inventory of camp chest " ..
-            chestIndex .. " and will not be shipped.")
-        return true
+    local itemsWithTemplate = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(item.TemplateUUID, chestUUID)
+    for _, itemData in ipairs(itemsWithTemplate) do
+        local holder = VCHelpers.Inventory:GetHolder(itemData.Entity)
+        if holder and holder.ServerItem and holder.ServerItem.Template and holder.ServerItem.Template.Name ~= ISMailboxes.TutChestTemplateName then
+            ISFDebug(1,
+                "Item already exists in the inventory of camp chest " ..
+                chestIndex ..
+                " (inside " .. VCHelpers.Loca:GetDisplayName(holder.Uuid.EntityUuid) .. ") and will not be shipped.")
+            return true
+        end
     end
 
     return false

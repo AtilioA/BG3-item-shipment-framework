@@ -2,6 +2,7 @@
 ISMailboxes = _Class:Create("HelperISMailboxes", Helper)
 
 ISMailboxes.MailboxTemplateUUID = "b99474ea-43f9-4dbb-9917-e0a6daa3b9e3"
+ISMailboxes.TutChestTemplateName = "CONT_ISF_TutorialChest_Container"
 ISMailboxes.TutChestTemplateUUID = "38b65f43-6681-4e78-961b-e6797c7d52bb"
 ISMailboxes.PlayerChestIndexMapping = {
     ["1"] = "Player1Chest",
