@@ -2,6 +2,7 @@
 ISMailboxes = _Class:Create("HelperISMailboxes", Helper)
 
 ISMailboxes.MailboxTemplateUUID = "b99474ea-43f9-4dbb-9917-e0a6daa3b9e3"
+ISMailboxes.UtilitiesCaseUUID = "f6164829-6513-462e-85fd-8b290cc38170"
 ISMailboxes.TutChestTemplateName = "CONT_ISF_TutorialChest_Container"
 ISMailboxes.TutChestTemplateUUID = "38b65f43-6681-4e78-961b-e6797c7d52bb"
 ISMailboxes.PlayerChestIndexMapping = {
@@ -43,6 +44,59 @@ function ISMailboxes:InitializeMailboxes()
             Osi.TemplateAddTo(self.MailboxTemplateUUID, chestUUID, 1)
             Osi.ShowNotification(Osi.GetHostCharacter(), Messages.ResolvedMessages.mailbox_added_to_camp_chest)
             -- NOTE: Assignment to Mailboxes table is done in the OnTemplateAddedTo event handler
+        end
+    end
+
+    -- Check if the utilities case exists, and add it if it doesn't
+    self:InitializeUtilitiesCase()
+end
+
+--- Initialize the utilities case if it doesn't exist
+function ISMailboxes:InitializeUtilitiesCase()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    local utilitiesCaseUUID = self.UtilitiesCaseUUID
+
+    -- Check if the utilities case exists in any of the mailboxes
+    for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+        ISFWarn(0, "Checking if mailbox " .. mailboxUUID .. " has the utilities case.")
+        local utilityCaseInsideMailbox = VCHelpers.Inventory:GetItemTemplateInInventory(utilitiesCaseUUID, mailboxUUID)
+        if utilityCaseInsideMailbox == nil then
+            ISFDebug(2, "Utilities case " .. utilitiesCaseUUID .. " not found in mailbox " .. mailboxUUID)
+            ISFDebug(2, "Adding utilities case " .. utilitiesCaseUUID .. " to mailbox " .. mailboxUUID)
+            Osi.TemplateAddTo(utilitiesCaseUUID, mailboxUUID, 1, 0)
+        end
+    end
+
+    -- Add items to the utilities case
+    self:RefillUtilitiesCase()
+end
+
+--- Refill the utilities case with the scrolls, if missing
+function ISMailboxes:RefillUtilitiesCase()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    local utilitiesCaseUUID = self.UtilitiesCaseUUID
+
+    ISFDebug(1, "Refilling utilities case with items.")
+
+    -- Items that the utilities case is supposed to have
+    local refillMailbox1 = "fa088082-2fc1-4710-8ba3-ff497f5229c3"
+    local refillMailbox2 = "7bf93529-26dc-4c38-9341-97147926147b"
+    local refillMailbox3 = "42b7bffb-0d8d-4a54-9261-6aa130eb5493"
+    local refillMailbox4 = "48608d58-00e0-405c-af2a-cc520519b194"
+    local uninstallScroll = "7348db1f-991e-4347-a334-88d13db7fbbe"
+
+    for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+        ISFDebug(2, "Checking mailbox " .. mailboxUUID .. " for utilities case.")
+        local utilitiesCaseItem = VCHelpers.Inventory:GetItemTemplateInInventory(utilitiesCaseUUID, mailboxUUID)
+        if utilitiesCaseItem then
+            ISFDebug(2, "Refilling utilities case in mailbox " .. mailboxUUID)
+            self:RefillContainerWithItem(refillMailbox1, 1, utilitiesCaseItem.Uuid.EntityUuid)
+            self:RefillContainerWithItem(refillMailbox2, 1, utilitiesCaseItem.Uuid.EntityUuid)
+            self:RefillContainerWithItem(refillMailbox3, 1, utilitiesCaseItem.Uuid.EntityUuid)
+            self:RefillContainerWithItem(refillMailbox4, 1, utilitiesCaseItem.Uuid.EntityUuid)
+            self:RefillContainerWithItem(uninstallScroll, 1, utilitiesCaseItem.Uuid.EntityUuid)
+        else
+            ISFWarn(1, "Utilities case not found in mailbox " .. mailboxUUID)
         end
     end
 end
