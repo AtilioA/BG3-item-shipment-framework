@@ -172,13 +172,19 @@ function ItemShipment:ShouldShipItem(modGUID, item)
     local itemExists = ISChecks:CheckExistence(modGUID, item)
 
     if not passedProgressionChecks then
-        ISFDebug(2, "Item " .. item.TemplateUUID .. " did not pass progression checks.")
+        ISFDebug(2,
+            string.format("Item %s (%s) did not pass progression checks.", item.TemplateUUID,
+                VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID)))
         return false
     elseif not IsTriggerCompatible then
-        ISFDebug(2, "Item " .. item.TemplateUUID .. " is not compatible with the current trigger.")
+        ISFDebug(2,
+            string.format("Item %s (%s) is not compatible with the current trigger.", item.TemplateUUID,
+                VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID)))
         return false
     elseif itemExists then
-        ISFDebug(2, "Item " .. item.TemplateUUID .. " already exists in inventories or camp chests.")
+        ISFDebug(2,
+            string.format("Item %s (%s) has been shipped already or exists in inventories or camp chests.",
+                item.TemplateUUID, VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID)))
         return false
     end
 
@@ -220,7 +226,10 @@ function ItemShipment:AddItemToTargetInventories(item, targetInventories)
 
     for _, targetInventory in ipairs(targetInventories) do
         if targetInventory ~= nil then
-            ISFPrint(0, "Adding item: " .. item.TemplateUUID .. " to inventory: " .. targetInventory)
+            ISFPrint(0,
+                string.format("Adding %d copies of item with UUID: %s (%s) to inventory: %s", quantity, item
+                    .TemplateUUID, VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID),
+                    targetInventory))
             Osi.TemplateAddTo(item.TemplateUUID, targetInventory, quantity, notify)
         else
             ISFPrint(1, "No valid target inventory found for item: " .. item.TemplateUUID)
