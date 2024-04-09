@@ -6,7 +6,7 @@ export interface TreasureItem {
 };
 
 export function isVanillaTreasureTable(treasureTable: string): boolean {
-    return VANILLA_TREASURE_TABLES.includes(treasureTable);
+    return VANILLA_TREASURE_TABLES[treasureTable] == true;
 }
 
 export function parseTreasureTableData(fileContent: string): TreasureItem[] {
