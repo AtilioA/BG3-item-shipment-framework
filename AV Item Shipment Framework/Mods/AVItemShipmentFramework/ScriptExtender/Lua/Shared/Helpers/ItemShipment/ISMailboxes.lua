@@ -48,35 +48,56 @@ function ISMailboxes:InitializeMailboxes()
     end
 
     -- Check if the utilities case exists, and add it if it doesn't
-    self:InitializeUtilitiesCase()
+    self:InitializeUtilitiesCaseForAllMailboxes()
 end
 
---- Initialize the utilities case if it doesn't exist
-function ISMailboxes:InitializeUtilitiesCase()
-    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+--- Initialize the utilities case for a specific mailbox
+function ISMailboxes:InitializeUtilitiesCaseForMailbox(mailboxUUID)
     local utilitiesCaseUUID = self.UtilitiesCaseUUID
+
+    ISFWarn(0, "Checking if mailbox " .. mailboxUUID .. " has the utilities case.")
+    local utilityCaseInsideMailbox = VCHelpers.Inventory:GetItemTemplateInInventory(utilitiesCaseUUID, mailboxUUID)
+    if utilityCaseInsideMailbox == nil then
+        ISFDebug(2, "Utilities case " .. utilitiesCaseUUID .. " not found in mailbox " .. mailboxUUID)
+        ISFDebug(2, "Adding utilities case " .. utilitiesCaseUUID .. " to mailbox " .. mailboxUUID)
+        Osi.TemplateAddTo(utilitiesCaseUUID, mailboxUUID, 1, 0)
+    end
+end
+
+--- Initialize the utilities case for mailboxes if it doesn't exist
+---@return nil
+function ISMailboxes:InitializeUtilitiesCaseForAllMailboxes()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
     -- Check if the utilities case exists in any of the mailboxes
     for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
-        ISFWarn(0, "Checking if mailbox " .. mailboxUUID .. " has the utilities case.")
-        local utilityCaseInsideMailbox = VCHelpers.Inventory:GetItemTemplateInInventory(utilitiesCaseUUID, mailboxUUID)
-        if utilityCaseInsideMailbox == nil then
-            ISFDebug(2, "Utilities case " .. utilitiesCaseUUID .. " not found in mailbox " .. mailboxUUID)
-            ISFDebug(2, "Adding utilities case " .. utilitiesCaseUUID .. " to mailbox " .. mailboxUUID)
-            Osi.TemplateAddTo(utilitiesCaseUUID, mailboxUUID, 1, 0)
-        end
+        self:InitializeUtilitiesCaseForMailbox(mailboxUUID)
     end
 
-    -- Add items to the utilities case
-    self:RefillUtilitiesCase()
+    -- Add items to the utilities cases for all mailboxes
+    self:RefillUtilitiesCaseForAllMailboxes()
 end
 
 --- Refill the utilities case with the scrolls, if missing
-function ISMailboxes:RefillUtilitiesCase()
+---@return nil
+function ISMailboxes:RefillUtilitiesCaseForAllMailboxes()
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
     local utilitiesCaseUUID = self.UtilitiesCaseUUID
 
     ISFDebug(1, "Refilling utilities case with items.")
+
+    for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+        ISFDebug(2, "Checking mailbox " .. mailboxUUID .. " for utilities case.")
+        local utilitiesCaseItem = VCHelpers.Inventory:GetItemTemplateInInventory(utilitiesCaseUUID, mailboxUUID)
+        if utilitiesCaseItem then
+            ISFDebug(2, "Refilling utilities case in mailbox " .. mailboxUUID)
+            self:RefillUtilitiesCaseForMailbox(mailboxUUID)
+        else
+            ISFWarn(1, "Utilities case not found in mailbox " .. mailboxUUID .. ". Adding it.")
+            self:InitializeUtilitiesCaseForMailbox(mailboxUUID)
+        end
+    end
+end
 
 --- Refill the utilities case for a specific mailbox
 ---@param mailboxUUID string The UUID of the mailbox

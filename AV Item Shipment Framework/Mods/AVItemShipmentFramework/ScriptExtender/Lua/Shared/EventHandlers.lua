@@ -91,11 +91,9 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
         ISMailboxes:IntegrateTutorialChest(object2)
     end
 
-    -- if campChestName ~= nil then
-    --     ISFModVars.Mailboxes[campChestName] = object2
-    --     VCHelpers.ModVars:Sync(ModuleUUID)
-    --     ISFDebug(2, "Mailboxes after initialization: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
-    -- end
+    -- Add utilities to the mailbox if it has been added only now
+    ISMailboxes:InitializeUtilitiesCaseForMailbox(object2)
+    ISMailboxes:RefillUtilitiesCaseForMailbox(object2)
 end
 
 --- Used to handle DayEnd for ISF configs
