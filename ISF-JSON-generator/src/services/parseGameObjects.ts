@@ -8,10 +8,20 @@ export interface GameObjectData {
     isContainer: boolean;
 }
 
+export function sortGameObjectData(data: GameObjectData[]): GameObjectData[] {
+    // Sort the data by templateName
+    return data.sort((a, b) => {
+        if (a.templateName && b.templateName) {
+            return a.templateName.localeCompare(b.templateName);
+        }
+        return 0;
+    });
+}
+
 /**
  * Parses a XML document containing Root Template data (.lsx).
  * @param xmlDoc - The XML document (.lsx) to parse.
- * @returns An array of game object data.
+ * @returns An array of game object data, containing the template UUID, template name, and template stats, sorted by template name.
  */
 export function parseRootTemplate(xmlDoc: Document): GameObjectData[] {
     const gameObjectsData: GameObjectData[] = [];
@@ -22,7 +32,7 @@ export function parseRootTemplate(xmlDoc: Document): GameObjectData[] {
             gameObjectsData.push(gameObjectData);
         }
     });
-    return gameObjectsData;
+    return sortGameObjectData(gameObjectsData);
 }
 
 /**
