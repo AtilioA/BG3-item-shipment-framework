@@ -73,7 +73,8 @@ const TemplateList: React.FC<TemplateListProps> = ({
                         className="flex items-center justify-between w-full text-gray-400 hover:text-gray-500 focus:outline-none transition-colors duration-200"
                         onClick={() => setShowFilteredTemplates(!showFilteredTemplates)}
                     >
-                        <span>Filtered out templates ({filteredObjectData.length})</span>
+                        {/* clean up this lol */}
+                        <span>{filteredObjectData.length} templates filtered out ({selectedTemplates.filter(uuid => filteredObjectData.some(obj => obj.templateUUID === uuid)).length} added back)</span>
                         <FontAwesomeIcon icon={showFilteredTemplates ? faChevronUp : faChevronDown} className="text-lg" />
                     </button>
                     {showFilteredTemplates && (
