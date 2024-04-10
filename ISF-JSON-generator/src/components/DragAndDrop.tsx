@@ -8,14 +8,35 @@ import LoadingSpinner from './LoadingSpinner';
 import { MAX_NON_CONTAINER_ITEMS } from '@/config/config';
 
 const DragAndDropContainer: React.FC = () => {
+    // JSON output states
     const [jsonOutput, setJsonOutput] = useState('');
+
+    // Drag and drop states
     const [isDragging, setIsDragging] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    // Folder states
     const [isFolderLoaded, setIsFolderLoaded] = useState(false);
     const [modName, setModName] = useState('Mod');
+
+    // Parsed data states
     const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
     const [nonContainerItemCount, setNonContainerItemCount] = useState(0);
     const [showWarningModal, setShowWarningModal] = useState(false);
-    const [isProcessing, setIsProcessing] = useState(false);
+    const [selectedTemplates, setSelectedTemplates] = useState<string[]>(
+        gameObjectData.map((gameObject) => gameObject.templateUUID || '')
+    );
+
+    // Handle template selection for JSON output; add or remove template UUIDs from the selectedTemplates array based on the checkbox state
+    const handleTemplateSelection = (templateUUID: string, isSelected: boolean) => {
+        setSelectedTemplates((prevSelectedTemplates) => {
+            if (isSelected) {
+                return [...prevSelectedTemplates, templateUUID];
+            } else {
+                return prevSelectedTemplates.filter((uuid) => uuid !== templateUUID);
+            }
+        });
+    };
 
     // Pipeline for processing dropped folder
     const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
@@ -29,6 +50,7 @@ const DragAndDropContainer: React.FC = () => {
         const lsxData = await parseLSXFiles(files);
         const treasureData = await parseTreasureTables(files);
         const finalData = removeItemsFromLSX(lsxData, treasureData);
+        setSelectedTemplates(finalData.map((gameObject) => gameObject.templateUUID || ''));
         setGameObjectData(finalData);
 
         // Count non-container items
@@ -40,15 +62,20 @@ const DragAndDropContainer: React.FC = () => {
         }
 
         console.debug("Final data: ", finalData);
-        if (finalData.length > 0) {
+        setIsProcessing(false);
+    }, [nonContainerItemCount]);
+
+    useEffect(() => {
+        if (gameObjectData.length > 0) {
             setIsFolderLoaded(true);
 
             // Construct JSON output
-            const ISFJSON = constructJSON(finalData);
+            console.debug(`Constructing JSON with ${selectedTemplates.length} selected templates.`)
+            const filterSelectedTemplates: GameObjectData[] = gameObjectData.filter((data) => selectedTemplates.includes(data.templateUUID || ''))
+            const ISFJSON = constructJSON(filterSelectedTemplates);
             setJsonOutput(JSON.stringify(ISFJSON, null, 2));
         }
-        setIsProcessing(false);
-    }, [nonContainerItemCount]);
+    }, [gameObjectData, selectedTemplates]);
 
     // For some reason, React.DragEvent<HTMLDivElement> will 'break' this
     const onDrop = useCallback((event: any) => {
@@ -185,6 +212,8 @@ const DragAndDropContainer: React.FC = () => {
                         jsonOutput={jsonOutput}
                         handleSaveJSON={handleSaveJSON}
                         gameObjectData={gameObjectData}
+                        handleTemplateSelection={handleTemplateSelection}
+                        selectedTemplates={selectedTemplates}
                     />
                 </>
             )}

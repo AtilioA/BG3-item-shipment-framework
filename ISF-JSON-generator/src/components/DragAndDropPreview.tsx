@@ -9,12 +9,16 @@ interface DragAndDropPreviewProps {
     jsonOutput: string;
     handleSaveJSON: () => void;
     gameObjectData: GameObjectData[];
+    handleTemplateSelection: (templateUUID: string, isSelected: boolean) => void;
+    selectedTemplates: string[];
 }
 
 const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
     jsonOutput,
     handleSaveJSON,
-    gameObjectData
+    gameObjectData,
+    handleTemplateSelection,
+    selectedTemplates,
 }) => {
     // Split the JSON output into lines and limit it to 500 lines
     const lines = jsonOutput.split('\n');
@@ -22,16 +26,23 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
         ? `${lines.slice(0, 500).join('\n')}\n...\n(JSON output has been truncated.)\n(Please download it and view it full in a text editor.)`
         : jsonOutput;
 
-
     return (
         <div className="w-full max-w-[50%] mx-4 mt-8 flex flex-col">
             <div className="flex-1 overflow-auto">
                 <b className="text-xl mt-4 mb-">Templates included in the JSON for shipping:</b>
                 <ul className="list-disc pl-4 mb-8 mt-2 max-h-[20vh] overflow-auto">
                     {gameObjectData.map((gameObject) => (
-                        <li key={gameObject.templateUUID} className="flex justify-between mx-2">
-                            <span className="font-bold">{gameObject.templateName}</span>
-                            <span className="text-right">({gameObject.templateUUID})</span>
+                        <li key={gameObject.templateUUID} className="flex items-center justify-between mx-2">
+                            <div className="flex items-center cursor-pointer" onClick={() => handleTemplateSelection(gameObject.templateUUID || '', !selectedTemplates.includes(gameObject.templateUUID || ''))}>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedTemplates.includes(gameObject.templateUUID || '')}
+                                    readOnly
+                                    className="mr-2 cursor-pointer"
+                                />
+                                <span className="font-bold">{gameObject.templateName}</span>
+                            </div>
+                            <span className="text-right cursor-pointer" onClick={() => handleTemplateSelection(gameObject.templateUUID || '', !selectedTemplates.includes(gameObject.templateUUID || ''))}>({gameObject.templateUUID})</span>
                         </li>
                     ))}
                 </ul>
