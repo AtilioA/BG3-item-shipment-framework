@@ -50,20 +50,24 @@ const DragAndDropContainer: React.FC = () => {
         setIsProcessing(false);
     }, [nonContainerItemCount]);
 
-    const onDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    // For some reason, React.DragEvent<HTMLDivElement> will 'break' this
+    const onDrop = useCallback((event: any) => {
         event.preventDefault();
-        const items: DataTransferItemList = event.dataTransfer.items;
+        if (event.dataTransfer === null) {
+            console.error('Data transfer is null');
+            return;
+        }
+
+        const items = event.dataTransfer.items;
 
         for (let i = 0; i < items.length; i++) {
-            const item: DataTransferItem = items[i];
-            const entry: FileSystemEntry | null = item.webkitGetAsEntry();
+            const entry = items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry() : items[i].getAsEntry();
+
             if (entry) {
                 executePipeline(entry);
             }
         }
-
         setIsDragging(false);
-        event.preventDefault();
     }, [executePipeline]);
 
     const onDragEnter = useCallback((event: React.DragEvent<HTMLDivElement>) => {
