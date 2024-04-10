@@ -26,7 +26,7 @@ export function parseTreasureTableData(fileContent: string): ParsedTreasureTable
             continue;
         }
 
-        if (!line.startsWith('object category')) {
+        if (!line.startsWith('object category') || isVanillaTreasureTable(currentTreasureTable)) {
             continue;
         }
 
