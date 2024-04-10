@@ -10,12 +10,10 @@ interface FileAndPath {
 export async function gatherData(item: FileSystemEntry, path: string = ''): Promise<FileAndPath[]> {
     let files: { file: File, path: string }[] = [];
     await processEntry(item, path, files);
-    console.info(files)
     return files;
 };
 
 async function processEntry(entry: FileSystemEntry, path: string, files: { file: File, path: string }[]) {
-    console.log(entry, path)
     if (entry.isFile) {
         const fileEntry = entry as FileSystemFileEntry;
         const file: File = await new Promise((resolve) => fileEntry.file(resolve));
@@ -61,5 +59,5 @@ export async function parseTreasureTables(files: FileAndPath[]): Promise<Treasur
 
 // Step 4: Removing items that are already in Treasure Tables
 export function removeItemsFromLSX(lsxData: GameObjectData[], treasureData: TreasureItem[]): GameObjectData[] {
-    return lsxData.filter((lsxItem) => !treasureData.some((treasureItem) => treasureItem.templateName === lsxItem.templateName));
+    return lsxData.filter((lsxItem) => !treasureData.some((treasureItem) => treasureItem.templateName === lsxItem.templateName || treasureItem.templateName === lsxItem.templateStats));
 };
