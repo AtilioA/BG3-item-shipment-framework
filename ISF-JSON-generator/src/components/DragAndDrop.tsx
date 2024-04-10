@@ -69,7 +69,7 @@ const DragAndDropContainer: React.FC = () => {
     }, [nonContainerItemCount]);
 
     useEffect(() => {
-        if (gameObjectData.length > 0) {
+        if (gameObjectData.length > 0 || filteredObjectData.length > 0) {
             setIsFolderLoaded(true);
 
             // Construct JSON output
@@ -78,7 +78,7 @@ const DragAndDropContainer: React.FC = () => {
             const ISFJSON = constructJSON(filterSelectedTemplates);
             setJsonOutput(JSON.stringify(ISFJSON, null, 2));
         }
-    }, [gameObjectData, selectedTemplates]);
+    }, [gameObjectData, filteredObjectData, selectedTemplates]);
 
     // For some reason, React.DragEvent<HTMLDivElement> will 'break' this
     const onDrop = useCallback((event: any) => {
