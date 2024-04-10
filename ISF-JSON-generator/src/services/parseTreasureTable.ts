@@ -14,21 +14,25 @@ export function parseTreasureTableData(fileContent: string): TreasureItem[] {
     const treasureItems: TreasureItem[] = [];
     let currentTreasureTable = '';
 
-    lines.forEach(line => {
-        // Check if the line denotes a new treasure table
+    for (const line of lines) {
         if (line.startsWith('new treasuretable')) {
-            currentTreasureTable = line.split('"')[1]; // Extract the treasure table name
-        } else if (line.startsWith('object category') && !isVanillaTreasureTable(currentTreasureTable)) {
-            // Extract the first string after 'object category', ignoring 'TUT_Chest_Potions' table
-            // console.log(currentTreasureTable)
-            const parts = line.split('"');
-            if (parts.length >= 2) {
-                const treasureName = parts[1];
-                const templateName = treasureName.startsWith('I_') ? treasureName.substring(2) : treasureName;
-                treasureItems.push({ treasureName, templateName });
-            }
+            currentTreasureTable = line.split('"')[1];
+            continue;
         }
-    });
+
+        if (!line.startsWith('object category') || isVanillaTreasureTable(currentTreasureTable)) {
+            continue;
+        }
+
+        const parts = line.split('"');
+        if (parts.length < 2) {
+            continue;
+        }
+
+        const treasureName = parts[1];
+        const templateName = treasureName.startsWith('I_') ? treasureName.substring(2) : treasureName;
+        treasureItems.push({ treasureName, templateName });
+    }
 
     return treasureItems;
 }
