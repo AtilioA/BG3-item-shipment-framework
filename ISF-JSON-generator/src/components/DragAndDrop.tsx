@@ -74,7 +74,7 @@ const DragAndDropContainer: React.FC = () => {
 
             // Construct JSON output
             console.debug(`Constructing JSON with ${selectedTemplates.length} selected templates.`)
-            const filterSelectedTemplates: GameObjectData[] = gameObjectData.filter((data) => selectedTemplates.includes(data.templateUUID || ''))
+            const filterSelectedTemplates: GameObjectData[] = [...gameObjectData, ...filteredObjectData].filter((data) => selectedTemplates.includes(data.templateUUID || ''))
             const ISFJSON = constructJSON(filterSelectedTemplates);
             setJsonOutput(JSON.stringify(ISFJSON, null, 2));
         }
