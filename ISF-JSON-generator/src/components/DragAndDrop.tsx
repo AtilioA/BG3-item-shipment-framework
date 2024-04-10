@@ -21,6 +21,7 @@ const DragAndDropContainer: React.FC = () => {
 
     // Parsed data states
     const [gameObjectData, setGameObjectData] = useState<GameObjectData[]>([]);
+    const [filteredObjectData, setFilteredObjectData] = useState<GameObjectData[]>([]);
     const [nonContainerItemCount, setNonContainerItemCount] = useState(0);
     const [showWarningModal, setShowWarningModal] = useState(false);
     const [selectedTemplates, setSelectedTemplates] = useState<string[]>(
@@ -49,19 +50,21 @@ const DragAndDropContainer: React.FC = () => {
         const files = await gatherData(rootItem);
         const lsxData = await parseLSXFiles(files);
         const treasureData = await parseTreasureTables(files);
-        const finalData = removeItemsFromLSX(lsxData, treasureData);
-        setSelectedTemplates(finalData.map((gameObject) => gameObject.templateUUID || ''));
-        setGameObjectData(finalData);
+        const filteredData = removeItemsFromLSX(lsxData, treasureData);
+        const validData = filteredData.validItems;
+        setSelectedTemplates(validData.map((gameObject) => gameObject.templateUUID || ''));
+        setGameObjectData(validData);
+
+        setFilteredObjectData(filteredData.filteredItems);
 
         // Count non-container items
-        const nonContainerItems = finalData.filter(item => item.isContainer === false);
+        const nonContainerItems = validData.filter(item => item.isContainer === false);
         setNonContainerItemCount(nonContainerItems.length);
         if (nonContainerItems.length > MAX_NON_CONTAINER_ITEMS) {
             console.debug(`Too many items outside of a container (${nonContainerItemCount}). Showing warning modal.`);
             setShowWarningModal(true);
         }
 
-        console.debug("Final data: ", finalData);
         setIsProcessing(false);
     }, [nonContainerItemCount]);
 
@@ -212,6 +215,7 @@ const DragAndDropContainer: React.FC = () => {
                         jsonOutput={jsonOutput}
                         handleSaveJSON={handleSaveJSON}
                         gameObjectData={gameObjectData}
+                        filteredObjectData={filteredObjectData}
                         handleTemplateSelection={handleTemplateSelection}
                         selectedTemplates={selectedTemplates}
                     />

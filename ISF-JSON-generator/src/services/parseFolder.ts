@@ -1,9 +1,14 @@
 import { GameObjectData, parseRootTemplate } from "./parseGameObjects";
-import { TreasureItem, parseTreasureTableData } from "./parseTreasureTable";
+import { ParsedTreasureTableData, TreasureItem, parseTreasureTableData } from "./parseTreasureTable";
 
 interface FileAndPath {
     file: File;
     path: string;
+}
+
+export interface FilteredLSXData {
+    validItems: GameObjectData[];
+    filteredItems: GameObjectData[];
 }
 
 // Step 1: Gathering data from the dropped folder
@@ -43,21 +48,35 @@ export async function parseLSXFiles(files: FileAndPath[]): Promise<GameObjectDat
 };
 
 // Step 3: Parsing Treasure Table file(s?)
-export async function parseTreasureTables(files: FileAndPath[]): Promise<TreasureItem[]> {
+export async function parseTreasureTables(files: FileAndPath[]): Promise<ParsedTreasureTableData[]> {
     const treasureFiles = files.filter((file) => file.file.name.endsWith('TreasureTable.txt') && file.path.includes('Generated'));
     console.debug("Treasure files: ", treasureFiles)
-    const treasureData: TreasureItem[] = [];
+    const treasureData: ParsedTreasureTableData[] = [];
     for (let file of treasureFiles) {
         const text = await file.file.text();
         const parsed = parseTreasureTableData(text);
-        treasureData.push(...parsed);
+        treasureData.push(parsed);
     }
 
     console.debug("Treasure data: ", treasureData);
     return treasureData;
 };
 
+
 // Step 4: Removing items that are already in Treasure Tables
-export function removeItemsFromLSX(lsxData: GameObjectData[], treasureData: TreasureItem[]): GameObjectData[] {
-    return lsxData.filter((lsxItem) => !treasureData.some((treasureItem) => treasureItem.templateName === lsxItem.templateName || treasureItem.templateName === lsxItem.templateStats));
-};
+export function removeItemsFromLSX(lsxData: GameObjectData[], treasureData: ParsedTreasureTableData[]): FilteredLSXData {
+    const validItems: GameObjectData[] = [];
+    const filteredItems: GameObjectData[] = [];
+
+    const allTreasureItems = treasureData.flatMap(data => [...data.validTreasureItems, ...data.filteredTreasureItems]);
+
+    for (const lsxItem of lsxData) {
+        if (allTreasureItems.some((treasureItem) => treasureItem.templateName === lsxItem.templateName || treasureItem.templateName === lsxItem.templateStats)) {
+            filteredItems.push(lsxItem);
+        } else {
+            validItems.push(lsxItem);
+        }
+    }
+
+    return { validItems, filteredItems };
+}

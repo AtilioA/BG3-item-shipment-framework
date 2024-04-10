@@ -8,6 +8,7 @@ interface DragAndDropPreviewProps {
     jsonOutput: string;
     handleSaveJSON: () => void;
     gameObjectData: GameObjectData[];
+    filteredObjectData: GameObjectData[];
     handleTemplateSelection: (templateUUID: string, isSelected: boolean) => void;
     selectedTemplates: string[];
 }
@@ -16,6 +17,7 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
     jsonOutput,
     handleSaveJSON,
     gameObjectData,
+    filteredObjectData,
     handleTemplateSelection,
     selectedTemplates,
 }) => {
@@ -29,6 +31,7 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
         <div className="w-full max-w-[50%] mx-4 mt-8 flex flex-col">
             <TemplateList
                 gameObjectData={gameObjectData}
+                filteredObjectData={filteredObjectData}
                 selectedTemplates={selectedTemplates}
                 handleTemplateSelection={handleTemplateSelection}
                 handleSaveJSON={handleSaveJSON}
