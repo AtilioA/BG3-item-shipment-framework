@@ -46,7 +46,7 @@ const TemplateList: React.FC<TemplateListProps> = ({
             <b className="text-xl mt-4 mb-">Templates parsed from the JSON for shipping:</b>
             <ul className="list-disc pl-4 mb-4 mt-2 max-h-[20vh] overflow-auto select-none">
                 {gameObjectData.map((gameObject) => (
-                    <li key={gameObject.templateUUID} className="flex items-center justify-between mx-2 select-none">
+                    <li key={gameObject.templateUUID} className="flex items-center justify-between mx-2 select-none hover:bg-gray-800">
                         <Checkbox
                             checked={selectedTemplates.includes(gameObject.templateUUID || '')}
                             onClick={() => handleTemplateSelection(gameObject.templateUUID || '', !selectedTemplates.includes(gameObject.templateUUID || ''))}
@@ -54,7 +54,7 @@ const TemplateList: React.FC<TemplateListProps> = ({
                             {gameObject.templateName}
                         </Checkbox>
                         <div className="flex items-center">
-                            <span className="text-right cursor-pointer select-none" onClick={() => handleTemplateSelection(gameObject.templateUUID || '', !selectedTemplates.includes(gameObject.templateUUID || ''))}>({gameObject.templateUUID})</span>
+                            <span className="text-right cursor-pointer select-none " onClick={() => handleTemplateSelection(gameObject.templateUUID || '', !selectedTemplates.includes(gameObject.templateUUID || ''))}>({gameObject.templateUUID})</span>
                             <button
                                 onClick={() => handleCopyUUID(gameObject.templateUUID || '')}
                                 className={`ml-2 text-gray-400 hover:text-gray-500 focus:outline-none transition-colors duration-200 ${copiedUUID === gameObject.templateUUID ? 'text-green-500' : ''}`}

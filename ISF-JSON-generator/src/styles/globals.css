@@ -32,6 +32,14 @@ body {
     .transition-hover {
         @apply transition-colors duration-200 ease-in-out;
     }
+
+    .animation-press {
+        @apply scale-95 transition-transform duration-100
+    }
+
+    .animation-press-text {
+        @apply scale-[0.98] transition-transform duration-75
+    }
 }
 
 /* Styling for webkit scrollbar */
