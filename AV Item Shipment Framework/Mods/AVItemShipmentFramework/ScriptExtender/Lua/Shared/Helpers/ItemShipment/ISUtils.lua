@@ -114,7 +114,7 @@ function ISUtils:HandleNotifications(chestUUID, modName)
     end
 
     -- Notify player that they have new items in their mailbox
-    Messages.UpdateLocalizedMessage(Messages.Handles.mod_shipped_item_to_mailbox, modName)
+    VCHelpers.Loca:UpdateLocalizedMessage(Messages.Handles.mod_shipped_item_to_mailbox, modName)
     Osi.ShowNotification(Osi.GetHostCharacter(),
         Ext.Loca.GetTranslatedString(Messages.Handles.mod_shipped_item_to_mailbox))
     -- VCHelpers.Timer:OnTime(2500, function()
@@ -123,18 +123,6 @@ function ISUtils:HandleNotifications(chestUUID, modName)
     -- end)
 
     if config.FEATURES.notifications.ping_chest then
-        self:PingChest(chestUUID)
-    end
-end
-
--- TODO: move to VC
---- Ping a chest (actually, any object) and play an effect on it
----@param chestUUID GUIDSTRING The UUID of the chest
----@return nil
-function ISUtils:PingChest(chestUUID)
-    local chestPositionX, chestPositionY, chestPositionZ = Osi.GetPosition(chestUUID)
-    if chestPositionX and chestPositionY and chestPositionZ then
-        Osi.RequestPing(chestPositionX, chestPositionY, chestPositionZ, chestUUID, Osi.GetHostCharacter())
-        -- Osi.PlayEffect(chestUUID, "00630e26-964d-c3e1-fcce-7f267c75e606")
+        VCHelpers.Object:PingObject(chestUUID)
     end
 end

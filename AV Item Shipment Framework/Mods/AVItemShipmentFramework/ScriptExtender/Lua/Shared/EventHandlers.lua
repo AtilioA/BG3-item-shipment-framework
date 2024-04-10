@@ -62,20 +62,25 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
     ISFDebug(2,
         "Entering OnTemplateAddedTo, objectTemplate: " ..
         objectTemplate .. ", object2: " .. object2 .. ", inventoryHolder: " .. inventoryHolder)
+
+    -- Ensure the Mailboxes table is initialized
     ISFModVars.Mailboxes = ISFModVars.Mailboxes or {}
     VCHelpers.ModVars:Sync(ModuleUUID)
 
+    -- Get the camp chest name
     local campChestName = VCHelpers.Format:GetTemplateName(inventoryHolder)
     if campChestName == nil then
         return
     end
 
-    -- TODO: clean up this godawful mess
+    -- Get the camp chest index
     local campChestIndex = VCHelpers.Camp:GetIndexFromCampChestName(campChestName)
     if campChestIndex == nil then
         ISFWarn(1, "Unexpected camp chest name: " .. campChestName)
         return
     end
+
+    -- Store the mailbox UUID in the Mailboxes table
     ISFModVars.Mailboxes[campChestIndex] = object2
     VCHelpers.ModVars:Sync(ModuleUUID)
 
@@ -124,7 +129,7 @@ function EHandlers.OnReadyCheckPassed(eventId)
 
     if eventId == "isf_uninstall_move_items" then
         EHandlers.moveItems = true
-        DustyMessageBox('isf_uninstall_confirmation',
+        VCHelpers.MessageBox:DustyMessageBox('isf_uninstall_confirmation',
             Messages.ResolvedMessages.uninstall_confirmation_prompt)
     elseif eventId == "isf_uninstall_confirmation" then
         ISFWarn(0, "Uninstalling Item Shipment Framework")
@@ -164,7 +169,8 @@ function EHandlers.HandleCastedSpell(spell, ISFModVars)
 end
 
 function EHandlers.HandleUninstallSpell()
-    DustyMessageBox('isf_uninstall_move_items', Messages.ResolvedMessages.uninstall_should_move_out_of_mailboxes)
+    VCHelpers.MessageBox:DustyMessageBox('isf_uninstall_move_items',
+        Messages.ResolvedMessages.uninstall_should_move_out_of_mailboxes)
 end
 
 --- Uninstall ISF, moving all items from mailboxes to camp chests and deleting mailboxes

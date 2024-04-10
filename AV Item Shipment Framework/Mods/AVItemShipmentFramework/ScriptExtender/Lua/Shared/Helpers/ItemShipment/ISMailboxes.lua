@@ -78,6 +78,10 @@ function ISMailboxes:RefillUtilitiesCase()
 
     ISFDebug(1, "Refilling utilities case with items.")
 
+--- Refill the utilities case for a specific mailbox
+---@param mailboxUUID string The UUID of the mailbox
+---@return nil
+function ISMailboxes:RefillUtilitiesCaseForMailbox(mailboxUUID)
     -- Items that the utilities case is supposed to have
     local refillMailbox1 = "fa088082-2fc1-4710-8ba3-ff497f5229c3"
     local refillMailbox2 = "7bf93529-26dc-4c38-9341-97147926147b"
@@ -85,19 +89,13 @@ function ISMailboxes:RefillUtilitiesCase()
     local refillMailbox4 = "48608d58-00e0-405c-af2a-cc520519b194"
     local uninstallScroll = "7348db1f-991e-4347-a334-88d13db7fbbe"
 
-    for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
-        ISFDebug(2, "Checking mailbox " .. mailboxUUID .. " for utilities case.")
-        local utilitiesCaseItem = VCHelpers.Inventory:GetItemTemplateInInventory(utilitiesCaseUUID, mailboxUUID)
-        if utilitiesCaseItem then
-            ISFDebug(2, "Refilling utilities case in mailbox " .. mailboxUUID)
-            self:RefillContainerWithItem(refillMailbox1, 1, utilitiesCaseItem.Uuid.EntityUuid)
-            self:RefillContainerWithItem(refillMailbox2, 1, utilitiesCaseItem.Uuid.EntityUuid)
-            self:RefillContainerWithItem(refillMailbox3, 1, utilitiesCaseItem.Uuid.EntityUuid)
-            self:RefillContainerWithItem(refillMailbox4, 1, utilitiesCaseItem.Uuid.EntityUuid)
-            self:RefillContainerWithItem(uninstallScroll, 1, utilitiesCaseItem.Uuid.EntityUuid)
-        else
-            ISFWarn(1, "Utilities case not found in mailbox " .. mailboxUUID)
-        end
+    local utilitiesCaseItem = VCHelpers.Inventory:GetItemTemplateInInventory(self.UtilitiesCaseUUID, mailboxUUID)
+    if utilitiesCaseItem then
+        VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox1, 1, utilitiesCaseItem.Uuid.EntityUuid)
+        VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox2, 1, utilitiesCaseItem.Uuid.EntityUuid)
+        VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox3, 1, utilitiesCaseItem.Uuid.EntityUuid)
+        VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox4, 1, utilitiesCaseItem.Uuid.EntityUuid)
+        VCHelpers.Inventory:RefillInventoryWithItem(uninstallScroll, 1, utilitiesCaseItem.Uuid.EntityUuid)
     end
 end
 
@@ -203,42 +201,7 @@ end
 ---@param mailboxUUID string The UUID of the mailbox
 ---@return nil
 function ISMailboxes:RefillMailboxWithItem(item, mailboxUUID)
-    return self:RefillContainerWithItem(item.TemplateUUID, item.Send.Quantity, mailboxUUID)
-end
-
--- TODO: move to VC
---- Refill a container with a certain quantity of an specific item.
----@param templateUUID string The UUID of the item template
----@param quantity integer The quantity of items to add
----@param containerUUID string The UUID of the container
----@return nil
-function ISMailboxes:RefillContainerWithItem(templateUUID, quantity, containerUUID)
-    -- Get all items of the same template in the container
-    local containerItems = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(
-        templateUUID,
-        containerUUID, true, false)
-
-    -- Get the total number of items in the container, including different stacks
-    local totalItemCount = 0
-    for _, itemInfo in ipairs(containerItems) do
-        local exact, total = Osi.GetStackAmount(itemInfo.Guid)
-        totalItemCount = totalItemCount + total
-    end
-
-    -- Compute the difference between the number of items in the container and the desired quantity
-    local itemsToAdd = quantity - totalItemCount
-
-    -- Add the difference to the container, if any
-    if itemsToAdd > 0 then
-        local itemName = VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(templateUUID) or templateUUID
-        ISFDebug(2,
-            "Adding " ..
-            itemsToAdd ..
-            " copies of item '" ..
-            itemName ..
-            "' to container " .. containerUUID)
-        Osi.TemplateAddTo(templateUUID, containerUUID, itemsToAdd, 0)
-    end
+    return VCHelpers.Inventory:RefillInventoryWithItem(item.TemplateUUID, item.Send.Quantity, mailboxUUID)
 end
 
 --- Update the host's mailbox with a new Tutorial Chest instance
