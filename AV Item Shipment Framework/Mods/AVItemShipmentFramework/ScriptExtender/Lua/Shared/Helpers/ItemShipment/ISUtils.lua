@@ -126,3 +126,21 @@ function ISUtils:HandleNotifications(chestUUID, modName)
         VCHelpers.Object:PingObject(chestUUID)
     end
 end
+
+--- Get the inventory for the given UUID and remove all items that have ISF_ in their template name
+---@param uuid GUIDSTRING The UUID of the inventory to remove items from
+---@return nil
+function ISUtils:DeleteAllISFItemsFromInventory(uuid)
+    local inventory = VCHelpers.Inventory:GetInventory(uuid, false, false)
+    if not inventory then
+        return
+    end
+
+    for _, item in pairs(inventory) do
+        if string.find(item.TemplateName, "ISF_") then
+            ISFDebug(0, "Removing item %s (%s) from inventory %s (%s)", item.TemplateName, item.Name, uuid,
+                VCHelpers.Loca:GetDisplayName(uuid))
+            Osi.RequestDelete(item.Guid)
+        end
+    end
+end

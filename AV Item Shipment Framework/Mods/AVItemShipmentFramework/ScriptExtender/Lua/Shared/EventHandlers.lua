@@ -181,19 +181,22 @@ function EHandlers.UninstallISF()
         end)
     end
 
-    -- Step 0: Delete Tutorial Chest (not modded, but also not from the user)
+    -- Delete Tutorial Chest (not modded, but also not from the user)
     -- Even if spawning is disabled, because the user might have disabled it after it was created
     ISMailboxes:RemoveTutorialChestsFromAllMailboxes()
 
-    -- Step 1: Move all items from mailboxes to their camp chests (if enabled)
+    -- Move all items from mailboxes to their camp chests (if enabled)
     if EHandlers.moveItems then
         ISMailboxes:MoveItemsFromMailboxesToCampChests()
     end
 
-    -- Step 2: Delete mailboxes (will include ISF items such as the scroll case)
+    -- Delete mailboxes (will include ISF items such as the scroll case)
     ISMailboxes:DeleteMailboxes()
 
-    -- Step 3: Notify the player that the uninstall is complete
+    -- Delete all items with ISF in their template name from all camp chests and party members
+    ItemShipmentInstance:DeleteAllISFItems()
+
+    -- Notify the player that the uninstall is complete
     notifyUninstallComplete()
 end
 

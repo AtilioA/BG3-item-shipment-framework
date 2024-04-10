@@ -258,3 +258,20 @@ function ItemShipment:ShipItem(modGUID, item)
     ISFModVars.Shipments[modGUID][item.TemplateUUID] = ISFModVars.Shipments[modGUID][item.TemplateUUID]
     VCHelpers.ModVars:Sync(ModuleUUID)
 end
+
+--- Iterate all camp chests and party members inventories to delete all items that are from ISF. These items have ISF_ in their template name.
+---@return nil
+function ItemShipment:DeleteAllISFItems()
+    for chestIndex = 1, 4 do
+        local mailboxUUID = ISMailboxes:GetPlayerMailbox(chestIndex)
+        if mailboxUUID then
+            ISFDebug(0, "Deleting all ISF items from mailbox: " .. mailboxUUID)
+            ISUtils:DeleteAllISFItemsFromInventory(mailboxUUID)
+        end
+    end
+
+    for _, character in pairs(VCHelpers.Party:GetAllPartyMembers()) do
+        ISFDebug(0, "Deleting all ISF items from character: " .. character)
+        ISUtils:DeleteAllISFItemsFromInventory(character)
+    end
+end
