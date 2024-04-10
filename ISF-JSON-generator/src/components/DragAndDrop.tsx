@@ -154,7 +154,7 @@ const DragAndDropContainer: React.FC = () => {
 
     const getBorderClass = () => {
         if (isDragging) {
-            return 'border-2 border-dashed border-blue-500';
+            return 'border-2 border-solid border-blue-500';
         } else if (isFolderLoaded) {
             return '';
         } else {
