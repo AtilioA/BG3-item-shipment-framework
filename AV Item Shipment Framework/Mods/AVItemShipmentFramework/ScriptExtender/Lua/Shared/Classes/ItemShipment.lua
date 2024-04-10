@@ -262,11 +262,11 @@ end
 --- Iterate all camp chests and party members inventories to delete all items that are from ISF. These items have ISF_ in their template name.
 ---@return nil
 function ItemShipment:DeleteAllISFItems()
-    for chestIndex = 1, 4 do
-        local mailboxUUID = ISMailboxes:GetPlayerMailbox(chestIndex)
-        if mailboxUUID then
-            ISFDebug(0, "Deleting all ISF items from mailbox: " .. mailboxUUID)
-            ISUtils:DeleteAllISFItemsFromInventory(mailboxUUID)
+    local campChestUUIDs = VCHelpers.Camp:GetAllCampChestUUIDs()
+    for _, campChestUUID in ipairs(campChestUUIDs) do
+        if campChestUUID then
+            ISFDebug(0, "Deleting all ISF items from camp chest: " .. campChestUUID)
+            ISUtils:DeleteAllISFItemsFromInventory(campChestUUID)
         end
     end
 
