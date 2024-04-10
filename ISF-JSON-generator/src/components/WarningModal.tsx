@@ -16,7 +16,7 @@ const WarningModal: React.FC<WarningModalProps> = ({ isVisible, onClose }) => {
             <div className="rounded-lg shadow-lg p-6 max-w-lg w-full bg-gray-800">
                 <h2 className="text-2xl font-bold mb-4">Warning</h2>
                 <p>This mod contains <span className='font-bold'>over {MAX_NON_CONTAINER_ITEMS} items outside of a container</span>.</p>
-                <p>This will led to a cluttered mailbox for your users.</p>
+                <p>This will lead to a cluttered mailbox for your users.</p>
                 <p>Please consider <a
                     className='font-bold text-volition-purple hover:text-volition-purple/80 transition-hover'
                     href="https://www.nexusmods.com/baldursgate3/mods/8418"
