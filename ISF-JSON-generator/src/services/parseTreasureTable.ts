@@ -5,13 +5,19 @@ export interface TreasureItem {
     templateName: string;
 };
 
+export interface ParsedTreasureTableData {
+    validTreasureItems: TreasureItem[];
+    filteredTreasureItems: TreasureItem[];
+}
+
 export function isVanillaTreasureTable(treasureTable: string): boolean {
     return VANILLA_TREASURE_TABLES[treasureTable] == true;
 }
 
-export function parseTreasureTableData(fileContent: string): TreasureItem[] {
+export function parseTreasureTableData(fileContent: string): ParsedTreasureTableData {
     const lines = fileContent.split('\n');
-    const treasureItems: TreasureItem[] = [];
+    const validTreasureItems: TreasureItem[] = [];
+    const filteredTreasureItems: TreasureItem[] = [];
     let currentTreasureTable = '';
 
     for (const line of lines) {
@@ -31,8 +37,13 @@ export function parseTreasureTableData(fileContent: string): TreasureItem[] {
 
         const treasureName = parts[1];
         const templateName = treasureName.startsWith('I_') ? treasureName.substring(2) : treasureName;
-        treasureItems.push({ treasureName, templateName });
+
+        if (isVanillaTreasureTable(currentTreasureTable)) {
+            filteredTreasureItems.push({ treasureName, templateName });
+        } else {
+            validTreasureItems.push({ treasureName, templateName });
+        }
     }
 
-    return treasureItems;
+    return { validTreasureItems, filteredTreasureItems };
 }

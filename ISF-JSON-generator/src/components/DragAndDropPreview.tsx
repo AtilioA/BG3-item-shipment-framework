@@ -8,6 +8,7 @@ interface DragAndDropPreviewProps {
     jsonOutput: string;
     handleSaveJSON: () => void;
     gameObjectData: GameObjectData[];
+    filteredObjectData: GameObjectData[];
     handleTemplateSelection: (templateUUID: string, isSelected: boolean) => void;
     selectedTemplates: string[];
 }
@@ -16,6 +17,7 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
     jsonOutput,
     handleSaveJSON,
     gameObjectData,
+    filteredObjectData,
     handleTemplateSelection,
     selectedTemplates,
 }) => {
@@ -29,6 +31,7 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
         <div className="w-full max-w-[50%] mx-4 mt-8 flex flex-col">
             <TemplateList
                 gameObjectData={gameObjectData}
+                filteredObjectData={filteredObjectData}
                 selectedTemplates={selectedTemplates}
                 handleTemplateSelection={handleTemplateSelection}
                 handleSaveJSON={handleSaveJSON}
@@ -37,7 +40,7 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
                 <hr className="w-full border-1 rounded-[10px] mt-4 border-gray-500 opacity-[50%]" />
 
                 <p className="mt-4 mb-2">JSON preview:</p>
-                <div className="rounded-4 overflow-auto max-h-[40vh]">
+                <div className="rounded-4 overflow-auto min-h-[40vh] max-h-[40vh]">
                     <SyntaxHighlighter
                         onClick={handleSaveJSON}
                         title="Click to save ISF JSON"
