@@ -222,6 +222,10 @@ end
 ---@param targetInventories table A table containing the UUIDs of objects that should receive the item
 function ItemShipment:AddItemToTargetInventories(item, targetInventories)
     local quantity = item.Send.Quantity or 1
+    ISFWarn(2,
+        "Quantity for item: " ..
+        VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID) .. " is: " .. quantity)
+
     local notify = item.Send.NotifyPlayer and 1 or 0
 
     for _, targetInventory in ipairs(targetInventories) do
@@ -230,7 +234,10 @@ function ItemShipment:AddItemToTargetInventories(item, targetInventories)
                 string.format("Adding %d copies of item with UUID: %s (%s) to inventory: %s", quantity, item
                     .TemplateUUID, VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID),
                     targetInventory))
-            Osi.TemplateAddTo(item.TemplateUUID, targetInventory, quantity, notify)
+            for i = 1, quantity do
+                ISFDebug(2, "Adding copy #%s of item to inventory: %s", i, targetInventory)
+                Osi.TemplateAddTo(item.TemplateUUID, targetInventory, 1, notify)
+            end
         else
             ISFPrint(1, "No valid target inventory found for item: " .. item.TemplateUUID)
         end
