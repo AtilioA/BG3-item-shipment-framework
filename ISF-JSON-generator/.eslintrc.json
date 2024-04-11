@@ -1,3 +1,20 @@
 {
-  "extends": "next/core-web-vitals"
+    "extends": "next/core-web-vitals",
+    "rules": {
+        "next/no-css-tags": "off",
+        "semi": "error",
+        "quotes": [
+            "warn",
+            "single"
+        ],
+        "no-unused-vars": "warn",
+        "indent": [
+            "error",
+            4
+        ],
+        "prefer-const": "error",
+        "react/jsx-props-no-spreading": "off",
+        "import/no-unresolved": "off",
+        "import/extensions": "off"
+    }
 }

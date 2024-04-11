@@ -1,5 +1,5 @@
-import { GameObjectData, parseRootTemplate } from "./parseGameObjects";
-import { ParsedTreasureTableData, TreasureItem, parseTreasureTableData } from "./parseTreasureTable";
+import { GameObjectData, parseRootTemplate } from './parseGameObjects';
+import { ParsedTreasureTableData, parseTreasureTableData } from './parseTreasureTable';
 
 interface FileAndPath {
     file: File;
@@ -13,7 +13,7 @@ export interface FilteredLSXData {
 
 // Step 1: Gathering data from the dropped folder
 export async function gatherData(item: FileSystemEntry, path: string = ''): Promise<FileAndPath[]> {
-    let files: { file: File, path: string }[] = [];
+    const files: { file: File, path: string }[] = [];
     await processEntry(item, path, files);
     return files;
 };
@@ -25,8 +25,8 @@ async function processEntry(entry: FileSystemEntry, path: string, files: { file:
         files.push({ file, path: `${path}/${fileEntry.name}` });
     } else if (entry.isDirectory) {
         const dirReader = (entry as FileSystemDirectoryEntry).createReader();
-        let readEntries: FileSystemEntry[] = await new Promise((resolve, reject) => dirReader.readEntries(resolve, reject));
-        for (let childEntry of readEntries) {
+        const readEntries: FileSystemEntry[] = await new Promise((resolve, reject) => dirReader.readEntries(resolve, reject));
+        for (const childEntry of readEntries) {
             await processEntry(childEntry, `${path}/${childEntry.name}`, files);
         }
     }
@@ -35,30 +35,30 @@ async function processEntry(entry: FileSystemEntry, path: string, files: { file:
 // Step 2: Parsing LSX file(s?) from RootTemplates
 export async function parseLSXFiles(files: FileAndPath[]): Promise<GameObjectData[]> {
     const lsxFiles = files.filter((file) => file.file.name.endsWith('.lsx') && file.path.includes('RootTemplates'));
-    console.debug("LSX files: ", lsxFiles);
+    console.debug('LSX files: ', lsxFiles);
     const parsedData: GameObjectData[] = [];
-    for (let file of lsxFiles) {
+    for (const file of lsxFiles) {
         const text = await file.file.text();
         const xmlDoc = new DOMParser().parseFromString(text, 'text/xml');
         const parsed = parseRootTemplate(xmlDoc);
         parsedData.push(...parsed);
     }
-    console.debug("Parsed data: ", parsedData);
+    console.debug('Parsed data: ', parsedData);
     return parsedData;
 };
 
 // Step 3: Parsing Treasure Table file(s?)
 export async function parseTreasureTables(files: FileAndPath[]): Promise<ParsedTreasureTableData[]> {
     const treasureFiles = files.filter((file) => file.file.name.endsWith('TreasureTable.txt') && file.path.includes('Generated'));
-    console.debug("Treasure files: ", treasureFiles)
+    console.debug('Treasure files: ', treasureFiles);
     const treasureData: ParsedTreasureTableData[] = [];
-    for (let file of treasureFiles) {
+    for (const file of treasureFiles) {
         const text = await file.file.text();
         const parsed = parseTreasureTableData(text);
         treasureData.push(parsed);
     }
 
-    console.debug("Treasure data: ", treasureData);
+    console.debug('Treasure data: ', treasureData);
     return treasureData;
 };
 
