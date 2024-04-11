@@ -40,7 +40,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ checked, onClick, className = '', c
                 className={`w-4 h-4 mr-2 rounded-sm transition-colors ${checked
                     ? `bg-volition-purple ${isPressed ? 'animation-press' : ''}`
                     : `bg-gray-200 border-gray-400 hover:border-volition-purple ${isPressed ? 'scale-95 transition-transform duration-100' : ''} ${isHovered ? 'bg-gray-400' : ''}`
-                    }`}
+                }`}
             >
                 {checked && (
                     <div className="w-full h-full rounded-sm bg-white flex items-center justify-center">

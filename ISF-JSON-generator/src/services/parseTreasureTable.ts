@@ -1,4 +1,4 @@
-import { VANILLA_TREASURE_TABLES } from "@/data/vanillaTreasureTables";
+import { VANILLA_TREASURE_TABLES } from '@/data/vanillaTreasureTables';
 
 export interface TreasureItem {
     treasureName: string;

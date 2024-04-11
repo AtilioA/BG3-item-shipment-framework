@@ -4,8 +4,8 @@ const KofiWidget: React.FC = () => {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        const kofiScript = document.createElement("script");
-        kofiScript.src = "https://storage.ko-fi.com/cdn/scripts/overlay-widget.js";
+        const kofiScript = document.createElement('script');
+        kofiScript.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
         kofiScript.async = true;
         kofiScript.addEventListener('load', () => setLoaded(true));
         document.body.appendChild(kofiScript);

@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import DragAndDropContainer from '@/components/DragAndDrop';
 import Footer from '@/components/Footer';

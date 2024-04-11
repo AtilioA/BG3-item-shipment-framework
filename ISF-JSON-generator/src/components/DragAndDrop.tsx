@@ -73,8 +73,8 @@ const DragAndDropContainer: React.FC = () => {
             setIsFolderLoaded(true);
 
             // Construct JSON output
-            console.debug(`Constructing JSON with ${selectedTemplates.length} selected templates.`)
-            const filterSelectedTemplates: GameObjectData[] = [...gameObjectData, ...filteredObjectData].filter((data) => selectedTemplates.includes(data.templateUUID || ''))
+            console.debug(`Constructing JSON with ${selectedTemplates.length} selected templates.`);
+            const filterSelectedTemplates: GameObjectData[] = [...gameObjectData, ...filteredObjectData].filter((data) => selectedTemplates.includes(data.templateUUID || ''));
             const ISFJSON = constructJSON(filterSelectedTemplates);
             setJsonOutput(JSON.stringify(ISFJSON, null, 2));
         }

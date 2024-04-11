@@ -36,7 +36,7 @@ const WarningModal: React.FC<WarningModalProps> = ({ isVisible, onClose }) => {
                         className="bg-volition-purple hover:bg-volition-purple/80 transition-hover text-white font-bold py-2 px-4 rounded mr-2"
                         onClick={() => {
                             if (!hasClickedLink) {
-                                window.open("https://www.nexusmods.com/baldursgate3/mods/8418", "_blank");
+                                window.open('https://www.nexusmods.com/baldursgate3/mods/8418', '_blank');
                                 setHasClickedLink(true);
                             }
                             onClose();
