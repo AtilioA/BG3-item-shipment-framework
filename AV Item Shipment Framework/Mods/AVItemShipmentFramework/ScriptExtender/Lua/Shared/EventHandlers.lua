@@ -93,7 +93,6 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
 
     -- Add utilities to the mailbox if it has been added only now
     ISMailboxes:InitializeUtilitiesCaseForMailbox(object2)
-    ISMailboxes:RefillUtilitiesCaseForMailbox(object2)
 end
 
 --- Used to handle DayEnd for ISF configs
