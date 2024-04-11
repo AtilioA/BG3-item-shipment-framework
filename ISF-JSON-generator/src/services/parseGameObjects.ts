@@ -62,22 +62,28 @@ function parseGameObjectNode(node: Element): GameObjectData {
         if (child.nodeName.toLowerCase() === 'attribute') {
             const attr = child as Element;
             switch (attr.getAttribute('id')) {
-                case 'Name':
-                    templateName = attr.getAttribute('value') || null;
-                    break;
-                case 'Stats':
-                    templateStats = attr.getAttribute('value') || null;
-                    break;
-                case 'MapKey':
-                    templateUUID = attr.getAttribute('value') || null;
-                    break;
-                case 'InventoryType':
-                    // If InventoryType is found, set isContainer to true
-                    isContainer = attr.getAttribute('value') != undefined;
-                    break;
+            case 'Name':
+                templateName = attr.getAttribute('value') || null;
+                break;
+            case 'Stats':
+                templateStats = attr.getAttribute('value') || null;
+                break;
+            case 'MapKey':
+                templateUUID = attr.getAttribute('value') || null;
+                break;
+            case 'InventoryType':
+                // If InventoryType is found, set isContainer to true
+                isContainer = attr.getAttribute('value') != undefined;
+                break;
             }
         }
     });
+
+    // NOTE: it might be best to just only use Stats. But then again, some authors might use Name instead, so for now, we'll just use Stats if Name is not found.
+    if (!templateName) {
+        console.warn(`Template name not found for game object node: ${node.outerHTML}. Defaulting to Stats value of "${templateStats}".`);
+        templateName = templateStats || null;
+    }
 
     return { templateUUID, templateName, templateStats, isContainer };
 }
