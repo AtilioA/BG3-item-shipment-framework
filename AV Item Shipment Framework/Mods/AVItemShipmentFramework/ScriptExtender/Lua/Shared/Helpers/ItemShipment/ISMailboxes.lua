@@ -52,6 +52,7 @@ function ISMailboxes:InitializeMailboxes()
 end
 
 --- Initialize the utilities case for a specific mailbox
+---@return nil
 function ISMailboxes:InitializeUtilitiesCaseForMailbox(mailboxUUID)
     local utilitiesCaseUUID = self.UtilitiesCaseUUID
 
@@ -176,6 +177,7 @@ function ISMailboxes:MoveItemsFromMailboxToCampChest(mailboxUUID, campChestUUID)
 end
 
 --- Delete all mailboxes
+---@return nil
 function ISMailboxes:DeleteMailboxes()
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
     for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
@@ -209,7 +211,7 @@ end
 ---@param mailboxUUID string The UUID of the mailbox
 ---@return nil
 function ISMailboxes:RefillMailbox(index, mailboxUUID)
-    for modGUID, modData in pairs(ItemShipmentInstance.mods) do
+    for _modGUID, modData in pairs(ItemShipmentInstance.mods) do
         for _, item in pairs(modData.Items) do
             if item.Send.To.CampChest["Player" .. index .. "Chest"] == true then
                 self:RefillMailboxWithItem(item, mailboxUUID)
@@ -237,6 +239,7 @@ function ISMailboxes:UpdateHostMailboxTutorialChest()
 end
 
 --- Update the remaining mailboxes with a new Tutorial Chest instance
+---@return nil
 function ISMailboxes:UpdateRemainingMailboxesTutorialChests()
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
     for i = 2, #ISFModVars.Mailboxes do
@@ -246,6 +249,7 @@ function ISMailboxes:UpdateRemainingMailboxesTutorialChests()
 end
 
 --- Update all mailboxes with a new Tutorial Chest instance
+---@return nil
 function ISMailboxes:UpdateTutorialChests()
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
     for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
