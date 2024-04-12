@@ -47,7 +47,7 @@ function ISJsonLoad:TryLoadConfig(configStr, modGUID)
         return data
     else
         ISFWarn(0,
-            "Invalid config for mod " ..
+            "Invalid ISF config JSON file for mod " ..
             Ext.Mod.GetMod(modGUID).Info.Name ..
             ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " for assistance.")
         return

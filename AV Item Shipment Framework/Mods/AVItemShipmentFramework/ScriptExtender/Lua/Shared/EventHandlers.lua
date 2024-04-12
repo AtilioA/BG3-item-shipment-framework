@@ -80,7 +80,7 @@ function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
     -- Get the camp chest index
     local campChestIndex = VCHelpers.Camp:GetIndexFromCampChestName(campChestName)
     if campChestIndex == nil then
-        ISFWarn(1, "Unexpected camp chest name: " .. campChestName)
+        ISFWarn(0, "Unexpected camp chest name: " .. campChestName)
         return
     end
 

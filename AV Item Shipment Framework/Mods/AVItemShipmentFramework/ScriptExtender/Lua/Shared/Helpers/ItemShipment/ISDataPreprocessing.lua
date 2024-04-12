@@ -95,7 +95,7 @@ function ISDataPreprocessing:IsValidItemTemplateUUID(item, modGUID)
 
     if not success then
         ISFWarn(0,
-            "ISF config file for mod produced an error while checking the item '" ..
+            "ISF config file produced an error while checking the item '" ..
             itemTemplateUUID .. "'. Error: " ..
             result ..
             ". For mod " ..
@@ -204,7 +204,7 @@ function ISDataPreprocessing:PreprocessData(data, modGUID)
     local sanitizedData = self:SanitizeData(data, modGUID)
     if not sanitizedData then
         ISFWarn(0,
-            "Failed to sanitize data for mod: " ..
+            "Failed to sanitize ISF config JSON data for mod: " ..
             Ext.Mod.GetMod(modGUID).Info.Name ..
             ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
         return

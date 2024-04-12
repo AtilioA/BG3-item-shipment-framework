@@ -75,7 +75,7 @@ function ItemShipment:LoadShipments()
                 self:SubmitData(data, uuid)
             else
                 ISFWarn(0,
-                    "Failed to load config for mod: " ..
+                    "Failed to load ISF config JSON file for mod: " ..
                     Ext.Mod.GetMod(uuid).Info.Name ..
                     ". Please contact " .. Ext.Mod.GetMod(uuid).Info.Author .. " about this issue.")
             end
@@ -221,7 +221,7 @@ end
 ---@param targetInventories table A table containing the UUIDs of objects that should receive the item
 function ItemShipment:AddItemToTargetInventories(item, targetInventories)
     local quantity = item.Send.Quantity or 1
-    ISFWarn(2,
+    ISFDebug(3,
         "Quantity for item: " ..
         VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID) .. " is: " .. quantity)
 
