@@ -39,7 +39,7 @@ function ISUtils:InitializeMailboxesTable()
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
     -- Each index in the Mailboxes table corresponds to a player chest
-    -- REVIEW: use chest template name instead? Honestly, indexing feels more elegant and less complex
+    -- Maybe use chest template name instead? Honestly, indexing feels more elegant and less complex
     if not ISFModVars.Mailboxes then
         ISFModVars.Mailboxes = {
             nil,
@@ -138,7 +138,7 @@ function ISUtils:DeleteAllISFItemsFromInventory(uuid)
 
     for _, item in pairs(inventory) do
         if string.find(item.TemplateName, "ISF_") then
-            ISFDebug(0, "Removing item %s (%s) from inventory %s (%s)", item.TemplateName, item.Name, uuid,
+            ISFWarn(0, "Removing item %s (%s) from inventory %s (%s)", item.TemplateName, item.Name, uuid,
                 VCHelpers.Loca:GetDisplayName(uuid))
             Osi.RequestDelete(item.Guid)
         end

@@ -13,7 +13,6 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
 
     -- Ignore Character Creation level
     if levelName == 'SYS_CC_I' then
-        -- TODO: Set variable to deliver on Act 1
         return
     end
 
@@ -116,7 +115,7 @@ function EHandlers.OnReadyCheckFailed(eventId)
         "Entering OnReadyCheckFailed, eventId: " .. eventId)
 
     if eventId == "isf_uninstall_move_items" then
-        ISFDebug(1, "May uninstall ISF without moving items")
+        ISFWarn(0, "Will uninstall ISF without moving items")
         EHandlers.moveItems = false
     end
 end

@@ -24,7 +24,6 @@
     SOFTWARE.
 --]]
 
--- TODO: add more level 2 debug messages to be able to track from user reports
 ---@class ItemShipment: MetaClass
 ItemShipment = _Class:Create("ItemShipment", nil, {
     mods = {},
@@ -108,7 +107,7 @@ function ItemShipment:ProcessModShipments(modGUID, skipChecks)
         return
     end
 
-    ISFPrint(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
+    ISFDebug(1, "Checking items to add from mod " .. Ext.Mod.GetMod(modGUID).Info.Name)
     for _, item in pairs(ItemShipmentInstance.mods[modGUID].Items) do
         local shouldShipItem = self:ShouldShipItem(modGUID, item)
         if (skipChecks or shouldShipItem) then
@@ -172,17 +171,17 @@ function ItemShipment:ShouldShipItem(modGUID, item)
     local itemExists = ISChecks:CheckExistence(modGUID, item)
 
     if not passedProgressionChecks then
-        ISFDebug(2,
+        ISFPrint(2,
             string.format("Item %s (%s) did not pass progression checks.", item.TemplateUUID,
                 VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID)))
         return false
     elseif not IsTriggerCompatible then
-        ISFDebug(2,
+        ISFPrint(2,
             string.format("Item %s (%s) is not compatible with the current trigger.", item.TemplateUUID,
                 VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID)))
         return false
     elseif itemExists then
-        ISFDebug(2,
+        ISFPrint(2,
             string.format("Item %s (%s) has been shipped already or exists in inventories or camp chests.",
                 item.TemplateUUID, VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID)))
         return false
@@ -206,7 +205,7 @@ function ItemShipment:GetTargetInventories(item)
     for chestIndex = 1, 4 do
         local mailboxUUID = ISMailboxes:GetPlayerMailbox(chestIndex)
         if mailboxUUID and item.Send.To.CampChest[ISMailboxes.PlayerChestIndexMapping[tostring(chestIndex)]] then
-            ISFDebug(2, "Adding mailbox to delivery list: " .. mailboxUUID)
+            ISFDebug(1, "Adding mailbox to delivery list: " .. mailboxUUID)
             table.insert(targetInventories, mailboxUUID)
         else
             ISFDebug(2, "Skipping mailbox for chestIndex: " .. chestIndex)
@@ -251,8 +250,8 @@ end
 function ItemShipment:ShipItem(modGUID, item)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
 
-    ISFPrint(1, "About to add item with config: " .. Ext.Json.Stringify(item), { Beautify = true })
-    ISFPrint(1, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
+    ISFDebug(1, "About to add item with config: " .. Ext.Json.Stringify(item), { Beautify = true })
+    ISFDebug(2, "Mailboxes: " .. Ext.Json.Stringify(ISFModVars.Mailboxes), { Beautify = true })
 
     local targetInventories = self:GetTargetInventories(item)
     ISFDebug(2, "Target inventories that will receive the item: " .. Ext.Json.Stringify(targetInventories),
@@ -272,13 +271,13 @@ function ItemShipment:DeleteAllISFItems()
     local campChestUUIDs = VCHelpers.Camp:GetAllCampChestUUIDs()
     for _, campChestUUID in ipairs(campChestUUIDs) do
         if campChestUUID then
-            ISFDebug(0, "Deleting all ISF items from camp chest: " .. campChestUUID)
+            ISFPrint(0, "Deleting all ISF items from camp chest: " .. campChestUUID)
             ISUtils:DeleteAllISFItemsFromInventory(campChestUUID)
         end
     end
 
     for _, character in pairs(VCHelpers.Party:GetAllPartyMembers()) do
-        ISFDebug(0, "Deleting all ISF items from character: " .. character)
+        ISFPrint(0, "Deleting all ISF items from character: " .. character)
         ISUtils:DeleteAllISFItemsFromInventory(character)
     end
 end

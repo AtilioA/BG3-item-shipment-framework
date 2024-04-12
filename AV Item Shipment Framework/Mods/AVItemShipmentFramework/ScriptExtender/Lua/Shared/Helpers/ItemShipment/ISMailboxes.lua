@@ -59,8 +59,8 @@ function ISMailboxes:InitializeUtilitiesCaseForMailbox(mailboxUUID)
     ISFWarn(0, "Checking if mailbox " .. mailboxUUID .. " has the utilities case.")
     local utilityCaseInsideMailbox = VCHelpers.Inventory:GetItemTemplateInInventory(utilitiesCaseUUID, mailboxUUID)
     if utilityCaseInsideMailbox == nil then
-        ISFDebug(2, "Utilities case " .. utilitiesCaseUUID .. " not found in mailbox " .. mailboxUUID)
-        ISFDebug(2, "Adding utilities case " .. utilitiesCaseUUID .. " to mailbox " .. mailboxUUID)
+        ISFPrint(2, "Utilities case " .. utilitiesCaseUUID .. " not found in mailbox " .. mailboxUUID)
+        ISFPrint(1, "Adding utilities case " .. utilitiesCaseUUID .. " to mailbox " .. mailboxUUID)
         Osi.TemplateAddTo(utilitiesCaseUUID, mailboxUUID, 1, 0)
     end
 end
@@ -91,7 +91,7 @@ function ISMailboxes:RefillUtilitiesCaseForAllMailboxes()
         ISFDebug(2, "Checking mailbox " .. mailboxUUID .. " for utilities case.")
         local utilitiesCaseItem = VCHelpers.Inventory:GetItemTemplateInInventory(utilitiesCaseUUID, mailboxUUID)
         if utilitiesCaseItem then
-            ISFDebug(2, "Refilling utilities case in mailbox " .. mailboxUUID)
+            ISFPrint(2, "Refilling utilities case in mailbox " .. mailboxUUID)
             self:RefillUtilitiesCaseForMailbox(mailboxUUID)
         else
             ISFWarn(1, "Utilities case not found in mailbox " .. mailboxUUID .. ". Adding it.")
@@ -273,7 +273,7 @@ function ISMailboxes:RemoveTutorialChestFromContainer(mailboxUUID)
     local tutorialChestsInMailbox = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(self.TutChestTemplateUUID,
         mailboxUUID)
     for _, tutorialChestInMailbox in pairs(tutorialChestsInMailbox) do
-        ISFDebug(3, "Removing Tutorial Chest from mailbox: " .. mailboxUUID)
+        ISFDebug(2, "Removing Tutorial Chest from mailbox: " .. mailboxUUID)
         Osi.RequestDelete(tutorialChestInMailbox.Guid)
     end
 end
@@ -291,6 +291,6 @@ end
 ---@param mailboxUUID string The UUID of the container
 ---@return nil
 function ISMailboxes:AddTutorialChestToContainer(mailboxUUID)
-    ISFDebug(3, "Adding Tutorial Chest to mailbox: " .. mailboxUUID)
+    ISFDebug(2, "Adding Tutorial Chest to mailbox: " .. mailboxUUID)
     Osi.TemplateAddTo(self.TutChestTemplateUUID, mailboxUUID, 1, 0)
 end

@@ -15,20 +15,20 @@ function ISChecks:ProgressionShipmentChecks(item)
     -- If spawning during tutorial is not allowed, and the item is not set for 'Act 0', and the character has not visited Act 1, shipments cannot be processed.
     -- TODO: refactor when Act 2 and 3 are added
     if hasVisitedAct1 then
-        ISFDebug(2, "Character has visited Act 1. Proceeding with shipment checks.")
+        ISFPrint(2, "Character has visited Act 1. Proceeding with shipment checks.")
         return true
         -- User config takes precedence over item config
     elseif not allowDuringTutorial then
-        ISFDebug(1, "Spawning during tutorial is not allowed, shipments will not be processed.")
+        ISFPrint(1, "Spawning during tutorial is not allowed, shipments will not be processed.")
         return false
     elseif not shouldShipDuringTutorial then
-        ISFDebug(1,
+        ISFPrint(1,
             "Character has not visited Act 1 and spawning during tutorial is not allowed, shipments will not be processed.")
         return false
     end
 
     -- In all other cases, shipments can be processed.
-    ISFDebug(2, "Shipments can be processed.")
+    ISFPrint(2, "Shipments can be processed.")
     return true
 end
 
@@ -60,15 +60,15 @@ function ISChecks:CheckFrameworkExistence(item, modGUID)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
     ISFDebug(2, "=== Checking ModVars ===")
     if not item.Send.Check.ItemExistence.FrameworkCheck then
-        ISFDebug(2, "FrameworkCheck is disabled. Skipping ModVars check for item " .. item.TemplateUUID .. ".")
+        ISFPrint(2, "FrameworkCheck is disabled. Skipping ModVars check for item " .. item.TemplateUUID .. ".")
         return false
     end
 
     if ISFModVars.Shipments[modGUID][item.TemplateUUID] == true then
-        ISFDebug(1, "Item " .. item.TemplateUUID .. " has already been shipped and will not be shipped again.")
+        ISFPrint(1, "Item " .. item.TemplateUUID .. " has already been shipped and will not be shipped again.")
         return true
     else
-        ISFDebug(2, "ModVars check passed. Item " .. item.TemplateUUID .. " has not been shipped by ISF yet.")
+        ISFPrint(2, "ModVars check passed. Item " .. item.TemplateUUID .. " has not been shipped by ISF yet.")
         return false
     end
 end
@@ -88,7 +88,7 @@ function ISChecks:CheckCampChestForItem(item, chestIndex)
     for _, itemData in ipairs(itemsWithTemplate) do
         local holder = VCHelpers.Inventory:GetHolder(itemData.Entity)
         if holder and holder.ServerItem and holder.ServerItem.Template and holder.ServerItem.Template.Name ~= ISMailboxes.TutChestTemplateName then
-            ISFDebug(1,
+            ISFPrint(1,
                 "Item already exists in the inventory of camp chest " ..
                 chestIndex ..
                 " (inside " .. VCHelpers.Loca:GetDisplayName(holder.Uuid.EntityUuid) .. ") and will not be shipped.")
@@ -109,7 +109,7 @@ function ISChecks:CheckCampChests(item, modGUID)
 
     ISFDebug(2, "=== Checking camp chests ===")
     if not shouldCheckCampChests then
-        ISFDebug(2, "Camp chests check passed. Camp chests checks are not enabled for item " .. item.TemplateUUID .. ".")
+        ISFPrint(2, "Camp chests check passed. Camp chests checks are not enabled for item " .. item.TemplateUUID .. ".")
         return false
     end
 
@@ -119,7 +119,7 @@ function ISChecks:CheckCampChests(item, modGUID)
         end
     end
 
-    ISFDebug(2,
+    ISFPrint(2,
         "Camp chests check passed. Item " ..
         item.TemplateUUID .. " does not exist in any camp chest that must be checked.")
     return false
@@ -139,16 +139,16 @@ function ISChecks:CheckPartyMembers(item, modGUID)
     -- Get party members table based on the configuration
     local partyMembers = {}
     if item.Send.Check.ItemExistence.PartyMembers.AtCamp == true then
-        ISFPrint(2, "Checking party members at camp for item " .. item.TemplateUUID)
+        ISFDebug(2, "Checking party members at camp for item " .. item.TemplateUUID)
         partyMembers = VCHelpers.Party:GetAllPartyMembers()
     elseif item.Send.Check.ItemExistence.PartyMembers.ActiveParty == true then
-        ISFPrint(2, "Checking active party members for item " .. item.TemplateUUID)
+        ISFDebug(2, "Checking active party members for item " .. item.TemplateUUID)
         partyMembers = VCHelpers.Party:GetPartyMembers()
     end
 
     for _, partyMember in ipairs(partyMembers) do
         if VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID, partyMember) ~= nil then
-            ISFDebug(1,
+            ISFPrint(1,
                 "Item " ..
                 item.TemplateUUID ..
                 " already exists in the inventory of " ..
@@ -158,7 +158,7 @@ function ISChecks:CheckPartyMembers(item, modGUID)
         end
     end
 
-    ISFDebug(1,
+    ISFPrint(1,
         "Item " ..
         item.TemplateUUID .. " does not exist in any party member's inventory to be checked and may be shipped.")
     return false
