@@ -52,3 +52,24 @@ Ext.RegisterConsoleCommand('isf_tut_update', function(cmd)
     ISFPrint(0, "Updating tutorial chests in mailboxes.")
     ISMailboxes:UpdateTutorialChests()
 end)
+
+-- Ext.RegisterConsoleCommand('isf_tt', function(cmd)
+--     ISFWarn(0, "Testing treasure table retrieval.")
+--     -- I don't know what I'm doing B-)
+--     -- local template = "TUT_Chest_Potions"
+--     -- local template = Ext.Template.GetLocalTemplate("3761acb2-5274-e2aa-bcd3-49b5d785f70b")
+--     -- _D(Ext.Template.GetCacheTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
+--     -- _D(Ext.Template.GetLocalCacheTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
+--     -- _D(Ext.Template.GetLocalTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
+
+--     -- _D(Ext.Template.GetTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
+--     -- _D("== ROOT ==")
+--     -- _D(Ext.Template.GetRootTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
+
+--     _D("TT")
+--     local treasureTableName = "MEQ_Item_Container_Cloaks_TT"
+--     local treasureTable = VCHelpers.TreasureTable:ProcessSingleTreasureTable(treasureTableName)
+--     if treasureTable then
+--         _D(VCHelpers.TreasureTable:ExtractTreasureCategories(treasureTable))
+--     end
+-- end)

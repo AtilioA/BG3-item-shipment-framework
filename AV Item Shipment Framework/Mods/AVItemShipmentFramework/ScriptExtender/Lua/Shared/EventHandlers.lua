@@ -27,18 +27,20 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
         -- Process shipments read from JSON files
         ItemShipmentInstance:ProcessShipments(false)
 
-        if Config:getCfg().FEATURES.spawning.tutorial_chest then
-            ISMailboxes:UpdateHostMailboxTutorialChest()
-        end
+        -- TODO: Reintroduce this with container refills after SE updates with TreasureTable fixes
+        -- if Config:getCfg().FEATURES.spawning.tutorial_chest then
+        --     ISMailboxes:UpdateHostMailboxTutorialChest()
+        -- end
     end)
 end
 
 function EHandlers.OnUserConnected(userID, userName, userProfileID)
-    ISFDebug(1, "User connected: " .. userName .. ", ID: " .. userID .. ", profileID: " .. userProfileID)
-    if Config:getCfg().FEATURES.spawning.tutorial_chest then
-        ISMailboxes:UpdateRemainingMailboxesTutorialChests()
-        ISFDebug(1, "Updated remaining mailboxes with Tutorial Chests.")
-    end
+    ISFDebug(2, "User connected: " .. userName .. ", ID: " .. userID .. ", profileID: " .. userProfileID)
+    -- TODO: Reintroduce this with container refills after SE updates with TreasureTable fixes
+    -- if Config:getCfg().FEATURES.spawning.tutorial_chest then
+    --     ISMailboxes:UpdateRemainingMailboxesTutorialChests()
+    --     ISFDebug(1, "Updated remaining mailboxes with Tutorial Chests.")
+    -- end
 end
 
 function EHandlers.OnUseStarted(character, item)
@@ -160,6 +162,8 @@ function EHandlers.HandleCastedSpell(spell, ISFModVars)
         ISMailboxes:RefillMailbox(3, ISFModVars.Mailboxes[3])
     elseif spell == "ISF_Refill_PlayerChest_4" then
         ISMailboxes:RefillMailbox(4, ISFModVars.Mailboxes[4])
+    elseif spell == "ISF_Spawn_TutorialChest" then
+        ISMailboxes:IntegrateTutorialChest(ISFModVars.Mailboxes[1])
     elseif spell == "ISF_Uninstall" then
         EHandlers.HandleUninstallSpell()
     end
