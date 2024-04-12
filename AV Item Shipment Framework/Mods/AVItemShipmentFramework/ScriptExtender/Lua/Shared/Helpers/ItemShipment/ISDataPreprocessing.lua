@@ -131,7 +131,7 @@ function ISDataPreprocessing:ApplyDefaultValues(data)
         -- Set default value for Send
         item.Send = item.Send or {}
         -- Set default value for Send.Quantity
-        if item.Send.Quantity == nil then
+        if item.Send.Quantity == nil or item.Send.Quantity < 0 then
             item.Send.Quantity = 1
         end
 
