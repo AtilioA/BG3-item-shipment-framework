@@ -35,6 +35,9 @@ end
 
 function EHandlers.OnUserConnected(userID, userName, userProfileID)
     ISFDebug(2, "User connected: " .. userName .. ", ID: " .. userID .. ", profileID: " .. userProfileID)
+    ISFPrint(1, "Reprocessing shipments due to user connection.")
+    ItemShipmentInstance:LoadShipments()
+    ItemShipmentInstance:ProcessShipments(false)
     -- TODO: Reintroduce this with container refills after SE updates with TreasureTable fixes
     -- if Config:getCfg().FEATURES.spawning.tutorial_chest then
     --     ISMailboxes:UpdateRemainingMailboxesTutorialChests()
