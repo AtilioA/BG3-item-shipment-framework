@@ -1,6 +1,20 @@
 ---@class HelperISDataPreprocessing: Helper
 ISDataPreprocessing = _Class:Create("HelperISDataPreprocessing", Helper)
 
+-- Function to convert string booleans to actual booleans
+local function convertStringBooleans(table)
+    for key, value in pairs(table) do
+        if type(value) == "table" then
+            -- Recursively convert nested tables
+            convertStringBooleans(value)
+        elseif value == "true" then
+            table[key] = true
+        elseif value == "false" then
+            table[key] = false
+        end
+    end
+end
+
 --- Remove elements in the table that do not have a FileVersions, Items table, and any elements in the Items table that do not have a TemplateUUID
 ---@param data table The item data to sanitize
 function ISDataPreprocessing:SanitizeData(data, modGUID)
@@ -13,6 +27,9 @@ function ISDataPreprocessing:SanitizeData(data, modGUID)
     end
 
     self:RemoveItemsWithoutTemplateUUID(data, modGUID)
+
+    -- Turn string booleans into actual booleans
+    convertStringBooleans(data)
 
     return data
 end
