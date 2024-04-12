@@ -108,6 +108,7 @@ function ISMailboxes:RefillUtilitiesCaseForMailbox(mailboxUUID)
     local refillMailbox2 = "7bf93529-26dc-4c38-9341-97147926147b"
     local refillMailbox3 = "42b7bffb-0d8d-4a54-9261-6aa130eb5493"
     local refillMailbox4 = "48608d58-00e0-405c-af2a-cc520519b194"
+    local updateTutChest = "d5ef2737-820c-4865-a39d-f17e7bd68970"
     local uninstallScroll = "7348db1f-991e-4347-a334-88d13db7fbbe"
 
     local utilitiesCaseItem = VCHelpers.Inventory:GetItemTemplateInInventory(self.UtilitiesCaseUUID, mailboxUUID)
@@ -116,6 +117,7 @@ function ISMailboxes:RefillUtilitiesCaseForMailbox(mailboxUUID)
         VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox2, 1, utilitiesCaseItem.Uuid.EntityUuid)
         VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox3, 1, utilitiesCaseItem.Uuid.EntityUuid)
         VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox4, 1, utilitiesCaseItem.Uuid.EntityUuid)
+        VCHelpers.Inventory:RefillInventoryWithItem(updateTutChest, 1, utilitiesCaseItem.Uuid.EntityUuid)
         VCHelpers.Inventory:RefillInventoryWithItem(uninstallScroll, 1, utilitiesCaseItem.Uuid.EntityUuid)
     end
 end
