@@ -67,7 +67,7 @@ data "ObjectCategory" "MagicScroll_Utility"
 data "Priority" "1"
 data "UseCosts" ""
 
-new entry "OBJ_Scroll_ISF_Spawn_Tutorial_Chest"
+new entry "OBJ_Scroll_ISF_Reset_Tutorial_Chest"
 type "Object"
 using "_MagicScroll"
 data "RootTemplate" "d5ef2737-820c-4865-a39d-f17e7bd68970"

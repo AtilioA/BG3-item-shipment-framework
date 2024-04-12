@@ -37,7 +37,7 @@ data "SpellType" "Target"
 using "ISF_Refill_PlayerChest_1"
 data "DisplayName" "h086ba061g1407g47e4g8df8ge24190195c22"
 
-new entry "ISF_Spawn_TutorialChest"
+new entry "ISF_Reset_TutorialChest"
 type "SpellData"
 data "SpellType" "Target"
 using "ISF_Refill_PlayerChest_1"

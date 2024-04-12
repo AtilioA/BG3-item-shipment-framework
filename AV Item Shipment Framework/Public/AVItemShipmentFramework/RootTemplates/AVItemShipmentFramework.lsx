@@ -225,15 +225,15 @@
 						</node>
 					</children>
 				</node>
-				<!--Spawn Tutorial Chest Scroll | UUID = d5ef2737-820c-4865-a39d-f17e7bd68970-->
+				<!--Reset Tutorial Chest Scroll | UUID = d5ef2737-820c-4865-a39d-f17e7bd68970-->
 				<node id="GameObjects">
 					<attribute id="DisplayName" type="TranslatedString" handle="h377c8e8bga8d8g478dg93f2g9762dab81620" version="1" />
 					<attribute id="TechnicalDescription" type="TranslatedString" handle="hd94d53deg7f43g40ffg882cg819c3a85ab9c" version="1" />
 					<attribute id="MapKey" type="FixedString" value="d5ef2737-820c-4865-a39d-f17e7bd68970" />
-					<attribute id="Icon" type="FixedString" value="Item_CONT_MF_Chest_A" />
+					<attribute id="Icon" type="FixedString" value="Icon_Scroll_ISF_Reset_Tutorial_Chest" />
 					<attribute id="LevelName" type="FixedString" value="" />
-					<attribute id="Name" type="LSString" value="LOOT_Scroll_ISF_Spawn_Tutorial_Chest" />
-					<attribute id="Stats" type="FixedString" value="OBJ_Scroll_ISF_Spawn_Tutorial_Chest" />
+					<attribute id="Name" type="LSString" value="LOOT_Scroll_ISF_Reset_Tutorial_Chest" />
+					<attribute id="Stats" type="FixedString" value="OBJ_Scroll_ISF_Reset_Tutorial_Chest" />
 					<attribute id="maxStackAmount" type="int32" value="1" />
 					<attribute id="ParentTemplateId" type="FixedString" value="4ffd5c4b-4c56-4f05-a228-a33754bb1806" />
 					<attribute id="VisualTemplate" type="FixedString" value="916f78a4-779b-3e43-28eb-eefc26d9683d" />
@@ -251,7 +251,7 @@
 											<attribute id="ClassId" type="guid" value="a865965f-501b-46e9-9eaa-7748e8c04d09" />
 											<attribute id="Conditions" type="LSString" value="" />
 											<attribute id="Consume" type="bool" value="False" />
-											<attribute id="SkillID" type="FixedString" value="ISF_Spawn_TutorialChest" />
+											<attribute id="SkillID" type="FixedString" value="ISF_Reset_TutorialChest" />
 										</node>
 									</children>
 								</node>

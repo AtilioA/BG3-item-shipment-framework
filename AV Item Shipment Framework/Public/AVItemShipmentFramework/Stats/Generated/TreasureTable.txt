@@ -10,3 +10,5 @@ new subtable "1,1"
 object category "I_OBJ_Scroll_ISF_Refill_Player_3",1,0,0,0,0,0,0,0
 new subtable "1,1"
 object category "I_OBJ_Scroll_ISF_Refill_Player_4",1,0,0,0,0,0,0,0
+new subtable "1,1"
+object category "I_OBJ_Scroll_ISF_Reset_Tutorial_Chest",1,0,0,0,0,0,0,0
