@@ -164,7 +164,7 @@ function EHandlers.HandleCastedSpell(spell, ISFModVars)
         ISMailboxes:RefillMailbox(3, ISFModVars.Mailboxes[3])
     elseif spell == "ISF_Refill_PlayerChest_4" then
         ISMailboxes:RefillMailbox(4, ISFModVars.Mailboxes[4])
-    elseif spell == "ISF_Spawn_TutorialChest" then
+    elseif spell == "ISF_Reset_TutorialChest" then
         ISMailboxes:IntegrateTutorialChest(ISFModVars.Mailboxes[1])
     elseif spell == "ISF_Uninstall" then
         EHandlers.HandleUninstallSpell()
