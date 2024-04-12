@@ -45,6 +45,12 @@ function ISDataPreprocessing:HasFileVersionsEntry(data, modGUID)
             Ext.Mod.GetMod(modGUID).Info.Name ..
             ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
         return false
+    elseif type(data.FileVersion) ~= "number" then
+        ISFWarn(0,
+            "Invalid 'FileVersion' section (not a number) found in data for mod: " ..
+            Ext.Mod.GetMod(modGUID).Info.Name ..
+            ". Please contact " .. Ext.Mod.GetMod(modGUID).Info.Author .. " about this issue.")
+        return false
     end
 
     return true
