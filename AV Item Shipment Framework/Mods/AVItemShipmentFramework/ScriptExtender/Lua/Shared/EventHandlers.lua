@@ -108,7 +108,7 @@ function EHandlers.OnEndTheDayRequested(character)
 end
 
 function EHandlers.OnReset()
-    ISFDebug(0, "'reset' command was called in the SE console, reloading shipments.")
+    ISFDebug(1, "'reset' command was called in the SE console, reloading shipments.")
     ItemShipmentInstance:LoadShipments()
 end
 
