@@ -2,6 +2,7 @@ EHandlers = {}
 
 EHandlers.moveItems = false
 
+-- SECTION: ISF-related event handlers
 function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
     ISFDebug(2,
         "Entering OnLevelGameplayStarted, levelName: " .. levelName .. ", isEditorMode: " .. tostring(isEditorMode))
@@ -45,20 +46,14 @@ function EHandlers.OnUserConnected(userID, userName, userProfileID)
     -- end
 end
 
-function EHandlers.OnUseStarted(character, item)
-    -- _D(Ext.Template.GetAllLocalTemplates("813c005f-72ab-4806-ad7e-2e3135e41d27"))
-    -- _D(VCHelpers.Inventory:GetInventory("813c005f-72ab-4806-ad7e-2e3135e41d27"))
-    -- VCHelpers.Object:DumpObjectEntity(item, "isf")
-    -- local entity = Ext.Entity.Get(item):GetAllComponents()
-    -- if entity.InventoryMember == nil then
-    --   return
-    -- end
-    -- _D(Ext.Entity.Get(item):GetAllComponents().InventoryMember.Inventory.InventoryIsOwned.Owner:GetAllComponents())
-end
-
 --- Used to catch the event when a mailbox is added to a camp chest, so that the mailbox can be stored in the ModVars
 function EHandlers.OnTemplateAddedTo(objectTemplate, object2, inventoryHolder)
     if objectTemplate ~= "CONT_ISF_Container_" .. ISMailboxes.MailboxTemplateUUID then
+        return
+    end
+
+    if Osi.IsInPartyWith(inventoryHolder, Osi.GetHostCharacter()) == 1 then
+        ISFDebug(2, "Ignoring mailbox added to party member: " .. inventoryHolder)
         return
     end
 
@@ -107,11 +102,36 @@ function EHandlers.OnEndTheDayRequested(character)
     ItemShipmentInstance:ProcessShipments(false)
 end
 
+--- Used to move back ISF containers if they were moved out of the camp chests/mailboxes.
+function EHandlers.OnMovedFromTo(movedObject, fromObject, toObject, isTrade)
+    -- If toObject is from party, movedObject is a container and has ISF in its template name, move it back to fromObject
+    local hasISF = string.find(movedObject, "CONT_ISF_Container")
+    local isContainer = Osi.IsContainer(movedObject) == 1
+    local movedByParty = Osi.IsInPartyWith(toObject, Osi.GetHostCharacter()) == 1
+    if hasISF and isContainer and movedByParty then
+        ISFWarn(1, "Moving back ISF container: " .. movedObject)
+        Osi.ToInventory(movedObject, fromObject, 1, 0, 0)
+    end
+end
+
+function EHandlers.OnUseStarted(character, item)
+    -- _D(Ext.Template.GetAllLocalTemplates("813c005f-72ab-4806-ad7e-2e3135e41d27"))
+    -- _D(VCHelpers.Inventory:GetInventory("813c005f-72ab-4806-ad7e-2e3135e41d27"))
+    -- VCHelpers.Object:DumpObjectEntity(item, "isf")
+    -- local entity = Ext.Entity.Get(item):GetAllComponents()
+    -- if entity.InventoryMember == nil then
+    --   return
+    -- end
+    -- _D(Ext.Entity.Get(item):GetAllComponents().InventoryMember.Inventory.InventoryIsOwned.Owner:GetAllComponents())
+end
+
+-- SECTION: SE handling
 function EHandlers.OnReset()
     ISFDebug(0, "'reset' command was called in the SE console, reloading shipments.")
     ItemShipmentInstance:LoadShipments()
 end
 
+-- SECTION: Message boxes
 --- Handle the event when the player declines a ReadyCheck
 function EHandlers.OnReadyCheckFailed(eventId)
     ISFDebug(2,
@@ -143,6 +163,7 @@ function EHandlers.OnReadyCheckPassed(eventId)
     end
 end
 
+-- SECTION: Casting spells
 --- Handle the event when a spell is cast
 function EHandlers.OnCastedSpell(caster, spell, spellType, spellElement, storyActionID)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
