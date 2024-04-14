@@ -56,7 +56,7 @@ end
 function ISMailboxes:InitializeUtilitiesCaseForMailbox(mailboxUUID)
     local utilitiesCaseUUID = self.UtilitiesCaseUUID
 
-    ISFWarn(0, "Checking if mailbox " .. mailboxUUID .. " has the utilities case.")
+    ISFDebug(1, "Checking if mailbox " .. mailboxUUID .. " has the utilities case.")
     local utilityCaseInsideMailbox = VCHelpers.Inventory:GetItemTemplateInInventory(utilitiesCaseUUID, mailboxUUID)
     if utilityCaseInsideMailbox == nil then
         ISFPrint(2, "Utilities case " .. utilitiesCaseUUID .. " not found in mailbox " .. mailboxUUID)
@@ -94,7 +94,7 @@ function ISMailboxes:RefillUtilitiesCaseForAllMailboxes()
             ISFPrint(2, "Refilling utilities case in mailbox " .. mailboxUUID)
             self:RefillUtilitiesCaseForMailbox(mailboxUUID)
         else
-            ISFWarn(1, "Utilities case not found in mailbox " .. mailboxUUID .. ". Adding it.")
+            ISFPrint(1, "Utilities case not found in mailbox " .. mailboxUUID .. ". Adding it.")
             self:InitializeUtilitiesCaseForMailbox(mailboxUUID)
         end
     end
