@@ -2,7 +2,7 @@ new entry "OBJ_ISF_Container"
 type "Object"
 using "OBJ_Chest_LetterBox"
 data "RootTemplate" "b99474ea-43f9-4dbb-9917-e0a6daa3b9e3"
-data "Weight" ""
+data "Weight" "500000"
 data "Rarity" "Common"
 
 new entry "OBJ_ISF_Utility_Container"

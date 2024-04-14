@@ -11,7 +11,6 @@ function SubscribedEvents.SubscribeToEvents()
         Ext.Osiris.RegisterListener("ReadyCheckPassed", 1, "after", EHandlers.OnReadyCheckPassed)
         Ext.Osiris.RegisterListener("UserConnected", 3, "after", EHandlers.OnUserConnected)
         Ext.Osiris.RegisterListener("CastedSpell", 5, "after", EHandlers.OnCastedSpell)
-        Ext.Osiris.RegisterListener("MovedFromTo", 4, "after", EHandlers.OnMovedFromTo)
 
         -- Reload the shipments when resetting Lua states
         Ext.Events.ResetCompleted:Subscribe(EHandlers.OnReset)
