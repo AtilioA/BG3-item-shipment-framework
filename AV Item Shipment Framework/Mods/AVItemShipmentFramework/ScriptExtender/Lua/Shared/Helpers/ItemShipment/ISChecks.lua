@@ -2,8 +2,9 @@
 ISChecks = _Class:Create("HelperISChecks", Helper)
 
 ISChecks.HasVisitedAct1Flag = "925c721d-686b-4fbe-8c3c-d1233bf863b7" -- "VISITEDREGION_WLD_Main_A"
--- TODO: look for flags for act 2 and 3
--- TODO: understand how to fetch player level
+ISChecks.HasVisitedAct2Flag = "f6e72539-9bc6-42e1-a20f-390f3a17ad8d" -- "VISITEDREGION_SCL_Main_A"
+ISChecks.HasVisitedAct3Flag = "11239767-48ad-4879-8312-b9164b6e4978" -- "VISITEDREGION_BGO_Main_A"
+-- TODO: understand how to properly fetch player level
 
 -- Check if the character has finished the tutorial or if spawning during tutorial is allowed
 function ISChecks:ProgressionShipmentChecks(item)
@@ -11,19 +12,26 @@ function ISChecks:ProgressionShipmentChecks(item)
     local allowDuringTutorial = Config:getCfg().FEATURES.spawning.allow_during_tutorial
     local shouldShipDuringTutorial = item.Send.Check.PlayerProgression.Act == 0
     local hasVisitedAct1 = Osi.GetFlag(self.HasVisitedAct1Flag, Osi.GetHostCharacter()) == 1
+    local hasVisitedAct2 = Osi.GetFlag(self.HasVisitedAct2Flag, Osi.GetHostCharacter()) == 1
+    local hasVisitedAct3 = Osi.GetFlag(self.HasVisitedAct3Flag, Osi.GetHostCharacter()) == 1
 
     -- If spawning during tutorial is not allowed, and the item is not set for 'Act 0', and the character has not visited Act 1, shipments cannot be processed.
-    -- TODO: refactor when Act 2 and 3 are added
-    if hasVisitedAct1 then
-        ISFPrint(2, "Character has visited Act 1. Proceeding with shipment checks.")
-        return true
-        -- User config takes precedence over item config
-    elseif not allowDuringTutorial then
-        ISFPrint(1, "Spawning during tutorial is not allowed, shipments will not be processed.")
-        return false
-    elseif not shouldShipDuringTutorial then
+    -- User config takes precedence over item config
+    if item.Send.Check.PlayerProgression.Act == 0 and (not allowDuringTutorial and not hasVisitedAct1) then
         ISFPrint(1,
-            "Character has not visited Act 1 and spawning during tutorial is not allowed, shipments will not be processed.")
+            "Item is set to spawn during tutorial but user config does not allow it, shipment will not be processed.")
+        return false
+    elseif item.Send.Check.PlayerProgression.Act == 1 and not hasVisitedAct1 then
+        ISFPrint(1,
+            "Character has not visited Act 1 yet, shipment will not be processed.")
+        return false
+    elseif item.Send.Check.PlayerProgression.Act == 2 and not hasVisitedAct2 then
+        ISFPrint(1,
+            "Character has not visited Act 2 yet, shipment will not be processed.")
+        return false
+    elseif item.Send.Check.PlayerProgression.Act == 3 and not hasVisitedAct3 then
+        ISFPrint(1,
+            "Character has not visited Act 3 yet, shipment will not be processed.")
         return false
     end
 
