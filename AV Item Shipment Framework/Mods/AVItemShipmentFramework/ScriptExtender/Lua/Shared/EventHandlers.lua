@@ -180,7 +180,7 @@ end
 function EHandlers.UninstallISF()
     --- Open a message box to inform the player that the uninstallation is complete
     local function notifyUninstallComplete()
-        VCHelpers.Timer:OnTime(2000, function()
+        VCHelpers.Timer:OnTime(1000, function()
             ISFPrint(0, Messages.ResolvedMessages.uninstall_completed)
             Osi.OpenMessageBox(Osi.GetHostCharacter(), Messages.ResolvedMessages.uninstall_completed)
         end)
