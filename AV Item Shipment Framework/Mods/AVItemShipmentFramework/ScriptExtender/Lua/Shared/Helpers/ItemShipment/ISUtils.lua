@@ -144,3 +144,18 @@ function ISUtils:DeleteAllISFItemsFromInventory(uuid)
         end
     end
 end
+
+--- Nuclear option to delete all ISF items from the game: iterate through all entities and delete items with Scroll_ISF_ in their template name
+---@return nil
+function ISUtils:DeleteAllISFScrollsFromGame()
+    local entities = Ext.Entity.GetAllEntitiesWithComponent("ServerItem")
+    if entities == nil then
+        return
+    end
+
+    for _, entity in pairs(entities) do
+        if entity and entity.Stats ~= nil and string.find(entity.Stats, "_Scroll_ISF_") then
+            Osi.RequestDelete(entity.Uuid.EntityUuid)
+        end
+    end
+end

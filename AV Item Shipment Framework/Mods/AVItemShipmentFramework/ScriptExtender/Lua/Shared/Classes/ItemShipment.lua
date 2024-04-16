@@ -280,4 +280,6 @@ function ItemShipment:DeleteAllISFItems()
         ISFPrint(0, "Deleting all ISF items from character: " .. character)
         ISUtils:DeleteAllISFItemsFromInventory(character)
     end
+
+    ISUtils:DeleteAllISFScrollsFromGame()
 end
