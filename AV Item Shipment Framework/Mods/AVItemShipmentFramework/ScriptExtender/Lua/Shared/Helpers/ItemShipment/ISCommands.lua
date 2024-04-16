@@ -56,6 +56,49 @@ Ext.RegisterConsoleCommand('isf_tut_update', function(cmd)
     ISMailboxes:UpdateTutorialChests()
 end)
 
+Ext.RegisterConsoleCommand('isf_uninstall_mod', function(cmd, modUUID)
+    local modName = Ext.Mod.GetMod(modUUID).Info.Name
+    _D(ItemShipmentInstance.mods)
+    ISFWarn(0, "Checking if " .. modName .. " uses A&V Item Shipment Framework.")
+    if not ItemShipmentInstance.mods[modUUID] then
+        ISFWarn(0, modName .. " is not using ISF. Please check the UUID.")
+    end
+
+    local modData = ItemShipmentInstance.mods[modUUID]
+    local templateUUIDs = {}
+
+    -- Iterate through the templateUUIDs and delete them from the game
+    for _, item in pairs(modData.Items) do
+        local templateUUID = item.TemplateUUID
+        if templateUUID then
+            ISFWarn(0, "Marking template for deletion: " .. templateUUID)
+            table.insert(templateUUIDs, templateUUID)
+        end
+    end
+
+    --- Filter out vanilla templates
+    local vanillaRootTemplates = VCHelpers.Template:GetAllVanillaTemplateIds()
+    for _, vanillaTemplate in pairs(vanillaRootTemplates) do
+        for i, templateUUID in pairs(templateUUIDs) do
+            if vanillaTemplate == templateUUID then
+                ISFWarn(0, "Removing vanilla template from deletion attempt: " .. templateUUID)
+                table.remove(templateUUIDs, i)
+            end
+        end
+    end
+
+    --- Scan all entities and delete the ones that match the templateUUIDs
+    local entities = Ext.Entity.GetAllEntitiesWithComponent("ServerItem")
+    for _, entity in pairs(entities) do
+        for _, templateUUID in pairs(templateUUIDs) do
+            if entity and entity.ServerItem and entity.ServerItem.Template and entity.ServerItem.Template.Id == templateUUID then
+                _D("Deleting entity: " .. entity.ServerItem.Template.Name)
+                Osi.RequestDelete(entity.Uuid.EntityUuid)
+            end
+        end
+    end
+end)
+
 -- Ext.RegisterConsoleCommand('isf_tt', function(cmd)
 --     ISFWarn(0, "Testing treasure table retrieval.")
 --     -- I don't know what I'm doing B-)
