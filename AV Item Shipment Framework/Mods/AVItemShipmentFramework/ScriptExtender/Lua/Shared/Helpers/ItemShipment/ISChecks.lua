@@ -11,25 +11,35 @@ function ISChecks:ProgressionShipmentChecks(item)
     -- TODO: add level check
     local allowDuringTutorial = Config:getCfg().FEATURES.spawning.allow_during_tutorial
     local shouldShipDuringTutorial = item.Send.Check.PlayerProgression.Act == 0
+    local shouldShipFromAct1 = item.Send.Check.PlayerProgression.Act == 1
+    local shouldShipFromAct2 = item.Send.Check.PlayerProgression.Act == 2
+    local shouldShipFromAct3 = item.Send.Check.PlayerProgression.Act == 3
     local hasVisitedAct1 = Osi.GetFlag(self.HasVisitedAct1Flag, Osi.GetHostCharacter()) == 1
     local hasVisitedAct2 = Osi.GetFlag(self.HasVisitedAct2Flag, Osi.GetHostCharacter()) == 1
     local hasVisitedAct3 = Osi.GetFlag(self.HasVisitedAct3Flag, Osi.GetHostCharacter()) == 1
+    local isPlayerLevelHighEnough = Osi.GetLevel(Osi.GetHostCharacter()) >= item.Send.Check.PlayerProgression.Level
+
+    if not isPlayerLevelHighEnough then
+        ISFPrint(1,
+            "Character level is not high enough to receive the item, shipment will not be processed.")
+        return false
+    end
 
     -- If spawning during tutorial is not allowed, and the item is not set for 'Act 0', and the character has not visited Act 1, shipments cannot be processed.
     -- User config takes precedence over item config
-    if item.Send.Check.PlayerProgression.Act == 0 and (not allowDuringTutorial and not hasVisitedAct1) then
+    if shouldShipDuringTutorial and (not allowDuringTutorial and not hasVisitedAct1) then
         ISFPrint(1,
             "Item is set to spawn during tutorial but user config does not allow it, shipment will not be processed.")
         return false
-    elseif item.Send.Check.PlayerProgression.Act == 1 and not hasVisitedAct1 then
+    elseif shouldShipFromAct1 and not hasVisitedAct1 then
         ISFPrint(1,
             "Character has not visited Act 1 yet, shipment will not be processed.")
         return false
-    elseif item.Send.Check.PlayerProgression.Act == 2 and not hasVisitedAct2 then
+    elseif shouldShipFromAct2 and not hasVisitedAct2 then
         ISFPrint(1,
             "Character has not visited Act 2 yet, shipment will not be processed.")
         return false
-    elseif item.Send.Check.PlayerProgression.Act == 3 and not hasVisitedAct3 then
+    elseif shouldShipFromAct3 and not hasVisitedAct3 then
         ISFPrint(1,
             "Character has not visited Act 3 yet, shipment will not be processed.")
         return false
