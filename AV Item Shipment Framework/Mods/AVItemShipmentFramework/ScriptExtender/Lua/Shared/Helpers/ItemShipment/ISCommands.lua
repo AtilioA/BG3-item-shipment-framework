@@ -99,23 +99,45 @@ Ext.RegisterConsoleCommand('isf_uninstall_mod', function(cmd, modUUID)
     end
 end)
 
--- Ext.RegisterConsoleCommand('isf_tt', function(cmd)
---     ISFWarn(0, "Testing treasure table retrieval.")
---     -- I don't know what I'm doing B-)
---     -- local template = "TUT_Chest_Potions"
---     -- local template = Ext.Template.GetLocalTemplate("3761acb2-5274-e2aa-bcd3-49b5d785f70b")
---     -- _D(Ext.Template.GetCacheTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
---     -- _D(Ext.Template.GetLocalCacheTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
---     -- _D(Ext.Template.GetLocalTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
+Ext.RegisterConsoleCommand('isf_tt', function(cmd)
+    ISFWarn(0, "Testing treasure table retrieval.")
+    -- I don't know what I'm doing B-)
+    -- local template = Ext.Template.GetLocalTemplate("3761acb2-5274-e2aa-bcd3-49b5d785f70b")
+    -- _D(Ext.Template.GetCacheTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
+    -- _D(Ext.Template.GetLocalCacheTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
+    -- _D(Ext.Template.GetLocalTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
 
---     -- _D(Ext.Template.GetTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
---     -- _D("== ROOT ==")
---     -- _D(Ext.Template.GetRootTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
+    -- _D(Ext.Template.GetTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
+    -- _D("== ROOT ==")
+    -- _D(Ext.Template.GetRootTemplate("4708b966-e0a5-4551-9871-43cf42302419"))
 
---     _D("TT")
---     local treasureTableName = "MEQ_Item_Container_Cloaks_TT"
---     local treasureTable = VCHelpers.TreasureTable:ProcessSingleTreasureTable(treasureTableName)
---     if treasureTable then
---         _D(VCHelpers.TreasureTable:ExtractTreasureCategories(treasureTable))
---     end
--- end)
+    -- _D("TT")
+    local treasureTableName = "MEQ_Item_Container_Underwear_TT"
+    -- local treasureTableName = "TUT_Chest_Potions"
+    -- _D(Ext.Stats.TreasureTable.GetLegacy(treasureTableName))
+    -- _D(Ext.Stats.TreasureCategory.GetLegacy(treasureTableName))
+    -- local treasureTable = VCHelpers.TreasureTable:ProcessSingleTreasureTable(treasureTableName)
+    -- if not treasureTable then
+    --     ISFWarn(0, "Treasure table not found.")
+    --     return
+    -- end
+
+    -- local treasureCategories = VCHelpers.TreasureTable:ExtractTreasureCategories(treasureTable)
+    -- if not treasureCategories then
+    --     ISFWarn(0, "Treasure categories not found.")
+    --     return
+    -- end
+
+    -- _D(treasureCategories)
+    -- for _, category in pairs(treasureCategories) do
+    --     local categoryItems = category.Items
+    --     for _, item in pairs(categoryItems) do
+    --         _D(item.Name)
+    --         _D(Ext.Template.GetRootTemplate(item.Name))
+    --     end
+    -- end
+
+    _D(VCHelpers.TreasureTable:GetTableOfItemsFromTreasureTable(treasureTableName))
+    -- _D(treasureTable[1])
+    -- _D(Ext.Stats.TreasureCategory.GetLegacy(treasureTable[1]))
+end)
