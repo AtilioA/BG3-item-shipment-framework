@@ -118,8 +118,10 @@ function EHandlers.OnReadyCheckFailed(eventId)
         "Entering OnReadyCheckFailed, eventId: " .. eventId)
 
     if eventId == "isf_uninstall_move_items" then
-        ISFWarn(0, "Will uninstall ISF without moving items")
+        ISFWarn(0, "May uninstall ISF without moving items")
         EHandlers.moveItems = false
+        VCHelpers.MessageBox:DustyMessageBox('isf_uninstall_confirmation',
+        Messages.ResolvedMessages.uninstall_confirmation_prompt)
     end
 end
 
