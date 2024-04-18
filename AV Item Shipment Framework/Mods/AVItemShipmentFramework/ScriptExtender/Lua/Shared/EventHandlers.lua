@@ -155,7 +155,6 @@ function EHandlers.OnCastedSpell(caster, spell, spellType, spellElement, storyAc
 end
 
 function EHandlers.HandleCastedSpell(spell, ISFModVars)
-    ISFDebug(2, "Party casted ISF spell")
     if spell == "ISF_Refill_PlayerChest_1" then
         ISMailboxes:RefillMailbox(1, ISFModVars.Mailboxes[1])
     elseif spell == "ISF_Refill_PlayerChest_2" then
@@ -168,6 +167,19 @@ function EHandlers.HandleCastedSpell(spell, ISFModVars)
         ISMailboxes:IntegrateTutorialChest(ISFModVars.Mailboxes[1])
     elseif spell == "ISF_Uninstall" then
         EHandlers.HandleUninstallSpell()
+    end
+end
+
+function EHandlers.OnUsingSpellOnTarget(caster, target, spell, spellType, spellElement, storyActionID)
+    ISFDebug(2,
+        "OnUsingSpellOnTarget: " ..
+        caster .. " " .. target .. " " .. spell .. " " .. spellType .. " " .. spellElement .. " " .. storyActionID)
+    if Osi.IsInPartyWith(caster, Osi.GetHostCharacter()) and spell == "ISF_Uninstall" then
+        local itemModGuid = ItemShipmentInstance:GetModGUIDForItem(target)
+        if itemModGuid ~= nil then
+            ISFWarn(0, "Uninstalling mod: " .. itemModGuid .. " (" .. Ext.Mod.GetMod(itemModGuid).Info.Name .. ")")
+            ISCommands:UninstallMod(itemModGuid)
+        end
     end
 end
 

@@ -57,6 +57,10 @@ Ext.RegisterConsoleCommand('isf_tut_update', function(cmd)
 end)
 
 Ext.RegisterConsoleCommand('isf_uninstall_mod', function(cmd, modUUID)
+    ISCommands:UninstallMod(modUUID)
+end)
+
+function ISCommands:UninstallMod(modUUID)
     local modName = Ext.Mod.GetMod(modUUID).Info.Name
     _D(ItemShipmentInstance.mods)
     ISFWarn(0, "Checking if " .. modName .. " uses A&V Item Shipment Framework.")
@@ -65,9 +69,14 @@ Ext.RegisterConsoleCommand('isf_uninstall_mod', function(cmd, modUUID)
     end
 
     local modData = ItemShipmentInstance.mods[modUUID]
-    local templateUUIDs = {}
+    local templateUUIDs = self:GetTemplateUUIDsFromModData(modData)
+    local vanillaTemplateUUIDs = self:FilterOutVanillaTemplates(templateUUIDs)
+    self:DeleteEntitiesWithTemplateUUIDs(vanillaTemplateUUIDs)
+end
 
-    -- Iterate through the templateUUIDs and delete them from the game
+--- TODO: Move this to a separate helper
+function ISCommands:GetTemplateUUIDsFromModData(modData)
+    local templateUUIDs = {}
     for _, item in pairs(modData.Items) do
         local templateUUID = item.TemplateUUID
         if templateUUID then
@@ -75,19 +84,24 @@ Ext.RegisterConsoleCommand('isf_uninstall_mod', function(cmd, modUUID)
             table.insert(templateUUIDs, templateUUID)
         end
     end
+    return templateUUIDs
+end
 
-    --- Filter out vanilla templates
+function ISCommands:FilterOutVanillaTemplates(templateUUIDs)
     local vanillaRootTemplates = VCHelpers.Template:GetAllVanillaTemplateIds()
-    for _, vanillaTemplate in pairs(vanillaRootTemplates) do
-        for i, templateUUID in pairs(templateUUIDs) do
+    for i, templateUUID in pairs(templateUUIDs) do
+        for _, vanillaTemplate in pairs(vanillaRootTemplates) do
             if vanillaTemplate == templateUUID then
                 ISFWarn(0, "Removing vanilla template from deletion attempt: " .. templateUUID)
                 table.remove(templateUUIDs, i)
+                break
             end
         end
     end
+    return templateUUIDs
+end
 
-    --- Scan all entities and delete the ones that match the templateUUIDs
+function ISCommands:DeleteEntitiesWithTemplateUUIDs(templateUUIDs)
     local entities = Ext.Entity.GetAllEntitiesWithComponent("ServerItem")
     for _, entity in pairs(entities) do
         for _, templateUUID in pairs(templateUUIDs) do
@@ -97,7 +111,7 @@ Ext.RegisterConsoleCommand('isf_uninstall_mod', function(cmd, modUUID)
             end
         end
     end
-end)
+end
 
 Ext.RegisterConsoleCommand('isf_tt', function(cmd)
     ISFWarn(0, "Testing treasure table retrieval.")

@@ -283,3 +283,21 @@ function ItemShipment:DeleteAllISFItems()
 
     ISUtils:DeleteAllISFScrollsFromGame()
 end
+
+--- Get the mod GUID for a specific item UUID
+---@param objectUUID string The UUID of the item being searched for
+---@return string|nil modGUID mod GUID of the mod that the item belongs to, or nil if the item is not found in any mod's shipment data
+function ItemShipment:GetModGUIDForItem(objectUUID)
+    -- Iterate through each mod's shipment data
+    for modGUID, modData in pairs(self.mods) do
+        -- Check if the item is listed in the mod's shipment data
+        for _, item in pairs(modData.Items) do
+            if item.TemplateUUID == objectUUID then
+                return modGUID
+            end
+        end
+    end
+
+    -- Item not found in any mod's shipment data
+    return nil
+end
