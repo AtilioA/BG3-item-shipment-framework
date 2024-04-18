@@ -2,6 +2,8 @@ EHandlers = {}
 
 EHandlers.moveItems = false
 
+TemplateNameToUUID = VCHelpers.Template:GetTemplateNameToTemplateData()
+
 function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
     ISFDebug(2,
         "Entering OnLevelGameplayStarted, levelName: " .. levelName .. ", isEditorMode: " .. tostring(isEditorMode))
@@ -121,7 +123,7 @@ function EHandlers.OnReadyCheckFailed(eventId)
         ISFWarn(0, "May uninstall ISF without moving items")
         EHandlers.moveItems = false
         VCHelpers.MessageBox:DustyMessageBox('isf_uninstall_confirmation',
-        Messages.ResolvedMessages.uninstall_confirmation_prompt)
+            Messages.ResolvedMessages.uninstall_confirmation_prompt)
     end
 end
 
@@ -177,7 +179,9 @@ function EHandlers.OnUsingSpellOnTarget(caster, target, spell, spellType, spellE
         "OnUsingSpellOnTarget: " ..
         caster .. " " .. target .. " " .. spell .. " " .. spellType .. " " .. spellElement .. " " .. storyActionID)
     if Osi.IsInPartyWith(caster, Osi.GetHostCharacter()) and spell == "ISF_Uninstall" then
-        local itemModGuid = ItemShipmentInstance:GetModGUIDForItem(target)
+        local targetTemplateName = VCHelpers.Format:GetTemplateName(target)
+        local itemRT = TemplateNameToUUID[targetTemplateName]
+        local itemModGuid = ItemShipmentInstance:GetModGUIDForItem(itemRT.Id)
         if itemModGuid ~= nil then
             ISFWarn(0, "Uninstalling mod: " .. itemModGuid .. " (" .. Ext.Mod.GetMod(itemModGuid).Info.Name .. ")")
             ISCommands:UninstallMod(itemModGuid)

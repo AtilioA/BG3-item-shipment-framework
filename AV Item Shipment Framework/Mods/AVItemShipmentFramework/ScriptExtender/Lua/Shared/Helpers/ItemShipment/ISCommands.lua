@@ -88,7 +88,7 @@ function ISCommands:GetTemplateUUIDsFromModData(modData)
 end
 
 function ISCommands:FilterOutVanillaTemplates(templateUUIDs)
-    local vanillaRootTemplates = VCHelpers.Template:GetAllVanillaTemplateIds()
+    local vanillaRootTemplates = VCHelpers.Template:GetAllVanillaTemplates()
     for i, templateUUID in pairs(templateUUIDs) do
         for _, vanillaTemplate in pairs(vanillaRootTemplates) do
             if vanillaTemplate == templateUUID then
