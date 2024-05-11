@@ -196,8 +196,12 @@ end
 function ItemShipment:GetTargetInventories(item)
     local targetInventories = {}
 
-    -- Check if the item should be sent to the host
-    if item.Send.To.Host then
+    -- Add an option to always send to host
+    if Config:getCfg().FEATURES.shipment.always_send_to_host then
+        table.insert(targetInventories, Osi.GetHostCharacter())
+        return targetInventories
+        -- Check if the item should be sent to the host
+    elseif item.Send.To.Host then
         table.insert(targetInventories, Osi.GetHostCharacter())
     end
 
