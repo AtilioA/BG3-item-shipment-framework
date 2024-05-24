@@ -19,12 +19,12 @@ const Page: React.FC = () => {
                 </a>
             </h1>
             <div className="flex items-center gap-4 mb-6">
-                <a href="https://www.nexusmods.com/baldursgate3/mods/8295" className="hover:text-gray-400 transition-hover flex items-center">
+                <a target="_blank" rel="noopener noreferrer" href="https://www.nexusmods.com/baldursgate3/mods/8295" className="hover:text-gray-400 transition-hover flex items-center">
                     <FontAwesomeIcon icon={faGlobe} className="mr-2 text-orange-400" />
                     Mod page
                 </a>
                 {/* <div className="border-r border-gray-600 h-8"></div> */}
-                <a href="https://github.com/AtilioA/BG3-item-shipment-framework/wiki" className="hover:text-gray-400 transition-hover flex items-center">
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/AtilioA/BG3-item-shipment-framework/wiki" className="hover:text-gray-400 transition-hover flex items-center">
                     <FontAwesomeIcon icon={faBook} className="mr-2 text-blue-400" />
                     Docs
                 </a>
