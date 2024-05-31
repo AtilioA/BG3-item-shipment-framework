@@ -32,6 +32,8 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
         -- if Config:getCfg().FEATURES.spawning.tutorial_chest then
         --     ISMailboxes:UpdateHostMailboxTutorialChest()
         -- end
+
+        ISMailboxes:RefillTutorialChests()
     end)
 end
 

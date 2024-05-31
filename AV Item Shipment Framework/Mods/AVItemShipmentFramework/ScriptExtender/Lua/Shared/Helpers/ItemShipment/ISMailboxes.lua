@@ -294,3 +294,33 @@ function ISMailboxes:AddTutorialChestToContainer(mailboxUUID)
     ISFDebug(2, "Adding Tutorial Chest to mailbox: " .. mailboxUUID)
     Osi.TemplateAddTo(self.TutChestTemplateUUID, mailboxUUID, 1, 0)
 end
+
+function ISMailboxes:RefillTutorialChestsInMailboxes()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    local treasureTableName = "TUT_Chest_Potions"
+    local treasureTableItemsTable = VCHelpers.TreasureTable:GetTableOfItemsFromTreasureTable(treasureTableName)
+
+    if not ISFModVars.Mailboxes then
+        ISFWarn(1, "Mailboxes not found.")
+        return
+    end
+
+    for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+        self:RefillTutorialChestsInMailbox(mailboxUUID, treasureTableItemsTable)
+    end
+end
+
+function ISMailboxes:RefillTutorialChestsInMailbox(mailboxUUID, treasureTableItemsTable)
+    local tutorialChestsInMailbox = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(
+        self.TutChestTemplateUUID, mailboxUUID)
+
+    if not tutorialChestsInMailbox then
+        return
+    end
+
+    for _, tutorialChestInMailbox in pairs(tutorialChestsInMailbox) do
+        for _, item in pairs(treasureTableItemsTable) do
+            VCHelpers.Inventory:RefillInventoryWithItem(item.Id, item.Quantity, tutorialChestInMailbox.Guid)
+        end
+    end
+end
