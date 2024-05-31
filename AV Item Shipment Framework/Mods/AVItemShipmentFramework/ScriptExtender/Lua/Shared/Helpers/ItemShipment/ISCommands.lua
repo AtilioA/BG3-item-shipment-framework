@@ -115,7 +115,7 @@ end
 
 Ext.RegisterConsoleCommand('isf_refill_tut', function(cmd)
     ISFDebug(0, "Refilling tutorial chests.")
-    ISMailboxes:RefillTutorialChests()
+    ISMailboxes:RefillTutorialChestsInMailboxes()
 end)
 
 Ext.RegisterConsoleCommand('isf_tt', function(cmd)

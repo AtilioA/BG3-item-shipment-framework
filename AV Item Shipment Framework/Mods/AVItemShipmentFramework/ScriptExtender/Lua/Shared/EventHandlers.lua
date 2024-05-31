@@ -33,7 +33,7 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
         --     ISMailboxes:UpdateHostMailboxTutorialChest()
         -- end
 
-        ISMailboxes:RefillTutorialChests()
+        ISMailboxes:RefillTutorialChestsInMailboxes()
     end)
 end
 
