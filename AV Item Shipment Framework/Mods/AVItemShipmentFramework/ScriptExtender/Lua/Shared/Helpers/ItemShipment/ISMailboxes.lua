@@ -109,7 +109,7 @@ function ISMailboxes:RefillUtilitiesCaseForMailbox(mailboxUUID)
     local refillMailbox2 = "7bf93529-26dc-4c38-9341-97147926147b"
     local refillMailbox3 = "42b7bffb-0d8d-4a54-9261-6aa130eb5493"
     local refillMailbox4 = "48608d58-00e0-405c-af2a-cc520519b194"
-    local updateTutChest = "d5ef2737-820c-4865-a39d-f17e7bd68970"
+    -- local updateTutChest = "d5ef2737-820c-4865-a39d-f17e7bd68970"
     local uninstallScroll = "7348db1f-991e-4347-a334-88d13db7fbbe"
 
     local utilitiesCaseItem = VCHelpers.Inventory:GetItemTemplateInInventory(self.UtilitiesCaseUUID, mailboxUUID)
@@ -118,7 +118,6 @@ function ISMailboxes:RefillUtilitiesCaseForMailbox(mailboxUUID)
         VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox2, 1, utilitiesCaseItem.Uuid.EntityUuid)
         VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox3, 1, utilitiesCaseItem.Uuid.EntityUuid)
         VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox4, 1, utilitiesCaseItem.Uuid.EntityUuid)
-        VCHelpers.Inventory:RefillInventoryWithItem(updateTutChest, 1, utilitiesCaseItem.Uuid.EntityUuid)
         VCHelpers.Inventory:RefillInventoryWithItem(uninstallScroll, 1, utilitiesCaseItem.Uuid.EntityUuid)
     end
 end
@@ -301,65 +300,42 @@ function ISMailboxes:RefillTutorialChestsInMailboxes()
     local treasureTableName = "TUT_Chest_Potions"
     local treasureTableItemsTable = VCHelpers.TreasureTable:GetTableOfItemsFromTreasureTable(treasureTableName)
 
-    if not ISFModVars.Mailboxes then
-        ISFWarn(1, "Mailboxes not found.")
-        return
-    end
-
     if not treasureTableItemsTable then
         ISFWarn(1, "Treasure table items not found.")
         return
     end
 
+    if not ISFModVars.Mailboxes then
+        ISFWarn(1, "Mailboxes not found.")
+        return
+    end
+
     for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
-        VCHelpers.TreasureTable:RefillContainerWithTTItems(mailboxUUID, treasureTableItemsTable)
+        self:RefillTutorialChestsInMailbox(mailboxUUID, treasureTableItemsTable)
     end
 end
 
+--- Refills all tutorial chests in a mailbox with items from the treasure table.
+---@param mailboxUUID string The UUID of the mailbox.
+---@param treasureTableItemsTable TreasureTableItem[] The items to refill the chests with.
 function ISMailboxes:RefillTutorialChestsInMailbox(mailboxUUID, treasureTableItemsTable)
-    local tutorialChestsInMailbox = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(
-        self.TutChestTemplateUUID, mailboxUUID)
+    local tutorialChestsInMailbox = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(self.TutChestTemplateUUID,
+        mailboxUUID)
 
     if not tutorialChestsInMailbox then
         return
     end
 
     for _, tutorialChestInMailbox in pairs(tutorialChestsInMailbox) do
-        for _, item in pairs(treasureTableItemsTable) do
-            VCHelpers.Inventory:RefillInventoryWithItem(item.Id, item.Quantity, tutorialChestInMailbox.Guid)
-        end
-    end
-end
-
--- TODO: move to VC
---- Refills the container with items from the treasure table, recursively handling nested items.
----@param containerID string The ID of the container to refill.
----@param ttItems TreasureTableItem[] The items to refill the container with, as returned by VCHelpers.TreasureTable:GetTableOfItemsFromTreasureTable.
-function VCHelpers.TreasureTable:RefillContainerWithTTItems(containerID, ttItems)
-    for _, item in ipairs(ttItems) do
-        ISFDebug(1,
-            "Refilling container with item: " ..
-            item.Name .. "(" .. item.Id .. "), quantity: " .. item.Quantity .. ", containerID: " .. containerID
-        )
-        local refillCreatedItem = VCHelpers.Inventory:RefillInventoryWithItem(item.Id, item.Quantity, containerID)
-
-        -- Item already exists in the container, refill nested items if any
-        if not refillCreatedItem and item.nestedItems and #item.nestedItems > 0 then
-            -- Get the local template of item, then refill it with its nested items
-            local existingItem = VCHelpers.Inventory:GetItemTemplateInInventory(item.Id, containerID)
-            if existingItem then
-                -- Recursively refill the container with nested items; this will handle nested items of nested items as well
-                self:RefillContainerWithTTItems(existingItem.Uuid.EntityUuid, item.nestedItems)
-            end
-        end
+        VCHelpers.TreasureTable:RefillContainerWithTTItems(tutorialChestInMailbox.Guid, treasureTableItemsTable)
     end
 end
 
 --- Refills all mailboxes with items from the treasure table.
----@param items TreasureTableItem[] The items to refill the mailboxes with.
-function ISMailboxes:RefillAllMailboxesWithItems(items)
+---@param ttItems TreasureTableItem[] The items to refill the mailboxes with.
+function ISMailboxes:RefillAllMailboxesWithItems(ttItems)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
     for _, mailboxID in pairs(ISFModVars.Mailboxes) do
-        VCHelpers.TreasureTable:RefillContainerWithTTItems(mailboxID, items)
+        VCHelpers.TreasureTable:RefillContainerWithTTItems(mailboxID, ttItems)
     end
 end
