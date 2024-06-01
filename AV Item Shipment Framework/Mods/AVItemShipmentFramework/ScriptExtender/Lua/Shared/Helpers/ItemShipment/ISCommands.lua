@@ -56,63 +56,6 @@ Ext.RegisterConsoleCommand('isf_tut_update', function(cmd)
     ISMailboxes:UpdateTutorialChests()
 end)
 
-Ext.RegisterConsoleCommand('isf_uninstall_mod', function(cmd, modUUID)
-    ISCommands:UninstallMod(modUUID)
-end)
-
-function ISCommands:UninstallMod(modUUID)
-    local modName = Ext.Mod.GetMod(modUUID).Info.Name
-    _D(ItemShipmentInstance.mods)
-    ISFWarn(0, "Checking if " .. modName .. " uses A&V Item Shipment Framework.")
-    if not ItemShipmentInstance.mods[modUUID] then
-        ISFWarn(0, modName .. " is not using ISF. Please check the UUID.")
-    end
-
-    local modData = ItemShipmentInstance.mods[modUUID]
-    local templateUUIDs = self:GetTemplateUUIDsFromModData(modData)
-    local vanillaTemplateUUIDs = self:FilterOutVanillaTemplates(templateUUIDs)
-    self:DeleteEntitiesWithTemplateUUIDs(vanillaTemplateUUIDs)
-end
-
---- TODO: Move this to a separate helper
-function ISCommands:GetTemplateUUIDsFromModData(modData)
-    local templateUUIDs = {}
-    for _, item in pairs(modData.Items) do
-        local templateUUID = item.TemplateUUID
-        if templateUUID then
-            ISFWarn(0, "Marking template for deletion: " .. templateUUID)
-            table.insert(templateUUIDs, templateUUID)
-        end
-    end
-    return templateUUIDs
-end
-
-function ISCommands:FilterOutVanillaTemplates(templateUUIDs)
-    local vanillaRootTemplates = VCHelpers.Template:GetAllVanillaTemplates()
-    for i, templateUUID in pairs(templateUUIDs) do
-        for _, vanillaTemplate in pairs(vanillaRootTemplates) do
-            if vanillaTemplate == templateUUID then
-                ISFWarn(0, "Removing vanilla template from deletion attempt: " .. templateUUID)
-                table.remove(templateUUIDs, i)
-                break
-            end
-        end
-    end
-    return templateUUIDs
-end
-
-function ISCommands:DeleteEntitiesWithTemplateUUIDs(templateUUIDs)
-    local entities = Ext.Entity.GetAllEntitiesWithComponent("ServerItem")
-    for _, entity in pairs(entities) do
-        for _, templateUUID in pairs(templateUUIDs) do
-            if entity and entity.ServerItem and entity.ServerItem.Template and entity.ServerItem.Template.Id == templateUUID then
-                ISFWarn(0, "Deleting entity: " .. entity.ServerItem.Template.Name)
-                Osi.RequestDelete(entity.Uuid.EntityUuid)
-            end
-        end
-    end
-end
-
 Ext.RegisterConsoleCommand('isf_refill_tut', function(cmd)
     ISFDebug(0, "Refilling tutorial chests.")
     ISMailboxes:RefillTutorialChestsInMailboxes()

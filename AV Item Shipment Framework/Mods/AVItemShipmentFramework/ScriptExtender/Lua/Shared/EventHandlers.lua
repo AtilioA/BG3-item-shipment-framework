@@ -172,21 +172,6 @@ function EHandlers.HandleCastedSpell(spell, ISFModVars)
     end
 end
 
-function EHandlers.OnUsingSpellOnTarget(caster, target, spell, spellType, spellElement, storyActionID)
-    ISFDebug(2,
-        "OnUsingSpellOnTarget: " ..
-        caster .. " " .. target .. " " .. spell .. " " .. spellType .. " " .. spellElement .. " " .. storyActionID)
-    if Osi.IsInPartyWith(caster, Osi.GetHostCharacter()) and spell == "ISF_Uninstall" then
-        local targetTemplateName = VCHelpers.Format:GetTemplateName(target)
-        local itemRT = VCHelpers.Template.TemplateNameToUUID[targetTemplateName]
-        local itemModGuid = ItemShipmentInstance:GetModGUIDForItem(itemRT.Id)
-        if itemModGuid ~= nil then
-            ISFWarn(0, "Uninstalling mod: " .. itemModGuid .. " (" .. Ext.Mod.GetMod(itemModGuid).Info.Name .. ")")
-            ISCommands:UninstallMod(itemModGuid)
-        end
-    end
-end
-
 function EHandlers.HandleUninstallSpell()
     VCHelpers.MessageBox:DustyMessageBox('isf_uninstall_move_items',
         Messages.ResolvedMessages.uninstall_should_move_out_of_mailboxes)
