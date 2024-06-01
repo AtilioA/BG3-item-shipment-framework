@@ -118,6 +118,12 @@ Ext.RegisterConsoleCommand('isf_refill_tut', function(cmd)
     ISMailboxes:RefillTutorialChestsInMailboxes()
 end)
 
+Ext.RegisterConsoleCommand('isf_r', function(cmd)
+    -- local treasureTableName = "?"
+    -- local treasureTableItemsTable = VCHelpers.TreasureTable:GetTableOfItemsFromTreasureTable(treasureTableName)
+    -- ISMailboxes:RefillAllMailboxesWithItems(treasureTableItemsTable)
+end)
+
 Ext.RegisterConsoleCommand('isf_tt', function(cmd)
     ISFWarn(0, "[DEV COMMAND] Testing treasure table retrieval.")
     -- I don't know what I'm doing B-)
