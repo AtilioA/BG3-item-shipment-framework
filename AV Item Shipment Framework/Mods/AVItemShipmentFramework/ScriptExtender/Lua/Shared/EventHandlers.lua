@@ -28,7 +28,7 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
 
         -- TODO: Reintroduce this with container refills after SE updates with TreasureTable fixes
         if Config:getCfg().FEATURES.spawning.tutorial_chest and Config:getCfg().FEATURES.spawning.refill_tutorial_chest then
-            ISMailboxes:RefillTutorialChestsInMailboxes()
+            ISMailboxes:RefillTutorialChestsInHostMailbox()
         end
     end)
 end
@@ -39,10 +39,10 @@ function EHandlers.OnUserConnected(userID, userName, userProfileID)
     ItemShipmentInstance:LoadShipments()
     ItemShipmentInstance:ProcessShipments(false)
     -- TODO: Reintroduce this with container refills after SE updates with TreasureTable fixes
-    -- if Config:getCfg().FEATURES.spawning.tutorial_chest then
-    --     ISMailboxes:UpdateRemainingMailboxesTutorialChests()
-    --     ISFDebug(1, "Updated remaining mailboxes with Tutorial Chests.")
-    -- end
+    if Config:getCfg().FEATURES.spawning.tutorial_chest and Config:getCfg().FEATURES.spawning.refill_tutorial_chest then
+        ISMailboxes:RefillTutorialChestsInRemainingMailboxes()
+        ISFDebug(1, "Updated remaining mailboxes with Tutorial Chests.")
+    end
 end
 
 function EHandlers.OnUseStarted(character, item)

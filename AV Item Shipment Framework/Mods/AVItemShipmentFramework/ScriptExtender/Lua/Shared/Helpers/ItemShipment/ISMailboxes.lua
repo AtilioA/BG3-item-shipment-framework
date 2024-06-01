@@ -295,8 +295,14 @@ function ISMailboxes:AddTutorialChestToContainer(mailboxUUID)
 end
 
 -- TODO: Do the same with any other containers managed by ISF that may need to be refilled
-function ISMailboxes:RefillTutorialChestsInMailboxes()
+function ISMailboxes:RefillTutorialChests(mailboxIndexStart, mailboxIndexEnd)
     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+
+    if not mailboxIndexStart or not mailboxIndexEnd then
+        mailboxIndexStart = 1
+        mailboxIndexEnd = #ISFModVars.Mailboxes
+    end
+
     local treasureTableName = "TUT_Chest_Potions"
     local treasureTableItemsTable = VCHelpers.TreasureTable:GetTableOfItemsFromTreasureTable(treasureTableName)
 
@@ -310,9 +316,22 @@ function ISMailboxes:RefillTutorialChestsInMailboxes()
         return
     end
 
-    for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
-        self:RefillTutorialChestsInMailbox(mailboxUUID, treasureTableItemsTable)
+    for i = mailboxIndexStart, mailboxIndexEnd do
+        if not ISFModVars.Mailboxes[i] then
+            ISFWarn(1, "Mailbox at index " .. i .. " not found.")
+            return
+        end
+        self:RefillTutorialChestsInMailbox(ISFModVars.Mailboxes[i], treasureTableItemsTable)
     end
+end
+
+function ISMailboxes:RefillTutorialChestsInHostMailbox()
+    self:RefillTutorialChests(1, 1)
+end
+
+function ISMailboxes:RefillTutorialChestsInRemainingMailboxes()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    self:RefillTutorialChests(2, #ISFModVars.Mailboxes)
 end
 
 --- Refills all tutorial chests in a mailbox with items from the treasure table.
