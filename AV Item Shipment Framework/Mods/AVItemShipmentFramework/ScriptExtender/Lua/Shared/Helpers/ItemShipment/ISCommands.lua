@@ -106,7 +106,7 @@ function ISCommands:DeleteEntitiesWithTemplateUUIDs(templateUUIDs)
     for _, entity in pairs(entities) do
         for _, templateUUID in pairs(templateUUIDs) do
             if entity and entity.ServerItem and entity.ServerItem.Template and entity.ServerItem.Template.Id == templateUUID then
-                _D("Deleting entity: " .. entity.ServerItem.Template.Name)
+                ISFWarn(0, "Deleting entity: " .. entity.ServerItem.Template.Name)
                 Osi.RequestDelete(entity.Uuid.EntityUuid)
             end
         end

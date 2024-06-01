@@ -2,8 +2,6 @@ EHandlers = {}
 
 EHandlers.moveItems = false
 
-TemplateNameToUUID = VCHelpers.Template:GetTemplateNameToTemplateData()
-
 function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
     ISFDebug(2,
         "Entering OnLevelGameplayStarted, levelName: " .. levelName .. ", isEditorMode: " .. tostring(isEditorMode))
@@ -182,7 +180,7 @@ function EHandlers.OnUsingSpellOnTarget(caster, target, spell, spellType, spellE
         caster .. " " .. target .. " " .. spell .. " " .. spellType .. " " .. spellElement .. " " .. storyActionID)
     if Osi.IsInPartyWith(caster, Osi.GetHostCharacter()) and spell == "ISF_Uninstall" then
         local targetTemplateName = VCHelpers.Format:GetTemplateName(target)
-        local itemRT = TemplateNameToUUID[targetTemplateName]
+        local itemRT = VCHelpers.Template.TemplateNameToUUID[targetTemplateName]
         local itemModGuid = ItemShipmentInstance:GetModGUIDForItem(itemRT.Id)
         if itemModGuid ~= nil then
             ISFWarn(0, "Uninstalling mod: " .. itemModGuid .. " (" .. Ext.Mod.GetMod(itemModGuid).Info.Name .. ")")
