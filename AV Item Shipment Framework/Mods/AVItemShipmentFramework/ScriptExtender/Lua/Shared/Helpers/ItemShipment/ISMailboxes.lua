@@ -349,7 +349,7 @@ function VCHelpers.TreasureTable:RefillContainerWithTTItems(containerID, ttItems
             local existingItem = VCHelpers.Inventory:GetItemTemplateInInventory(item.Id, containerID)
             if existingItem then
                 -- Recursively refill the container with nested items; this will handle nested items of nested items as well
-                self:RefillContainerWithTTItems(existingItem.Guid, item.nestedItems)
+                self:RefillContainerWithTTItems(existingItem.Uuid.EntityUuid, item.nestedItems)
             end
         end
     end

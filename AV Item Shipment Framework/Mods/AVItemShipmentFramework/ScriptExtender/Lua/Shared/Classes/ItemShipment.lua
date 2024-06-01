@@ -197,6 +197,7 @@ function ItemShipment:GetTargetInventories(item)
     local targetInventories = {}
 
     -- Add an option to always send to host
+    -- TODO: test if this is working
     if Config:getCfg().FEATURES.shipment.always_send_to_host then
         table.insert(targetInventories, Osi.GetHostCharacter())
         return targetInventories
