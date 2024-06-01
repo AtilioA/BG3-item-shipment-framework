@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <save>
   <version major="4" minor="0" revision="0" build="49" />
   <region id="Config">
@@ -18,7 +18,7 @@
         <node id="ModuleInfo">
           <attribute id="Author" type="LSString" value="Aetherpoint, Volitio" />
           <attribute id="CharacterCreationLevelName" type="FixedString" value="" />
-          <attribute id="Description" type="LSString" value="A framework designed to supersede Tutorial Chest usage by enabling mod authors to easily and safely add new items to camp chests/player inventories." />
+          <attribute id="Description" type="LSString" value="This framework supersedes Tutorial Chest summoning by allowing mod authors to easily add new items to camp chests and player inventories, and by providing a self-updating tutorial chest to camp chests." />
           <attribute id="Folder" type="LSString" value="AVItemShipmentFramework" />
           <attribute id="LobbyLevelName" type="FixedString" value="" />
           <attribute id="MD5" type="LSString" value="" />
