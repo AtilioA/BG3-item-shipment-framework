@@ -25,5 +25,5 @@
     <content contentuid="h93f3b749g83deg4eaagb114g0bafaf8d15bc" version="1">Bist du sicher, dass du die Mod deinstallieren willst?&lt;br&gt;&lt;br&gt;Alternativ kann man sie über die JSON-Konfigurationsdatei deaktivieren.&lt;br&gt;&lt;br&gt;Eine Neuinstallation dieses Mods zu einem späteren Zeitpunkt kann dazu führen, dass einige Mods ihre Items erneut sendet.</content>
     <content contentuid="h5f8290f2gf829g4170gbf39gc6088811945a" version="1">Item Shipment Framework wurde deinstalliert.&lt;br&gt;&lt;br&gt;Die Mod kann nun sicher von der Load-Order entfernt werden.</content>
     <content contentuid="ha521e34fg52d2g413ag9623g6ddb937058cf" version="1">Tutorial-Truhe</content>
-    <content contentuid="hff01ce89g89c6g49cegb1fcg6ab2da5fec19" version="1">Dieser "Tutorial-Truhe" dient der Kompatibilität mit älteren Mods, die noch nicht auf das Item Shipment Framework umgestellt wurden.&lt;br&gt;&lt;br&gt;Additionally, it will now automatically refill as new mods add items to it.</content>
+    <content contentuid="hff01ce89g89c6g49cegb1fcg6ab2da5fec19" version="1">Dieser "Tutorial-Truhe" dient der Kompatibilität mit älteren Mods, die noch nicht auf das Item Shipment Framework umgestellt wurden.&lt;br&gt;&lt;br&gt;Außerdem wird die Truhe automatisch aufgefüllt, wenn neue Mods ihre Items hinzufügen.</content>
 </contentList>
