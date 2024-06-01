@@ -27,11 +27,9 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
         ItemShipmentInstance:ProcessShipments(false)
 
         -- TODO: Reintroduce this with container refills after SE updates with TreasureTable fixes
-        -- if Config:getCfg().FEATURES.spawning.tutorial_chest then
-        --     ISMailboxes:UpdateHostMailboxTutorialChest()
-        -- end
-
-        ISMailboxes:RefillTutorialChestsInMailboxes()
+        if Config:getCfg().FEATURES.spawning.tutorial_chest and Config:getCfg().FEATURES.spawning.refill_tutorial_chest then
+            ISMailboxes:RefillTutorialChestsInMailboxes()
+        end
     end)
 end
 

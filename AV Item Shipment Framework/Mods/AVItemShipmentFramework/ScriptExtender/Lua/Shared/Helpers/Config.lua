@@ -16,6 +16,7 @@ Config = VCHelpers.Config:New({
             },
             spawning = {
                 tutorial_chest = true,        -- Set to false to disable the tutorial chest integration
+                refill_tutorial_chest = true, -- Set to false to disable the tutorial chest refill
                 allow_during_tutorial = true, -- Set to true to allow item spawning during the tutorial
             },
         },
