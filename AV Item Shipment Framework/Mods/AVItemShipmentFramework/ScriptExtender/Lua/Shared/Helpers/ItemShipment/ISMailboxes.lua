@@ -109,7 +109,7 @@ function ISMailboxes:RefillUtilitiesCaseForMailbox(mailboxUUID)
     local refillMailbox2 = "7bf93529-26dc-4c38-9341-97147926147b"
     local refillMailbox3 = "42b7bffb-0d8d-4a54-9261-6aa130eb5493"
     local refillMailbox4 = "48608d58-00e0-405c-af2a-cc520519b194"
-    local updateTutChest = "d5ef2737-820c-4865-a39d-f17e7bd68970"
+    -- local updateTutChest = "d5ef2737-820c-4865-a39d-f17e7bd68970"
     local uninstallScroll = "7348db1f-991e-4347-a334-88d13db7fbbe"
 
     local utilitiesCaseItem = VCHelpers.Inventory:GetItemTemplateInInventory(self.UtilitiesCaseUUID, mailboxUUID)
@@ -118,7 +118,6 @@ function ISMailboxes:RefillUtilitiesCaseForMailbox(mailboxUUID)
         VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox2, 1, utilitiesCaseItem.Uuid.EntityUuid)
         VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox3, 1, utilitiesCaseItem.Uuid.EntityUuid)
         VCHelpers.Inventory:RefillInventoryWithItem(refillMailbox4, 1, utilitiesCaseItem.Uuid.EntityUuid)
-        VCHelpers.Inventory:RefillInventoryWithItem(updateTutChest, 1, utilitiesCaseItem.Uuid.EntityUuid)
         VCHelpers.Inventory:RefillInventoryWithItem(uninstallScroll, 1, utilitiesCaseItem.Uuid.EntityUuid)
     end
 end
@@ -229,25 +228,6 @@ function ISMailboxes:RefillMailboxWithItem(item, mailboxUUID)
     return VCHelpers.Inventory:RefillInventoryWithItem(item.TemplateUUID, item.Send.Quantity, mailboxUUID)
 end
 
---- Update the host's mailbox with a new Tutorial Chest instance
-function ISMailboxes:UpdateHostMailboxTutorialChest()
-    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
-    local hostMailboxUUID = ISFModVars.Mailboxes[1]
-    if hostMailboxUUID then
-        self:IntegrateTutorialChest(hostMailboxUUID)
-    end
-end
-
---- Update the remaining mailboxes with a new Tutorial Chest instance
----@return nil
-function ISMailboxes:UpdateRemainingMailboxesTutorialChests()
-    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
-    for i = 2, #ISFModVars.Mailboxes do
-        local mailboxUUID = ISFModVars.Mailboxes[i]
-        self:IntegrateTutorialChest(mailboxUUID)
-    end
-end
-
 --- Update all mailboxes with a new Tutorial Chest instance
 ---@return nil
 function ISMailboxes:UpdateTutorialChests()
@@ -294,3 +274,134 @@ function ISMailboxes:AddTutorialChestToContainer(mailboxUUID)
     ISFDebug(2, "Adding Tutorial Chest to mailbox: " .. mailboxUUID)
     Osi.TemplateAddTo(self.TutChestTemplateUUID, mailboxUUID, 1, 0)
 end
+
+-- TODO: Do the same with any other containers managed by ISF that may need to be refilled
+function ISMailboxes:RefillTutorialChests(mailboxIndexStart, mailboxIndexEnd)
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+
+    if not mailboxIndexStart or not mailboxIndexEnd then
+        mailboxIndexStart = 1
+        mailboxIndexEnd = #ISFModVars.Mailboxes
+    end
+
+    local treasureTableName = "TUT_Chest_Potions"
+    local treasureTableItemsTable = VCHelpers.TreasureTable:GetTableOfItemsFromTreasureTable(treasureTableName)
+
+    if not treasureTableItemsTable then
+        ISFWarn(1, "Treasure table items not found.")
+        return
+    end
+
+    if not ISFModVars.Mailboxes then
+        ISFWarn(1, "Mailboxes not found.")
+        return
+    end
+
+    for i = mailboxIndexStart, mailboxIndexEnd do
+        if not ISFModVars.Mailboxes[i] then
+            ISFWarn(1, "Mailbox at index " .. i .. " not found.")
+            return
+        end
+        self:RefillTutorialChestsInMailbox(ISFModVars.Mailboxes[i], treasureTableItemsTable)
+    end
+end
+
+function ISMailboxes:RefillTutorialChestsInHostMailbox()
+    self:RefillTutorialChests(1, 1)
+end
+
+function ISMailboxes:RefillTutorialChestsInRemainingMailboxes()
+    local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+    self:RefillTutorialChests(2, #ISFModVars.Mailboxes)
+end
+
+--- Refills all tutorial chests in a mailbox with items from the treasure table.
+---@param mailboxUUID string The UUID of the mailbox.
+---@param treasureTableItemsTable TreasureTableItem[] The items to refill the chests with.
+function ISMailboxes:RefillTutorialChestsInMailbox(mailboxUUID, treasureTableItemsTable)
+    local tutorialChestsInMailbox = VCHelpers.Inventory:GetAllItemsWithTemplateInInventory(self.TutChestTemplateUUID,
+        mailboxUUID)
+
+    if not tutorialChestsInMailbox then
+        return
+    end
+
+    for _, tutorialChestInMailbox in pairs(tutorialChestsInMailbox) do
+        VCHelpers.TreasureTable:RefillContainerWithTTItems(tutorialChestInMailbox.Guid, treasureTableItemsTable)
+    end
+end
+
+--- Refills all mailboxes with items from the treasure table from shipments.
+--- WIP
+-- function ISMailboxes:RefillAllMailboxesWithItems()
+--     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+--     for _, mailboxID in pairs(ISFModVars.Mailboxes) do
+--         self:RefillMailboxWithItems(mailboxID)
+--     end
+-- end
+
+-- function ISMailboxes:RefillMailboxWithItems(mailboxUUID)
+--     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+--     local mailboxIndex = ISFModVars.Mailboxes[mailboxUUID]
+--     ItemShipmentInstance:LoadShipments()
+--     for _, mod in pairs(ItemShipmentInstance.mods) do
+--         local shipmentItems = mod.Items[mailboxIndex]
+--         if shipmentItems then
+--             for _, item in pairs(shipmentItems) do
+--                 VCHelpers.Inventory:RefillInventoryWithItem(item.TemplateUUID, item.Send.Quantity, mailboxUUID)
+--             end
+--         end
+--     end
+-- end
+
+--- Refill containers in mailboxes with items from treasure tables if they have not been delivered yet.
+---@return nil
+--- Extremely WIP and broken, do not use.
+-- function ISMailboxes:RefillContainersWithNewItems()
+--     ISFDebug(1, "Entering RefillContainersWithNewItems")
+--     local ISFModVars = Ext.Vars.GetModVariables(ModuleUUID)
+--     ItemShipmentInstance:LoadShipments()
+
+--     ISFDebug(2, "Iterating through mod data")
+--     for modGUID, modData in pairs(ItemShipmentInstance.mods) do
+--         for _, item in pairs(modData.Items) do
+--             ISFDebug(2, "Processing item: " .. item.TemplateUUID)
+--             local treasureTable = self:GetTreasureTableForItem(item.TemplateUUID)
+--             if treasureTable then
+--                 ISFPrint(2, "Found treasure table: " .. treasureTable)
+--                 local treasureTableItems = VCHelpers.TreasureTable:GetTableOfItemsFromTreasureTable(treasureTable)
+--                 if ISFModVars.Shipments[modGUID][item.TemplateUUID] then
+--                     ISFPrint(2, "Item has not been delivered yet, refilling mailboxes")
+--                     for _, mailboxUUID in pairs(ISFModVars.Mailboxes) do
+--                         ISFDebug(2, "Refilling mailbox: " .. mailboxUUID)
+--                         local itemInMailbox = VCHelpers.Inventory:GetItemTemplateInInventory(item.TemplateUUID,
+--                             mailboxUUID, true)
+--                             _D(VCHelpers.Loca:GetTranslatedStringFromTemplateUUID(item.TemplateUUID))
+--                         if itemInMailbox then
+--                             VCHelpers.TreasureTable:RefillContainerWithTTItems(itemInMailbox.Uuid.EntityUuid,
+--                                 treasureTableItems)
+--                         else
+--                             ISFDebug(2, "No item found in mailbox: " .. mailboxUUID)
+--                         end
+--                     end
+--                     ISFModVars.Shipments[modGUID][item.TemplateUUID] = true
+--                 else
+--                     ISFDebug(2, "Item has already been delivered, skipping")
+--                 end
+--             else
+--                 ISFDebug(3, "No treasure table found for item: " .. item.TemplateUUID)
+--             end
+--         end
+--     end
+
+--     -- ISFDebug(1, "Syncing mod variables")
+--     -- VCHelpers.ModVars:Sync(ModuleUUID)
+-- end
+
+-- --- Get the treasure table for a specific item UUID (stub, to be implemented).
+-- ---@param itemUUID string The UUID of the item.
+-- ---@return string|nil The treasure table name or nil if not found.
+-- function ISMailboxes:GetTreasureTableForItem(itemUUID)
+--     -- Placeholder for the actual implementation to get the treasure table for an item.
+--     return "TUT_Chest_Potions" -- Example treasure table name.
+-- end

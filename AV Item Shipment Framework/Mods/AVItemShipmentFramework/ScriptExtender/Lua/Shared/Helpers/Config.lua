@@ -3,9 +3,12 @@ Config = VCHelpers.Config:New({
     configFilePath = "av_item_shipment_framework_config.json",
     defaultConfig = {
         GENERAL = {
-            enabled = true,        -- Toggle the mod on/off
+            enabled = true,               -- Toggle the mod on/off
         },
-        FEATURES = {               -- Options that can override values set by mod authors
+        FEATURES = {                      -- Options that can override values set by mod authors
+            shipment = {
+                only_send_to_host = false -- Set to true to always and only send items to the host
+            },
             notifications = {
                 enabled = true,    -- Set to false to disable all item shipment notifications, regardless of mod author settings
                 ping_chest = true, -- Set to false to disable the ping on chest upon item shipment
@@ -13,6 +16,7 @@ Config = VCHelpers.Config:New({
             },
             spawning = {
                 tutorial_chest = true,        -- Set to false to disable the tutorial chest integration
+                refill_tutorial_chest = true, -- Set to false to disable the tutorial chest refill
                 allow_during_tutorial = true, -- Set to true to allow item spawning during the tutorial
             },
         },

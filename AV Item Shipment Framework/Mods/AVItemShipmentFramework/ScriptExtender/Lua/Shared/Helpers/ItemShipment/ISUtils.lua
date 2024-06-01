@@ -155,6 +155,7 @@ function ISUtils:DeleteAllISFScrollsFromGame()
     end
 
     for _, entity in pairs(entities) do
+        -- REFACTOR: use ISF's mapkeys (templateUUIDs) and just compare with the entity's ServerItem.Template.Id
         if entity and entity.ServerItem.Stats ~= nil and string.find(entity.ServerItem.Stats, "_Scroll_ISF_") then
             local scrollOwnerName = VCHelpers.Loca:GetDisplayName(VCHelpers.Inventory:GetOwner(entity.Uuid.EntityUuid))
             if scrollOwnerName then

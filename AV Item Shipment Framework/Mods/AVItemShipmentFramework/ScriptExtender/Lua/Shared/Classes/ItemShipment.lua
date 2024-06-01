@@ -196,8 +196,13 @@ end
 function ItemShipment:GetTargetInventories(item)
     local targetInventories = {}
 
-    -- Check if the item should be sent to the host
-    if item.Send.To.Host then
+    -- Add an option to always send to host
+    -- TODO: test if this is working
+    if Config:getCfg().FEATURES.shipment.only_send_to_host then
+        table.insert(targetInventories, Osi.GetHostCharacter())
+        return targetInventories
+        -- Check if the item should be sent to the host
+    elseif item.Send.To.Host then
         table.insert(targetInventories, Osi.GetHostCharacter())
     end
 
@@ -282,4 +287,22 @@ function ItemShipment:DeleteAllISFItems()
     end
 
     ISUtils:DeleteAllISFScrollsFromGame()
+end
+
+--- Get the mod GUID for a specific item UUID
+---@param objectUUID string The UUID of the item being searched for
+---@return string|nil modGUID mod GUID of the mod that the item belongs to, or nil if the item is not found in any mod's shipment data
+function ItemShipment:GetModGUIDForItem(objectUUID)
+    -- Iterate through each mod's shipment data
+    for modGUID, modData in pairs(self.mods) do
+        -- Check if the item is listed in the mod's shipment data
+        for _, item in pairs(modData.Items) do
+            if item.TemplateUUID == objectUUID then
+                return modGUID
+            end
+        end
+    end
+
+    -- Item not found in any mod's shipment data
+    return nil
 end

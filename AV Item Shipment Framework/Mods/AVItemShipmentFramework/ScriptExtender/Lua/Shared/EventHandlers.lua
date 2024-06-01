@@ -27,9 +27,9 @@ function EHandlers.OnLevelGameplayStarted(levelName, isEditorMode)
         ItemShipmentInstance:ProcessShipments(false)
 
         -- TODO: Reintroduce this with container refills after SE updates with TreasureTable fixes
-        -- if Config:getCfg().FEATURES.spawning.tutorial_chest then
-        --     ISMailboxes:UpdateHostMailboxTutorialChest()
-        -- end
+        if Config:getCfg().FEATURES.spawning.tutorial_chest and Config:getCfg().FEATURES.spawning.refill_tutorial_chest then
+            ISMailboxes:RefillTutorialChestsInHostMailbox()
+        end
     end)
 end
 
@@ -39,10 +39,10 @@ function EHandlers.OnUserConnected(userID, userName, userProfileID)
     ItemShipmentInstance:LoadShipments()
     ItemShipmentInstance:ProcessShipments(false)
     -- TODO: Reintroduce this with container refills after SE updates with TreasureTable fixes
-    -- if Config:getCfg().FEATURES.spawning.tutorial_chest then
-    --     ISMailboxes:UpdateRemainingMailboxesTutorialChests()
-    --     ISFDebug(1, "Updated remaining mailboxes with Tutorial Chests.")
-    -- end
+    if Config:getCfg().FEATURES.spawning.tutorial_chest and Config:getCfg().FEATURES.spawning.refill_tutorial_chest then
+        ISMailboxes:RefillTutorialChestsInRemainingMailboxes()
+        ISFDebug(1, "Updated remaining mailboxes with Tutorial Chests.")
+    end
 end
 
 function EHandlers.OnUseStarted(character, item)
@@ -118,8 +118,10 @@ function EHandlers.OnReadyCheckFailed(eventId)
         "Entering OnReadyCheckFailed, eventId: " .. eventId)
 
     if eventId == "isf_uninstall_move_items" then
-        ISFWarn(0, "Will uninstall ISF without moving items")
+        ISFWarn(0, "May uninstall ISF without moving items")
         EHandlers.moveItems = false
+        VCHelpers.MessageBox:DustyMessageBox('isf_uninstall_confirmation',
+            Messages.ResolvedMessages.uninstall_confirmation_prompt)
     end
 end
 
@@ -155,7 +157,6 @@ function EHandlers.OnCastedSpell(caster, spell, spellType, spellElement, storyAc
 end
 
 function EHandlers.HandleCastedSpell(spell, ISFModVars)
-    ISFDebug(2, "Party casted ISF spell")
     if spell == "ISF_Refill_PlayerChest_1" then
         ISMailboxes:RefillMailbox(1, ISFModVars.Mailboxes[1])
     elseif spell == "ISF_Refill_PlayerChest_2" then
