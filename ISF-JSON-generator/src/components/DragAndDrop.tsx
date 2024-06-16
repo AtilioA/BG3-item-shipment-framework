@@ -6,6 +6,7 @@ import { gatherData, parseLSXFiles, parseTreasureTables, removeItemsFromLSX } fr
 import WarningModal from './WarningModal';
 import LoadingSpinner from './LoadingSpinner';
 import { MAX_NON_CONTAINER_ITEMS } from '@/config/config';
+import DragErrorMessages from './DragErrorMessages';
 
 const DragAndDropContainer: React.FC = () => {
     // JSON output states
@@ -14,6 +15,7 @@ const DragAndDropContainer: React.FC = () => {
     // Drag and drop states
     const [isDragging, setIsDragging] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
     // Folder states
     const [isFolderLoaded, setIsFolderLoaded] = useState(false);
@@ -39,9 +41,20 @@ const DragAndDropContainer: React.FC = () => {
         });
     };
 
+    function resetState() {
+        setJsonOutput('');
+        setErrorMessages([]);
+        setSelectedTemplates([]);
+        setShowWarningModal(false);
+        setIsFolderLoaded(false);
+        setGameObjectData([]);
+        setFilteredObjectData([]);
+    }
+
     // Pipeline for processing dropped folder
     const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
         setIsProcessing(true);
+        resetState();
 
         // Clean up previous data
         setGameObjectData([]);
@@ -66,6 +79,16 @@ const DragAndDropContainer: React.FC = () => {
         }
 
         setIsProcessing(false);
+
+        if (validData.length === 0) {
+            console.error('No valid mod templates found in the dropped folder.');
+            setErrorMessages([
+                'No valid mod templates found in the dropped folder.',
+                'Ensure the folder contains a mod that has root templates.',
+                'If you believe this is an error, please report it on our mod page.'
+            ]);
+        }
+
     }, [nonContainerItemCount]);
 
     useEffect(() => {
@@ -167,8 +190,9 @@ const DragAndDropContainer: React.FC = () => {
     const renderContent = () => {
         if (isProcessing) {
             return <LoadingSpinner />;
-        }
-        else if (isDragging) {
+        } else if (errorMessages) {
+            return <DragErrorMessages errorMessages={errorMessages} />;
+        } else if (isDragging) {
             return (
                 <p className="text-2xl text-blue-500 font-bold">Drop to generate the ISF config JSON</p>
             );
