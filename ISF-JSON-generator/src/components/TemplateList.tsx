@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy, faCheck, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faCheck, faChevronDown, faChevronUp, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { GameObjectData } from '@/services/parseGameObjects';
 import SaveJSONButton from './SaveJSON';
 import Checkbox from './Checkbox';
@@ -43,7 +43,14 @@ const TemplateList: React.FC<TemplateListProps> = ({
 
     return (
         <div className="flex-1 overflow-auto">
-            <b className="text-xl mt-4 mb-">Templates parsed from the JSON for shipping:</b>
+            <div className="flex items-center text-xl mt-4 mb-">
+                <FontAwesomeIcon
+                    icon={faInfoCircle}
+                    className="mr-2 text-gray-600 hover:text-gray-500 cursor-pointer"
+                    title="You can remove/add templates with the checkboxes and also review the (collapsed) ignored templates to see if anything is missing. Feel free to report issues on our mod page."
+                />
+                <b>Templates parsed from the JSON for shipping:</b>
+            </div>
             <ul className="list-disc pl-4 mb-4 mt-2 max-h-[20vh] overflow-auto select-none">
                 {gameObjectData.map((gameObject) => (
                     <li key={gameObject.templateUUID} className="flex items-center justify-between mx-2 select-none hover:bg-gray-800">
