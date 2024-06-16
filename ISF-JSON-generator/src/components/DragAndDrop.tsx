@@ -111,6 +111,10 @@ const DragAndDropContainer: React.FC = () => {
             return;
         }
 
+        if (isProcessing) {
+            return;
+        }
+
         const items = event.dataTransfer.items;
 
         for (let i = 0; i < items.length; i++) {
@@ -121,19 +125,30 @@ const DragAndDropContainer: React.FC = () => {
             }
         }
         setIsDragging(false);
-    }, [executePipeline]);
+    }, [executePipeline, isProcessing]);
 
     const onDragEnter = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+        if (isProcessing) {
+            return;
+        }
+
         setIsDragging(true);
         event.preventDefault();
-    }, []);
+    }, [isProcessing]);
 
     const onDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+        if (isProcessing) {
+            return;
+        }
+
         setIsDragging(false);
         event.preventDefault();
-    }, []);
+    }, [isProcessing]);
 
     const onPaste = useCallback((event: React.ClipboardEvent<HTMLDivElement>) => {
+        if (isProcessing) {
+            return;
+        }
         setIsFolderLoaded(false);
         setIsDragging(true);
         event.preventDefault();
@@ -147,7 +162,7 @@ const DragAndDropContainer: React.FC = () => {
             }
         }
         setIsDragging(false);
-    }, [executePipeline]);
+    }, [executePipeline, isProcessing]);
 
     // Allow drag and drop to work on the entire document (i.e. + child elements). This adds drag and drop event listeners to the document itself, not just the component.
     useEffect(() => {
