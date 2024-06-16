@@ -181,7 +181,9 @@ const DragAndDropContainer: React.FC = () => {
             );
         } else {
             return (
-                <p className="text-xl text-gray-400 text-center">Drag and drop or paste your main mod folder here</p>
+                <>
+                    <p className="text-xl text-gray-400 text-center">Drag and drop your main mod folder here to automatically generate an ISF JSON for integration</p>
+                </>
             );
         }
     };
