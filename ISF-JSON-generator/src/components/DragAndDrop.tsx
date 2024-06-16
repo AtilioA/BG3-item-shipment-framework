@@ -176,7 +176,7 @@ const DragAndDropContainer: React.FC = () => {
             return (
                 <div className="flex flex-col items-center text-xl text-gray-400">
                     <p><span className='font-bold'>{modName}</span> has been parsed successfully.</p>
-                    <p className="ml-2 text-base">You can still drop in another mod.</p>
+                    <p className="ml-2 text-base text-gray-500 cursor-default">You can still drop in another mod.</p>
                 </div>
             );
         } else {
