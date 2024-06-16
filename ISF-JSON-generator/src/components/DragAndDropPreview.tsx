@@ -39,7 +39,7 @@ const DragAndDropPreview: React.FC<DragAndDropPreviewProps> = ({
             <div className="flex flex-col">
                 <hr className="w-full border-1 rounded-[10px] mt-4 border-gray-500 opacity-[50%]" />
 
-                <p className="mt-4 mb-2">JSON preview:</p>
+                <p className="mt-4 mb-2 text-sm text-gray-300">JSON preview:</p>
                 <div className="rounded-4 overflow-auto min-h-[40vh] max-h-[40vh]">
                     <SyntaxHighlighter
                         onClick={handleSaveJSON}
