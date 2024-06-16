@@ -244,24 +244,26 @@ const DragAndDropContainer: React.FC = () => {
             onDragLeave={onDragLeave}
             onPaste={onPaste}
             onDragOver={(event: React.DragEvent<HTMLDivElement>) => event.preventDefault()}
-            className={`flex flex-col items-center ${isFolderLoaded ? 'justify-start' : 'justify-center'} h-full w-full ${getBorderClass()}`}
+            className={`flex flex-col items-center ${isFolderLoaded ? 'justify-start' : 'justify-center'} h-full w-full ${getBorderClass()}} ${isProcessing ? 'cursor-wait' : 'cursor-auto'}`}
         >
             <div className="flex flex-col items-center justify-center h-[100px] w-full px-2 my-4">
                 {renderContent()}
             </div>
-            {jsonOutput && (
-                <>
-                    <hr className="w-screen border-1 rounded-[10px] border-gray-500 opacity-[50%]" />
-                    <DragAndDropPreview
-                        jsonOutput={jsonOutput}
-                        handleSaveJSON={handleSaveJSON}
-                        gameObjectData={gameObjectData}
-                        filteredObjectData={filteredObjectData}
-                        handleTemplateSelection={handleTemplateSelection}
-                        selectedTemplates={selectedTemplates}
-                    />
-                </>
-            )}
+            {
+                jsonOutput && (
+                    <>
+                        <hr className="w-screen border-1 rounded-[10px] border-gray-500 opacity-[50%]" />
+                        <DragAndDropPreview
+                            jsonOutput={jsonOutput}
+                            handleSaveJSON={handleSaveJSON}
+                            gameObjectData={gameObjectData}
+                            filteredObjectData={filteredObjectData}
+                            handleTemplateSelection={handleTemplateSelection}
+                            selectedTemplates={selectedTemplates}
+                        />
+                    </>
+                )
+            }
             <WarningModal
                 isVisible={showWarningModal}
                 onClose={() => {
@@ -269,7 +271,7 @@ const DragAndDropContainer: React.FC = () => {
                     setIsDragging(false);
                 }}
             />
-        </div>
+        </div >
     );
 };
 export default DragAndDropContainer;
