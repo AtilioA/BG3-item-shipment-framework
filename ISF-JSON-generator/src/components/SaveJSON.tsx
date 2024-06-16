@@ -30,7 +30,7 @@ const SaveJSONButton: React.FC<SaveJSONButtonProps> = ({ handleSaveJSON }) => {
                 <p className="text-center text-xl flex items-center">Save ISF JSON</p>
             </button>
             <p className="mt-1 text-center text-base text-gray-500 cursor-default">*Place this JSON file in the same directory as your mod&apos;s meta.lsx file.</p>
-            {isModalVisible && <ConfirmationModal onClose={() => setIsModalVisible(false)} />}
+            <ConfirmationModal isVisible={isModalVisible} setIsVisible={setIsModalVisible} onClose={() => setIsModalVisible(false)} />
         </div>
     );
 };

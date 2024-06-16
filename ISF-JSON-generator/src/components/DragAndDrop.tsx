@@ -266,6 +266,7 @@ const DragAndDropContainer: React.FC = () => {
             }
             <WarningModal
                 isVisible={showWarningModal}
+                setIsVisible={setShowWarningModal}
                 onClose={() => {
                     setShowWarningModal(false);
                     setIsDragging(false);

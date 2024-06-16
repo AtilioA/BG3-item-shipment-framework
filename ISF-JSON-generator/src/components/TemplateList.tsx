@@ -4,6 +4,7 @@ import { faCopy, faCheck, faChevronDown, faChevronUp, faInfoCircle } from '@fort
 import { GameObjectData } from '@/services/parseGameObjects';
 import SaveJSONButton from './SaveJSON';
 import Checkbox from './Checkbox';
+import InfoModal from './InfoModal';
 
 interface TemplateListProps {
     gameObjectData: GameObjectData[];
@@ -23,6 +24,7 @@ const TemplateList: React.FC<TemplateListProps> = ({
     const [copiedUUID, setCopiedUUID] = useState<string | null>(null);
     const [copiedUUIDTimeout, setCopiedUUIDTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
     const [showFilteredTemplates, setShowFilteredTemplates] = useState(false);
+    const [isInfoModalVisible, setIsInfoModalVisible] = useState(false);
 
     // Handle copying the UUID to the clipboard and setting the copiedUUID state used for styling
     const handleCopyUUID = (uuid: string) => {
@@ -48,6 +50,7 @@ const TemplateList: React.FC<TemplateListProps> = ({
                     icon={faInfoCircle}
                     className="mr-2 text-gray-600 hover:text-gray-500 cursor-pointer"
                     title="You can remove/add templates with the checkboxes and also review the (collapsed) ignored templates to see if anything is missing. Feel free to report issues on our mod page."
+                    onClick={() => setIsInfoModalVisible(true)}
                 />
                 <b>Templates parsed from the JSON for shipping:</b>
             </div>
@@ -111,7 +114,8 @@ const TemplateList: React.FC<TemplateListProps> = ({
             )}
 
             <SaveJSONButton handleSaveJSON={handleSaveJSON} />
-        </div>
+            <InfoModal isVisible={isInfoModalVisible} setIsVisible={setIsInfoModalVisible} onClose={() => setIsInfoModalVisible(false)} />
+        </div >
     );
 };
 
