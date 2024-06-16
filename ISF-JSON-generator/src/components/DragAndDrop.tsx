@@ -41,7 +41,9 @@ const DragAndDropContainer: React.FC = () => {
         });
     };
 
-    function resetState() {
+    function resetState(rootItem: FileSystemEntry) {
+        setGameObjectData([]);
+        setModName(rootItem.name);
         setJsonOutput('');
         setErrorMessages([]);
         setSelectedTemplates([]);
@@ -54,11 +56,9 @@ const DragAndDropContainer: React.FC = () => {
     // Pipeline for processing dropped folder
     const executePipeline = useCallback(async (rootItem: FileSystemEntry) => {
         setIsProcessing(true);
-        resetState();
 
         // Clean up previous data
-        setGameObjectData([]);
-        setModName(rootItem.name);
+        resetState(rootItem);
 
         const files = await gatherData(rootItem);
         const lsxData = await parseLSXFiles(files);
