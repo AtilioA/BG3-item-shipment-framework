@@ -190,7 +190,7 @@ const DragAndDropContainer: React.FC = () => {
     const renderContent = () => {
         if (isProcessing) {
             return <LoadingSpinner />;
-        } else if (errorMessages) {
+        } else if (errorMessages.length > 0) {
             return <DragErrorMessages errorMessages={errorMessages} />;
         } else if (isDragging) {
             return (
