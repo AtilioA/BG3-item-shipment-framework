@@ -1,6 +1,8 @@
 import { MAX_NON_CONTAINER_ITEMS } from '@/config/config';
 import React, { useState } from 'react';
 import Modal from './Modal';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface WarningModalProps {
     isVisible: boolean;
@@ -13,7 +15,13 @@ const WarningModal: React.FC<WarningModalProps> = ({ isVisible, setIsVisible, on
 
     return (
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} onClose={onClose}>
-            <h2 className="text-2xl font-bold mb-4">Warning</h2>
+            <div className='mb-4 flex flex-row items-center align-middle'>
+                <FontAwesomeIcon
+                    icon={faExclamationCircle}
+                    className="mr-2 text-yellow-500 hover:text-yellow-600 cursor-default"
+                />
+                <h2 className="text-2xl font-bold">Warning</h2>
+            </div>
             <p>This mod contains <span className='font-bold'>over {MAX_NON_CONTAINER_ITEMS} items outside of a container</span>.</p>
             <p>This will lead to a cluttered mailbox for your users.</p>
             <p>Please consider <a
