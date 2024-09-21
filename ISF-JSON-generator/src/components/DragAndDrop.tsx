@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import DragAndDropPreview from './DragAndDropPreview';
 import { GameObjectData } from '@/services/parseGameObjects';
 import { constructJSON } from '@/services/xmlToJson';
-import { gatherData, parseLSXFiles, parseTreasureTables, removeItemsFromLSX } from '@/services/parseFolder';
+import { gatherData, parseLSFFiles, parseLSXFiles, parseTreasureTables, removeItemsFromLSX } from '@/services/parseFolder';
 import WarningModal from './WarningModal';
 import LoadingSpinner from './LoadingSpinner';
 import { MAX_NON_CONTAINER_ITEMS } from '@/config/config';
@@ -62,6 +62,7 @@ const DragAndDropContainer: React.FC = () => {
 
         const files = await gatherData(rootItem);
         const lsxData = await parseLSXFiles(files);
+        const WIPLsfData = parseLSFFiles(files);
         const treasureData = await parseTreasureTables(files);
         const filteredData = removeItemsFromLSX(lsxData, treasureData);
         const validData = filteredData.validItems;
@@ -81,12 +82,20 @@ const DragAndDropContainer: React.FC = () => {
         setIsProcessing(false);
 
         if (validData.length === 0) {
-            console.error('No valid mod templates found in the dropped folder.');
-            setErrorMessages([
-                'No valid mod templates found in the dropped folder.',
-                'Ensure the folder contains a mod that has root templates.',
-                'If you believe this is an error, please report it on our mod page.'
-            ]);
+            if (WIPLsfData.length > 0) {
+                console.error('Only LSF files found in the dropped folder.');
+                setErrorMessages([
+                    'The dropped folder contains only LSF files.',
+                    'Ensure the folder contains a mod that has root templates in LSX format.',
+                    'You can convert LSF files to LSX using tools such as [LSLib](https://github.com/Norbyte/lslib), [BG3 Mod Helper](https://marketplace.visualstudio.com/items?itemName=ghostboats.bg3-mod-helper) or [MMT](https://github.com/ShinyHobo/BG3-Modders-Multitool).',
+                ]);
+            } else {
+                console.error('No valid mod templates found in the dropped folder.');
+                setErrorMessages([
+                    'No valid mod templates found in the dropped folder.',
+                    'Ensure the folder contains a mod that has root templates.',
+                ]);
+            }
         }
 
     }, [nonContainerItemCount]);

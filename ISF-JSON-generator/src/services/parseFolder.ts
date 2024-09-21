@@ -31,11 +31,11 @@ async function processEntry(entry: FileSystemEntry, path: string, files: { file:
         }
     }
 }
-
 // Step 2: Parsing LSX file(s?) from RootTemplates
 export async function parseLSXFiles(files: FileAndPath[]): Promise<GameObjectData[]> {
     const lsxFiles = files.filter((file) => file.file.name.endsWith('.lsx') && file.path.includes('RootTemplates'));
     console.debug('LSX files: ', lsxFiles);
+
     const parsedData: GameObjectData[] = [];
     for (const file of lsxFiles) {
         const text = await file.file.text();
@@ -45,7 +45,14 @@ export async function parseLSXFiles(files: FileAndPath[]): Promise<GameObjectDat
     }
     console.debug('Parsed data: ', parsedData);
     return parsedData;
-};
+}
+
+export function parseLSFFiles(files: FileAndPath[]): FileAndPath[] {
+    const lsfFiles = files.filter((file) => file.file.name.endsWith('.lsf') && file.path.includes('RootTemplates'));
+    console.debug('LSF files: ', lsfFiles);
+    // Read lsf files somehow with lslib, unfortunately I don't have the time to implement this
+    return lsfFiles;
+}
 
 // Step 3: Parsing Treasure Table file(s?)
 export async function parseTreasureTables(files: FileAndPath[]): Promise<ParsedTreasureTableData[]> {
