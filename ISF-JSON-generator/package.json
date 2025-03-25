@@ -13,7 +13,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.5.2",
         "@fortawesome/react-fontawesome": "^0.2.0",
         "@types/react-syntax-highlighter": "^15.5.11",
-        "next": "14.1.4",
+        "next": "14.2.25",
         "react": "^18",
         "react-dom": "^18",
         "react-dropzone": "^14.2.3",
